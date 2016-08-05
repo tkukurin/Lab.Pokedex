@@ -23,7 +23,7 @@ struct PokeAttributes : Unboxable {
     var weight : Double?
     var createdAt: NSDate?
     var updatedAt: NSDate?
-    var imageUrl : NSURL?
+    var imageUrl : String?
     var description: String?
     var totalVoteCount: Int?
     

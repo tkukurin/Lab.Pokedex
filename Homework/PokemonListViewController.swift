@@ -66,15 +66,15 @@ extension PokemonListViewController {
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         /*let pokemon = items?.pokemons[indexPath.row]
-        let individualPokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("IndividualPokemonViewController")
-            as! IndividualPokemonViewController
+        let individualPokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("SinglePokemonViewController")
+            as! SinglePokemonViewController
         
         individualPokemonViewController.pokemon = pokemon
         self.navigationController?.pushViewController(individualPokemonViewController, animated: true)*/
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("LabelCell", forIndexPath: indexPath) as! PokemonTableCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("pokemonTableCell", forIndexPath: indexPath) as! PokemonTableCell
         cell.displayPokemon(self.items.pokemons[indexPath.row])
         
         return cell
@@ -86,16 +86,13 @@ extension PokemonListViewController {
     func serverActionCallback(response: ServerResponse<AnyObject>) {
         response
             .ifSuccessfulDo(loadPokemonsFromServerResponse)
-            // .ifFailedDo({ _ in ProgressHud.indicateFailure("Uh-oh... The Pokemons could not be loaded!") })
+            .ifFailedDo({ _ in ProgressHud.indicateFailure("Uh-oh... The Pokemons could not be loaded!") })
     }
     
-    func loadPokemonsFromServerResponse(data: NSData) {
-        let fetchedData: PokemonList? = try? Unbox(data)
-        
-        Result.ofNullable(fetchedData)
-            .ifSuccessfulDo({ pokelist in
-                self.items = pokelist
-                self.tableView.reloadData()
-            })
+    func loadPokemonsFromServerResponse(data: NSData) throws {
+        let fetchedData: PokemonList = try Unbox(data)
+        self.items = fetchedData
+        self.tableView.reloadData()
+        ProgressHud.indicateSuccess()
     }
 }

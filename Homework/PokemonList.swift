@@ -2,7 +2,7 @@ import Unbox
 
 struct PokemonList : Unboxable {
     var pokemons : [Pokemon]
-    var links: PokeListPagination
+    var links: PokeListPagination?
     
     init(unboxer: Unboxer) {
         pokemons = unboxer.unbox("data")
