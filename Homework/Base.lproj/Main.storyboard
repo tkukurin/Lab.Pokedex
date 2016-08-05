@@ -167,6 +167,9 @@
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bGL-Dz-mjX">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="250"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" image="YES" header="YES"/>
+                                </accessibility>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="250" id="3bK-q9-NTF"/>
                                 </constraints>
@@ -260,6 +263,9 @@
                             <constraint firstAttribute="trailing" secondItem="bGL-Dz-mjX" secondAttribute="trailing" id="vAL-hJ-c4R"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="heroImage" destination="bGL-Dz-mjX" id="J0v-ee-zXi"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lUN-cl-Uaz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

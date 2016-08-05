@@ -2,7 +2,6 @@ import UIKit
 
 class SinglePokemonViewController: UIViewController {
     
-    @IBOutlet weak var heightLabel: UILabel!
     @IBOutlet weak var heroImage: UIImageView!
     
     var pokemon : Pokemon!
@@ -36,5 +35,9 @@ class SinglePokemonViewController: UIViewController {
             .ifSuccessfulDo({ self.heroImage.image = $0 })
         ProgressHud.dismiss()
     }
+    
+}
+
+extension SinglePokemonViewController {
     
 }

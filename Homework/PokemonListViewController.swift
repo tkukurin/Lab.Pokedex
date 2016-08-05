@@ -69,8 +69,8 @@ extension PokemonListViewController {
         let pokemon = items.pokemons[indexPath.row]
         let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonViewController")
             as! SinglePokemonViewController
-        
         singlePokemonViewController.pokemon = pokemon
+        
         self.navigationController?.pushViewController(singlePokemonViewController, animated: true)
     }
     
