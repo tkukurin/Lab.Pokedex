@@ -1,4 +1,5 @@
 import UIKit
+import Unbox
 
 class LoginViewController: UIViewController {
     @IBOutlet weak var usernameTextField: UITextField!
@@ -6,14 +7,9 @@ class LoginViewController: UIViewController {
     
     private var alertUtils: AlertUtils!
     
-    required init(coder: NSCoder) {
-        super.init(coder: coder)!
-        
-        alertUtils = Container.sharedInstance.getAlertUtilities(self)
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        alertUtils = Container.sharedInstance.getAlertUtilities(self)
         
         getExistingRegistration()
             .ifSuccessfulDo({ self.sendLoginRequest($0) })
@@ -30,7 +26,7 @@ class LoginViewController: UIViewController {
     }
 }
 
-extension LoginViewController: UserLoginServerResponseDelegate {
+extension LoginViewController {
     
     @IBAction func loginButtonTap(sender: UIButton) {
         requireFilledTextFields()
@@ -63,6 +59,28 @@ extension LoginViewController: UserLoginServerResponseDelegate {
                 .wrapWithKey(RequestKeys.User.ATTRIBUTES)
                 .wrapWithKey(RequestKeys.User.DATA_PREFIX)
         })
+    }
+    
+    func serverActionCallback(response: ServerResponse<AnyObject>) {
+        response
+            .ifSuccessfulDo(loadUserAndLogin)
+            .ifFailedDo({ ProgressHud.indicateFailure("\($0)") })
+    }
+    
+    private func loadUserAndLogin(data: NSData) throws {
+        let user : User = try Unbox(data)
+        goToHomescreen(user)
+        
+        ProgressHud.indicateSuccess("Login: \(user.attributes.username)")
+    }
+    
+    private func goToHomescreen(user: User) {
+        let pokemonListViewController = storyboard?
+            .instantiateViewControllerWithIdentifier("pokemonListViewController") as! PokemonListViewController
+        pokemonListViewController.user = user
+        
+        navigationController?.pushViewController(pokemonListViewController, animated: true)
+        print("User \(user)")
     }
     
 }

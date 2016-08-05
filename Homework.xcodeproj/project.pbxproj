@@ -32,6 +32,8 @@
 		4234DD9D1D54772B00CEBA18 /* JsonMapBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD9C1D54772B00CEBA18 /* JsonMapBuilder.swift */; };
 		4234DDA01D547A4800CEBA18 /* Launchscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = 4234DD9F1D547A4800CEBA18 /* Launchscreen.png */; };
 		4234DDA61D547E7000CEBA18 /* password.png in Resources */ = {isa = PBXBuildFile; fileRef = 4234DDA51D547E6F00CEBA18 /* password.png */; };
+		4234DDAB1D54841E00CEBA18 /* PokemonTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DDAA1D54841E00CEBA18 /* PokemonTableCell.swift */; };
+		4234DDAF1D548D7E00CEBA18 /* PokemonListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DDAE1D548D7E00CEBA18 /* PokemonListViewController.swift */; };
 		623F3B2EA7A5E842E1F369FB /* Pods_HomeworkUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3860BEE453FF3D846B82DAFC /* Pods_HomeworkUITests.framework */; };
 		C27E372A94B259DA310FD615 /* Pods_HomeworkTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22ABFD6E8E80A253684177AF /* Pods_HomeworkTests.framework */; };
 /* End PBXBuildFile section */
@@ -86,6 +88,8 @@
 		4234DD9C1D54772B00CEBA18 /* JsonMapBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonMapBuilder.swift; sourceTree = "<group>"; };
 		4234DD9F1D547A4800CEBA18 /* Launchscreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Launchscreen.png; sourceTree = "<group>"; };
 		4234DDA51D547E6F00CEBA18 /* password.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = password.png; sourceTree = "<group>"; };
+		4234DDAA1D54841E00CEBA18 /* PokemonTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokemonTableCell.swift; sourceTree = "<group>"; };
+		4234DDAE1D548D7E00CEBA18 /* PokemonListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokemonListViewController.swift; sourceTree = "<group>"; };
 		B24D32D3AC143C6C3664D8E9 /* Pods-Homework.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Homework.release.xcconfig"; path = "Pods/Target Support Files/Pods-Homework/Pods-Homework.release.xcconfig"; sourceTree = "<group>"; };
 		BB2BB73FEB52175A0A90E7FC /* Pods-HomeworkTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeworkTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeworkTests/Pods-HomeworkTests.release.xcconfig"; sourceTree = "<group>"; };
 		C936BF2C91978BD45140DBB0 /* Pods-Homework.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Homework.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Homework/Pods-Homework.debug.xcconfig"; sourceTree = "<group>"; };
@@ -161,6 +165,7 @@
 		4234DD421D5469A900CEBA18 /* Homework */ = {
 			isa = PBXGroup;
 			children = (
+				4234DDA71D5483BE00CEBA18 /* ControllerToServerPokemonFrontend */,
 				4234DD9E1D547A0100CEBA18 /* Resources */,
 				4234DD881D5472B200CEBA18 /* Common */,
 				4234DD8B1D5473D000CEBA18 /* ServerRequest */,
@@ -284,6 +289,15 @@
 				4234DD9F1D547A4800CEBA18 /* Launchscreen.png */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		4234DDA71D5483BE00CEBA18 /* ControllerToServerPokemonFrontend */ = {
+			isa = PBXGroup;
+			children = (
+				4234DDAA1D54841E00CEBA18 /* PokemonTableCell.swift */,
+				4234DDAE1D548D7E00CEBA18 /* PokemonListViewController.swift */,
+			);
+			name = ControllerToServerPokemonFrontend;
 			sourceTree = "<group>";
 		};
 		81FBD33860963BCA4BCA3D3F /* Frameworks */ = {
@@ -566,8 +580,10 @@
 				4234DD811D546D3100CEBA18 /* AlertUtils.swift in Sources */,
 				4234DD791D546BF800CEBA18 /* Exception.swift in Sources */,
 				4234DD841D546F7F00CEBA18 /* Container.swift in Sources */,
+				4234DDAB1D54841E00CEBA18 /* PokemonTableCell.swift in Sources */,
 				4234DD921D54747100CEBA18 /* RequestKeys.swift in Sources */,
 				4234DD8A1D5472C100CEBA18 /* Typealiases.swift in Sources */,
+				4234DDAF1D548D7E00CEBA18 /* PokemonListViewController.swift in Sources */,
 				4234DD871D54720E00CEBA18 /* LocalStorageAdapter.swift in Sources */,
 				4234DD981D5474BC00CEBA18 /* User.swift in Sources */,
 				4234DD8F1D54743800CEBA18 /* UserLoginServerResponseDelegate.swift in Sources */,

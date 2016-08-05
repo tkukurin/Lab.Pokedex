@@ -3,7 +3,7 @@
 
 import UIKit
 import Unbox
-
+/*
 protocol UserLoginServerResponseDelegate: ServerResponseDelegate {
     var navigationController: UINavigationController? { get }
     var storyboard: UIStoryboard? { get }
@@ -11,7 +11,7 @@ protocol UserLoginServerResponseDelegate: ServerResponseDelegate {
 
 extension UserLoginServerResponseDelegate {
     
-    func serverActionCallback<AnyObject>(response: ServerResponse<AnyObject>) {
+    func serverActionCallback(response: ServerResponse<AnyObject>) {
         response
             .ifSuccessfulDo(loadUserAndLogin)
             .ifFailedDo({ ProgressHud.indicateFailure("\($0)") })
@@ -32,4 +32,4 @@ extension UserLoginServerResponseDelegate {
         navigationController?.pushViewController(pokemonListViewController, animated: true)*/
         print("User \(user)")
     }
-}
+}*/
