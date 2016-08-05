@@ -1,7 +1,6 @@
 import UIKit
 
 class SinglePokemonViewController: UIViewController {
-    static let IMAGE_BASE_URL = NSURL(string: ServerRequestor.REQUEST_DOMAIN)
     
     @IBOutlet weak var heightLabel: UILabel!
     @IBOutlet weak var heroImage: UIImageView!
@@ -37,22 +36,5 @@ class SinglePokemonViewController: UIViewController {
             .ifSuccessfulDo({ self.heroImage.image = $0 })
         ProgressHud.dismiss()
     }
-    
-    /*func loadImageAsync(imageUrl: String) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-            let image = self.imageFromUrlSuffix(imageUrl)
-            
-            dispatch_async(dispatch_get_main_queue(), {
-                self.heroImage.image = image
-                ProgressHud.dismiss()
-            });
-        });
-    }
-    
-    func imageFromUrlSuffix(urlSuffix: String) -> UIImage? {
-        return NSURL(string: urlSuffix, relativeToURL: SinglePokemonViewController.IMAGE_BASE_URL)
-            .flatMap { NSData(contentsOfURL: $0) }
-            .flatMap { UIImage(data: $0) }
-    }*/
     
 }

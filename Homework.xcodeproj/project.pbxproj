@@ -263,6 +263,7 @@
 				4234DD8C1D5473E100CEBA18 /* ServerDelegateProtocols.swift */,
 				4234DD8E1D54743800CEBA18 /* UserLoginServerResponseDelegate.swift */,
 				4234DD991D5474F100CEBA18 /* ServerRequestor.swift */,
+				4234DDB21D54A47800CEBA18 /* AsyncImageLoader.swift */,
 			);
 			name = ServerRequest;
 			sourceTree = "<group>";
@@ -298,12 +299,19 @@
 		4234DDA71D5483BE00CEBA18 /* ControllerToServerPokemonFrontend */ = {
 			isa = PBXGroup;
 			children = (
-				4234DDAA1D54841E00CEBA18 /* PokemonTableCell.swift */,
-				4234DDAE1D548D7E00CEBA18 /* PokemonListViewController.swift */,
+				4234DDB91D54B51600CEBA18 /* ListPokemons */,
 				4234DDB01D54A35D00CEBA18 /* SinglePokemonViewController.swift */,
-				4234DDB21D54A47800CEBA18 /* AsyncImageLoader.swift */,
 			);
 			name = ControllerToServerPokemonFrontend;
+			sourceTree = "<group>";
+		};
+		4234DDB91D54B51600CEBA18 /* ListPokemons */ = {
+			isa = PBXGroup;
+			children = (
+				4234DDAA1D54841E00CEBA18 /* PokemonTableCell.swift */,
+				4234DDAE1D548D7E00CEBA18 /* PokemonListViewController.swift */,
+			);
+			name = ListPokemons;
 			sourceTree = "<group>";
 		};
 		81FBD33860963BCA4BCA3D3F /* Frameworks */ = {

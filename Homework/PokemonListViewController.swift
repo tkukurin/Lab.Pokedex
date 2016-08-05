@@ -40,6 +40,7 @@ class PokemonListViewController: UITableViewController {
         
         let loginViewController = self.storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
         self.navigationController?.pushViewController(loginViewController, animated: true)
+        
     }
     
     func fetchPokemons() {
@@ -65,12 +66,12 @@ extension PokemonListViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        /*let pokemon = items?.pokemons[indexPath.row]
-        let individualPokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("SinglePokemonViewController")
+        let pokemon = items.pokemons[indexPath.row]
+        let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonViewController")
             as! SinglePokemonViewController
         
-        individualPokemonViewController.pokemon = pokemon
-        self.navigationController?.pushViewController(individualPokemonViewController, animated: true)*/
+        singlePokemonViewController.pokemon = pokemon
+        self.navigationController?.pushViewController(singlePokemonViewController, animated: true)
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
