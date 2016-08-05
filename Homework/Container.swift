@@ -18,9 +18,11 @@ class Container {
     static let sharedInstance = Container();
     
     private let localStorageAdapter: LocalStorageAdapter
+    private let imageLoader: UrlImageLoader
     
     private init() {
         localStorageAdapter = LocalStorageAdapter()
+        imageLoader = AsyncImageLoader()
     }
     
     func getLocalStorageAdapter() -> LocalStorageAdapter {
@@ -29,6 +31,10 @@ class Container {
     
     func getAlertUtilities(caller: UIViewController) -> AlertUtils {
         return AlertUtils(caller)
+    }
+    
+    func getImageLoader() -> UrlImageLoader {
+        return imageLoader
     }
     
 }
