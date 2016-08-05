@@ -2,8 +2,8 @@ struct RequestKeys {
     struct User {
         private init() {}
         
-        static let ID = "id"
         static let DATA_PREFIX = "data"
+        static let ID = "id"
         static let ATTRIBUTES = "attributes"
         static let TYPE = "type"
     }

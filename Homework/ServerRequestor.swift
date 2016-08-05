@@ -18,6 +18,7 @@ class ServerResponse<T> {
     }
     
     func ifSuccessfulDo(consumer: ((NSData) throws -> ())) -> Result<Void> {
+        print(String(self.responseDelegate.data?.bytes) ?? "no data")
         switch responseDelegate.result {
         case .Success:
             do {
@@ -26,7 +27,7 @@ class ServerResponse<T> {
                 return Result.error("\(error)")
             }
         case .Failure(let error):
-            return Result.error("\(error)")
+            return Result.error("Error code: \(error.code)")
         }
         
         return Result.of()

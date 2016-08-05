@@ -2,7 +2,7 @@ import UIKit
 import Unbox
 
 class LoginViewController: UIViewController {
-    @IBOutlet weak var usernameTextField: UITextField!
+    @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
     private var alertUtils: AlertUtils!
@@ -14,7 +14,7 @@ class LoginViewController: UIViewController {
         getExistingRegistration()
             .ifSuccessfulDo({ self.sendLoginRequest($0) })
         
-        usernameTextField.text = "tkukurin@gmail.com"
+        emailTextField.text = "tkukurin@gmail.com"
         passwordTextField.text = "longpassword"
     }
     
@@ -31,11 +31,11 @@ extension LoginViewController {
     @IBAction func loginButtonTap(sender: UIButton) {
         requireFilledTextFields()
             .map({ self.sendLoginRequest($0) })
-            .ifFailedDo({ self.alertUtils.alert("\($0)") })
+            .ifFailedDo({ self.alertUtils.alert("\($0.cause)") })
     }
     
     private func requireFilledTextFields() -> Result<UserLoginData> {
-        guard let username = usernameTextField.text where !username.isEmpty,
+        guard let username = emailTextField.text where !username.isEmpty,
               let password = passwordTextField.text where !password.isEmpty else {
                 return Result.error("Please enter username and password.")
         }
@@ -45,6 +45,7 @@ extension LoginViewController {
     
     private func sendLoginRequest(userData: UserLoginData) {
         let loginRequest = buildLoginRequest(userData)
+        print("Using request \(loginRequest)")
         
         ProgressHud.show()
         ServerRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
@@ -54,9 +55,10 @@ extension LoginViewController {
     
     private func buildLoginRequest(userData: UserLoginData) -> JsonType {
         return  JsonMapBuilder.use({ builder in
-            builder.addParam(RequestKeys.UserAttributes.USERNAME, userData.username)
+            builder.addParam(RequestKeys.UserAttributes.EMAIL, userData.username)
                 .addParam(RequestKeys.UserAttributes.PASSWORD, userData.password)
                 .wrapWithKey(RequestKeys.User.ATTRIBUTES)
+                .addParam("type", "session")
                 .wrapWithKey(RequestKeys.User.DATA_PREFIX)
         })
     }
@@ -64,7 +66,7 @@ extension LoginViewController {
     func serverActionCallback(response: ServerResponse<AnyObject>) {
         response
             .ifSuccessfulDo(loadUserAndLogin)
-            .ifFailedDo({ ProgressHud.indicateFailure("\($0)") })
+            .ifFailedDo({ ProgressHud.indicateFailure("\($0.cause)") })
     }
     
     private func loadUserAndLogin(data: NSData) throws {

@@ -7,9 +7,9 @@ struct User : Unboxable {
     let attributes: UserAttributes
     
     init(unboxer : Unboxer) {
-        id = unboxer.unbox(RequestKeys.User.ID)
-        type = unboxer.unbox(RequestKeys.User.TYPE)
-        attributes = unboxer.unbox(RequestKeys.User.ATTRIBUTES)
+        id = unboxer.unbox(RequestKeys.User.DATA_PREFIX + "." + RequestKeys.User.ID)
+        type = unboxer.unbox(RequestKeys.User.DATA_PREFIX + "." + RequestKeys.User.TYPE)
+        attributes = unboxer.unbox(RequestKeys.User.DATA_PREFIX + "." + RequestKeys.User.ATTRIBUTES)
     }
     
 }
