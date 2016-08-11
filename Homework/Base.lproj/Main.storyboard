@@ -175,7 +175,7 @@
                                 </constraints>
                             </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rtv-dD-Iam">
-                                <rect key="frame" x="20" y="260" width="560" height="100"/>
+                                <rect key="frame" x="20" y="260" width="560" height="50"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K6F-6A-h5m">
                                         <rect key="frame" x="22" y="0.0" width="538" height="21"/>
@@ -183,8 +183,8 @@
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="X4G-l5-bFv">
-                                        <rect key="frame" x="0.0" y="0.0" width="6" height="80"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X4G-l5-bFv">
+                                        <rect key="frame" x="0.0" y="0.0" width="6" height="50"/>
                                         <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="80" id="LQ1-qF-uQj"/>
@@ -206,8 +206,10 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="K6F-6A-h5m" firstAttribute="leading" secondItem="X4G-l5-bFv" secondAttribute="trailing" constant="16" id="4Dr-Cf-UV9"/>
+                                    <constraint firstItem="X4G-l5-bFv" firstAttribute="top" secondItem="rtv-dD-Iam" secondAttribute="top" id="Lqv-cm-VVO"/>
                                     <constraint firstItem="iZr-fl-Ydc" firstAttribute="bottom" secondItem="X4G-l5-bFv" secondAttribute="bottom" id="Nae-Fs-HDm"/>
                                     <constraint firstItem="iZr-fl-Ydc" firstAttribute="top" secondItem="K6F-6A-h5m" secondAttribute="bottom" constant="8" id="S0H-O8-fFN"/>
+                                    <constraint firstAttribute="bottom" secondItem="X4G-l5-bFv" secondAttribute="bottom" id="WrM-jZ-7vL"/>
                                     <constraint firstItem="iZr-fl-Ydc" firstAttribute="trailing" secondItem="K6F-6A-h5m" secondAttribute="trailing" id="ZQO-T7-oqP"/>
                                     <constraint firstItem="K6F-6A-h5m" firstAttribute="top" secondItem="rtv-dD-Iam" secondAttribute="top" id="Zon-xN-JNd"/>
                                     <constraint firstItem="X4G-l5-bFv" firstAttribute="top" secondItem="rtv-dD-Iam" secondAttribute="top" id="hOl-Kn-xIs"/>
@@ -216,6 +218,11 @@
                                     <constraint firstAttribute="height" constant="100" id="uyh-GT-NDt"/>
                                     <constraint firstItem="iZr-fl-Ydc" firstAttribute="leading" secondItem="K6F-6A-h5m" secondAttribute="leading" id="vfN-cd-Q3F"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="uyh-GT-NDt"/>
+                                    </mask>
+                                </variation>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
