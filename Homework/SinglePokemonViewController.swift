@@ -3,6 +3,8 @@ import UIKit
 class SinglePokemonViewController: UIViewController {
     
     @IBOutlet weak var heroImage: UIImageView!
+    @IBOutlet weak var pokemonNameLabel: UILabel!
+    @IBOutlet weak var pokemonDescriptionTextField: UITextView!
     
     var pokemon : Pokemon!
     var imageLoader: UrlImageLoader!
@@ -15,6 +17,9 @@ class SinglePokemonViewController: UIViewController {
     }
     
     func loadPokemonData(pokemon: Pokemon) {
+        pokemonNameLabel.text = pokemon.attributes.name
+        pokemonDescriptionTextField.text = pokemon.attributes.description
+        
         Result
             .ofNullable(pokemon.attributes.imageUrl)
             .ifSuccessfulDo(loadImage)
