@@ -37,4 +37,15 @@ class JsonMapBuilder {
         return self
     }
     
+    
+    static func buildLoginRequest(userData: UserLoginData) -> JsonType {
+        return  JsonMapBuilder.use({ builder in
+            builder.addParam(RequestKeys.UserAttributes.EMAIL, userData.email)
+                .addParam(RequestKeys.UserAttributes.PASSWORD, userData.password)
+                .wrapWithKey(RequestKeys.User.ATTRIBUTES)
+                .addParam("type", "session")
+                .wrapWithKey(RequestKeys.User.DATA_PREFIX)
+        })
+    }
+    
 }

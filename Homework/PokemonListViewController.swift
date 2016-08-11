@@ -16,6 +16,11 @@ class PokemonListViewController: UITableViewController {
     }
     
     func initBackButton() {
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: "logout",
+            style: UIBarButtonItemStyle.Plain,
+            target: self,
+            action: #selector(PokemonListViewController.backToLoginScreenAction))
         // self.navigationItem.leftBarButtonItem.action = backToLoginScreenAction
     }
     
@@ -38,7 +43,7 @@ class PokemonListViewController: UITableViewController {
     func backToLoginScreenAction(sender: AnyObject) {
         ServerRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
         
-        let loginViewController = self.storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
+        let loginViewController = self.storyboard?.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
         self.navigationController?.pushViewController(loginViewController, animated: true)
         
     }

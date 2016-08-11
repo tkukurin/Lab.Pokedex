@@ -6,31 +6,27 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     
     private var alertUtils: AlertUtils!
+    private var localStorageAdapter: LocalStorageAdapter!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        alertUtils = Container.sharedInstance.getAlertUtilities(self)
+        self.navigationItem.leftBarButtonItem = nil
+        self.navigationItem.backBarButtonItem = nil
         
-        getExistingRegistration()
-            .ifSuccessfulDo({ self.sendLoginRequest($0) })
+        alertUtils = Container.sharedInstance.getAlertUtilities(self)
+        localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         
         emailTextField.text = "tkukurin@gmail.com"
         passwordTextField.text = "longpassword"
     }
     
-    private func getExistingRegistration() -> Result<UserLoginData> {
-        return Container
-                .sharedInstance
-                .getLocalStorageAdapter()
-                .loadUser()
-    }
 }
 
 extension LoginViewController {
     
     @IBAction func loginButtonTap(sender: UIButton) {
         requireFilledTextFields()
-            .map({ self.sendLoginRequest($0) })
+            .map(sendLoginRequest)
             .ifFailedDo({ self.alertUtils.alert("\($0.cause)") })
     }
     
@@ -44,23 +40,13 @@ extension LoginViewController {
     }
     
     private func sendLoginRequest(userData: UserLoginData) {
-        let loginRequest = buildLoginRequest(userData)
+        let loginRequest = JsonMapBuilder.buildLoginRequest(userData)
         print("Using request \(loginRequest)")
         
         ProgressHud.show()
         ServerRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
                                jsonReq: loginRequest,
                                callback: serverActionCallback)
-    }
-    
-    private func buildLoginRequest(userData: UserLoginData) -> JsonType {
-        return  JsonMapBuilder.use({ builder in
-            builder.addParam(RequestKeys.UserAttributes.EMAIL, userData.username)
-                .addParam(RequestKeys.UserAttributes.PASSWORD, userData.password)
-                .wrapWithKey(RequestKeys.User.ATTRIBUTES)
-                .addParam("type", "session")
-                .wrapWithKey(RequestKeys.User.DATA_PREFIX)
-        })
     }
     
     func serverActionCallback(response: ServerResponse<AnyObject>) {
@@ -71,8 +57,10 @@ extension LoginViewController {
     
     private func loadUserAndLogin(data: NSData) throws {
         let user : User = try Unbox(data)
-        goToHomescreen(user)
+        localStorageAdapter
+            .persistUser(emailTextField.text!, passwordTextField.text!)
         
+        goToHomescreen(user)
         ProgressHud.indicateSuccess("Login: \(user.attributes.username)")
     }
     

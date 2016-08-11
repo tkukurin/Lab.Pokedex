@@ -1,5 +1,7 @@
 import Alamofire
 
+typealias ServerCallbackFn = ((response: ServerResponse<AnyObject>) -> Void)
+
 class RequestEndpoint {
     static let USER_ACTION_CREATE_OR_DELETE = "users"
     static let USER_ACTION_LOGIN = "users/login"
@@ -42,7 +44,7 @@ class ServerRequestor {
 
     static func doGet(toEndpoint: String,
                       requestingUser: User,
-                      callback: ((response: ServerResponse<AnyObject>) -> Void)) {
+                      callback: ServerCallbackFn) {
         let headers = headersForUser(requestingUser)
         Alamofire.request(.GET,
                           resolveUrl(toEndpoint),
@@ -53,8 +55,8 @@ class ServerRequestor {
     }
 
     static func doPost(toEndpoint: String,
-                   jsonReq: [String: AnyObject],
-                   callback: ((response: ServerResponse<AnyObject>) -> Void)) {
+                   jsonReq: JsonType,
+                   callback: ServerCallbackFn) {
         Alamofire.request(.POST,
                           resolveUrl(toEndpoint),
                           parameters: jsonReq,

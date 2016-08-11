@@ -64,6 +64,7 @@ class Result<T> {
         }
         return self
     }
+    
 }
 
 extension Result {

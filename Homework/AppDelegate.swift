@@ -7,46 +7,71 @@
 //
 
 import UIKit
+import Unbox
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var mainStoryboard: UIStoryboard?
+    var navigationController: UINavigationController?
 
     func application(application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        navigationController = (mainStoryboard?.instantiateViewControllerWithIdentifier("mainNavigationController")
+            as! UINavigationController)
+        window?.rootViewController = navigationController
         
-        // TODO
-        //window?.rootViewController = nil
-        //window?.makeKeyAndVisible()
+        getExistingRegistration()
+            .ifSuccessfulDo(showPokemonListScreen)
+            .ifFailedDo(showLoginScreen)
         
         return true
     }
-
-    func applicationWillResignActive(application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
+    private func showPokemonListScreen(userLoginData: UserLoginData) {
+        let loginRequestMap = JsonMapBuilder.buildLoginRequest(userLoginData)
+        ServerRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
+                               jsonReq: loginRequestMap,
+                               callback: serverActionCallback)
     }
-
-    func applicationDidEnterBackground(application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    func serverActionCallback(response: ServerResponse<AnyObject>) {
+        response
+            .ifSuccessfulDo(loadUserAndShowPokemonListScreen)
+            .ifFailedDo(showLoginScreen)
     }
-
-    func applicationWillEnterForeground(application: UIApplication) {
-        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
+    private func loadUserAndShowPokemonListScreen(data: NSData) throws {
+        let user : User = try Unbox(data)
+        let pokemonListViewController = mainStoryboard?.instantiateViewControllerWithIdentifier("pokemonListViewController") as! PokemonListViewController
+        pokemonListViewController.user = user
+        
+        //window?.rootViewController = pokemonListViewController
+        //window?.makeKeyAndVisible()
+        navigationController?.pushViewController(pokemonListViewController, animated: true)
+        
+        //UIView.transitionWithView(self.window!, duration: 0.5, options: .TransitionCrossDissolve, animations: {
+          //  self.window!.rootViewController = pokemonListViewController }, completion: nil)
     }
-
-    func applicationDidBecomeActive(application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    private func showLoginScreen(ignorable: Exception) {
+        let loginViewController = mainStoryboard?.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
+        navigationController?.pushViewController(loginViewController, animated: true)
+        
+        // window?.makeKeyAndVisible()
+        //UIView.transitionWithView(self.window!, duration: 0.5, options: .TransitionCrossDissolve, animations: {
+          //  self.window!.rootViewController = loginViewController }, completion: nil)
     }
-
-    func applicationWillTerminate(application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    
+    private func getExistingRegistration() -> Result<UserLoginData> {
+        return Container
+            .sharedInstance
+            .getLocalStorageAdapter()
+            .loadUser()
     }
-
 
 }
 
