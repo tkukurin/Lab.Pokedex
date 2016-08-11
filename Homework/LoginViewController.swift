@@ -7,14 +7,15 @@ class LoginViewController: UIViewController {
     
     private var alertUtils: AlertUtils!
     private var localStorageAdapter: LocalStorageAdapter!
+    private var serverRequestor: ServerRequestor!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.leftBarButtonItem = nil
-        self.navigationItem.backBarButtonItem = nil
+        self.navigationItem.setHidesBackButton(true, animated: false)
         
         alertUtils = Container.sharedInstance.getAlertUtilities(self)
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
+        serverRequestor = Container.sharedInstance.getServerRequestor()
         
         emailTextField.text = "tkukurin@gmail.com"
         passwordTextField.text = "longpassword"
@@ -44,7 +45,7 @@ extension LoginViewController {
         print("Using request \(loginRequest)")
         
         ProgressHud.show()
-        ServerRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
+        serverRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
                                jsonReq: loginRequest,
                                callback: serverActionCallback)
     }

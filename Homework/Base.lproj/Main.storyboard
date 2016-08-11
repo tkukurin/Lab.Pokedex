@@ -55,7 +55,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                             </textField>
-                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Launchscreen.png" translatesAutoresizingMaskIntoConstraints="NO" id="FwQ-nl-qSN">
+                            <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="Launchscreen.png" translatesAutoresizingMaskIntoConstraints="NO" id="FwQ-nl-qSN">
                                 <rect key="frame" x="0.0" y="74" width="600" height="292"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="292" id="JDs-WX-BCD"/>

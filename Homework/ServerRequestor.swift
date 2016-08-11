@@ -42,7 +42,7 @@ class ServerRequestor {
 
     private static let COMPRESSION_QUALITY: CGFloat = 0.8
 
-    static func doGet(toEndpoint: String,
+    func doGet(toEndpoint: String,
                       requestingUser: User,
                       callback: ServerCallbackFn) {
         let headers = headersForUser(requestingUser)
@@ -54,7 +54,7 @@ class ServerRequestor {
             }
     }
 
-    static func doPost(toEndpoint: String,
+    func doPost(toEndpoint: String,
                    jsonReq: JsonType,
                    callback: ServerCallbackFn) {
         Alamofire.request(.POST,
@@ -66,13 +66,13 @@ class ServerRequestor {
             }
     }
 
-    static func doDelete(toEndpoint: String) {
+    func doDelete(toEndpoint: String) {
         Alamofire.request(.DELETE,
                           resolveUrl(toEndpoint),
                           headers: [ "Content-type" : "text\\html" ])
     }
 
-    static func doMultipart(toEndpoint: String,
+    func doMultipart(toEndpoint: String,
                             user: User,
                             pickedImage: UIImage?,
                             attributes: [String: String],
@@ -82,14 +82,14 @@ class ServerRequestor {
                          resolveUrl(toEndpoint),
                          headers: headers,
                          multipartFormData: { multipartFormData in
-                            addImageMultipart(multipartFormData, pickedImage)
-                            addAttributesMultipart(multipartFormData, attributes);
+                            self.addImageMultipart(multipartFormData, pickedImage)
+                            self.addAttributesMultipart(multipartFormData, attributes);
                         }, encodingCompletion: { encodingResult in
                             callback(encodingResult)
                         })
     }
 
-    private static func addImageMultipart(multipartFormData: MultipartFormData,
+    private func addImageMultipart(multipartFormData: MultipartFormData,
                                    _ pickedImage: UIImage?) {
         pickedImage.flatMap({ UIImageJPEGRepresentation($0, ServerRequestor.COMPRESSION_QUALITY) })
                    .flatMap({ multipartFormData.appendBodyPart(
@@ -100,7 +100,7 @@ class ServerRequestor {
                     })
     }
 
-    private static func addAttributesMultipart(multipartFormData: MultipartFormData,
+    private func addAttributesMultipart(multipartFormData: MultipartFormData,
                                                _ attributes: [String: String]) {
         for (key, value) in attributes {
             multipartFormData.appendBodyPart(
@@ -109,15 +109,15 @@ class ServerRequestor {
         }
     }
 
-    private static func toMultipartAttributeName(key: String) -> String {
+    private func toMultipartAttributeName(key: String) -> String {
       return "data[attributes][\(key)]"
     }
 
-    private static func resolveUrl(endpoint: String) -> String {
+    private func resolveUrl(endpoint: String) -> String {
       return ServerRequestor.APIREQUEST_URL + endpoint
     }
 
-    private static func headersForUser(user: User) -> [String:String] {
+    private func headersForUser(user: User) -> [String:String] {
         return [ "Authorization": "Token token=\(user.attributes.authToken), email=\(user.attributes.email)"]
     }
 

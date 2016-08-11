@@ -15,6 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var mainStoryboard: UIStoryboard?
     var navigationController: UINavigationController?
+    
+    private var serverRequestor: ServerRequestor!
 
     func application(application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -24,6 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             as! UINavigationController)
         window?.rootViewController = navigationController
         
+        self.serverRequestor = Container.sharedInstance.getServerRequestor()
         getExistingRegistration()
             .ifSuccessfulDo(showPokemonListScreen)
             .ifFailedDo(showLoginScreen)
@@ -33,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func showPokemonListScreen(userLoginData: UserLoginData) {
         let loginRequestMap = JsonMapBuilder.buildLoginRequest(userLoginData)
-        ServerRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
+        serverRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
                                jsonReq: loginRequestMap,
                                callback: serverActionCallback)
     }

@@ -6,10 +6,15 @@ class PokemonListViewController: UITableViewController {
     var user : User!
     var items : PokemonList!
     
+    private var localStorageAdapter: LocalStorageAdapter!
+    private var serverRequestor: ServerRequestor!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Pokedex"
+        localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
+        serverRequestor = Container.sharedInstance.getServerRequestor()
         
+        title = "Pokedex"
         initBackButton()
         initCreateNewPokemonButton()
         fetchPokemons()
@@ -21,7 +26,6 @@ class PokemonListViewController: UITableViewController {
             style: UIBarButtonItemStyle.Plain,
             target: self,
             action: #selector(PokemonListViewController.backToLoginScreenAction))
-        // self.navigationItem.leftBarButtonItem.action = backToLoginScreenAction
     }
     
     func initCreateNewPokemonButton() {
@@ -41,7 +45,8 @@ class PokemonListViewController: UITableViewController {
     }
     
     func backToLoginScreenAction(sender: AnyObject) {
-        ServerRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
+        serverRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
+        localStorageAdapter.deleteActiveUser()
         
         let loginViewController = self.storyboard?.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
         self.navigationController?.pushViewController(loginViewController, animated: true)
@@ -50,7 +55,7 @@ class PokemonListViewController: UITableViewController {
     
     func fetchPokemons() {
         ProgressHud.show()
-        ServerRequestor.doGet(
+        serverRequestor.doGet(
             RequestEndpoint.POKEMON_ACTION,
             requestingUser: user,
             callback: serverActionCallback)

@@ -19,10 +19,12 @@ class Container {
     
     private let localStorageAdapter: LocalStorageAdapter
     private let imageLoader: UrlImageLoader
+    private let serverRequestor: ServerRequestor
     
     private init() {
         localStorageAdapter = LocalStorageAdapter()
         imageLoader = AsyncImageLoader()
+        serverRequestor = ServerRequestor()
     }
     
     func getLocalStorageAdapter() -> LocalStorageAdapter {
@@ -35,6 +37,10 @@ class Container {
     
     func getImageLoader() -> UrlImageLoader {
         return imageLoader
+    }
+    
+    func getServerRequestor() -> ServerRequestor {
+        return serverRequestor
     }
     
 }
