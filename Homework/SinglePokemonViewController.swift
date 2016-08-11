@@ -1,6 +1,6 @@
 import UIKit
 
-class SinglePokemonViewController: UITableViewController { //UIViewController {
+class SinglePokemonViewController: UIViewController {
     
     @IBOutlet weak var heroImage: UIImageView!
     

@@ -20,8 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        navigationController = (mainStoryboard?.instantiateViewControllerWithIdentifier("mainNavigationController")
-            as! UINavigationController)
+        navigationController = (mainStoryboard?.instantiateInitialViewController() as! UINavigationController)
         window?.rootViewController = navigationController
         
         getExistingRegistration()

@@ -18,12 +18,10 @@ class PokemonTableCell: UITableViewCell {
     }
     
     func initRoundedImage() {
-        // let layer = pokemonImageUIView.layer
-        
-        pokemonImageUIView.layer.masksToBounds = false
-        pokemonImageUIView.layer.borderColor = UIColor.whiteColor().CGColor
-        pokemonImageUIView.layer.cornerRadius = pokemonImageUIView.frame.size.width / 2;
-        pokemonImageUIView.clipsToBounds = true;
+//        pokemonImageUIView.layer.masksToBounds = false
+//        pokemonImageUIView.layer.borderColor = UIColor.whiteColor().CGColor
+//        pokemonImageUIView.layer.cornerRadius = pokemonImageUIView.frame.size.width / 2;
+//        pokemonImageUIView.clipsToBounds = true;
     }
     
     func displayPokemon(pokemon: Pokemon) {

@@ -11,6 +11,7 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.leftBarButtonItem = nil
+        self.navigationItem.setHidesBackButton(true, animated: false)
         self.navigationItem.backBarButtonItem = nil
         
         alertUtils = Container.sharedInstance.getAlertUtilities(self)

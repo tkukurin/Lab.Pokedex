@@ -42,8 +42,10 @@ class PokemonListViewController: UITableViewController {
     
     func backToLoginScreenAction(sender: AnyObject) {
         ServerRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
+        Container.sharedInstance.getLocalStorageAdapter().deleteActiveUser()
         
         let loginViewController = self.storyboard?.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
+        //self.navigationController?.presentViewController(loginViewController, animated: true, completion: {})
         self.navigationController?.pushViewController(loginViewController, animated: true)
         
     }
