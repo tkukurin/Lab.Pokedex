@@ -165,7 +165,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bGL-Dz-mjX">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="password.png" translatesAutoresizingMaskIntoConstraints="NO" id="bGL-Dz-mjX">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="250"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" image="YES" header="YES"/>
@@ -183,34 +183,38 @@
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X4G-l5-bFv">
+                                    <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="X4G-l5-bFv">
                                         <rect key="frame" x="0.0" y="0.0" width="6" height="80"/>
                                         <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="80" id="LQ1-qF-uQj"/>
                                             <constraint firstAttribute="width" constant="6" id="oJg-u7-gEu"/>
                                         </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="LQ1-qF-uQj"/>
+                                            </mask>
+                                        </variation>
                                     </view>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="IjC-Id-8dQ">
-                                        <rect key="frame" x="22" y="26" width="538" height="54"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                    </textView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iZr-fl-Ydc">
+                                        <rect key="frame" x="22" y="29" width="538" height="51"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="K6F-6A-h5m" firstAttribute="leading" secondItem="X4G-l5-bFv" secondAttribute="trailing" constant="16" id="4Dr-Cf-UV9"/>
-                                    <constraint firstItem="IjC-Id-8dQ" firstAttribute="leading" secondItem="K6F-6A-h5m" secondAttribute="leading" id="7po-Ca-Ewg"/>
-                                    <constraint firstItem="IjC-Id-8dQ" firstAttribute="top" secondItem="K6F-6A-h5m" secondAttribute="bottom" constant="5" id="Gdx-DW-mSR"/>
-                                    <constraint firstItem="IjC-Id-8dQ" firstAttribute="trailing" secondItem="K6F-6A-h5m" secondAttribute="trailing" id="MpV-Tn-8XI"/>
-                                    <constraint firstItem="IjC-Id-8dQ" firstAttribute="bottom" secondItem="X4G-l5-bFv" secondAttribute="bottom" id="ZGa-jt-uv9"/>
+                                    <constraint firstItem="iZr-fl-Ydc" firstAttribute="bottom" secondItem="X4G-l5-bFv" secondAttribute="bottom" id="Nae-Fs-HDm"/>
+                                    <constraint firstItem="iZr-fl-Ydc" firstAttribute="top" secondItem="K6F-6A-h5m" secondAttribute="bottom" constant="8" id="S0H-O8-fFN"/>
+                                    <constraint firstItem="iZr-fl-Ydc" firstAttribute="trailing" secondItem="K6F-6A-h5m" secondAttribute="trailing" id="ZQO-T7-oqP"/>
                                     <constraint firstItem="K6F-6A-h5m" firstAttribute="top" secondItem="rtv-dD-Iam" secondAttribute="top" id="Zon-xN-JNd"/>
                                     <constraint firstItem="X4G-l5-bFv" firstAttribute="top" secondItem="rtv-dD-Iam" secondAttribute="top" id="hOl-Kn-xIs"/>
                                     <constraint firstItem="X4G-l5-bFv" firstAttribute="leading" secondItem="rtv-dD-Iam" secondAttribute="leading" id="hsf-2n-rfo"/>
                                     <constraint firstAttribute="trailing" secondItem="K6F-6A-h5m" secondAttribute="trailing" id="k5I-Dx-Tll"/>
                                     <constraint firstAttribute="height" constant="100" id="uyh-GT-NDt"/>
+                                    <constraint firstItem="iZr-fl-Ydc" firstAttribute="leading" secondItem="K6F-6A-h5m" secondAttribute="leading" id="vfN-cd-Q3F"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -227,7 +231,7 @@
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <connections>
                         <outlet property="heroImage" destination="bGL-Dz-mjX" id="J0v-ee-zXi"/>
-                        <outlet property="pokemonDescriptionTextField" destination="IjC-Id-8dQ" id="7RL-1I-nov"/>
+                        <outlet property="pokemonDescriptionTextField" destination="iZr-fl-Ydc" id="9Kw-EG-omb"/>
                         <outlet property="pokemonNameLabel" destination="K6F-6A-h5m" id="qVx-W5-oqs"/>
                     </connections>
                 </viewController>

@@ -4,7 +4,7 @@ class SinglePokemonViewController: UIViewController {
     
     @IBOutlet weak var heroImage: UIImageView!
     @IBOutlet weak var pokemonNameLabel: UILabel!
-    @IBOutlet weak var pokemonDescriptionTextField: UITextView!
+    @IBOutlet weak var pokemonDescriptionTextField: UILabel!
     
     var pokemon : Pokemon!
     var imageLoader: UrlImageLoader!
@@ -19,6 +19,13 @@ class SinglePokemonViewController: UIViewController {
     func loadPokemonData(pokemon: Pokemon) {
         pokemonNameLabel.text = pokemon.attributes.name
         pokemonDescriptionTextField.text = pokemon.attributes.description
+        
+//        let fixedWidth = pokemonDescriptionTextField.frame.size.width
+//        pokemonDescriptionTextField.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.max))
+//        let newSize = pokemonDescriptionTextField.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.max))
+//        var newFrame = pokemonDescriptionTextField.frame
+//        newFrame.size = CGSize(width: max(newSize.width, fixedWidth), height: newSize.height)
+//        pokemonDescriptionTextField.frame = newFrame;
         
         Result
             .ofNullable(pokemon.attributes.imageUrl)
