@@ -1,4 +1,5 @@
 import UIKit
+import Unbox
 
 class SinglePokemonViewController: UIViewController {
     
@@ -13,12 +14,22 @@ class SinglePokemonViewController: UIViewController {
     
     var pokemon : Pokemon!
     var imageLoader: UrlImageLoader!
+    var loggedInUser: User!
+    var serverRequestor: ServerRequestor!
+    var alertUtils: AlertUtils!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         imageLoader = Container.sharedInstance.getImageLoader()
+        serverRequestor = Container.sharedInstance.getServerRequestor()
+        alertUtils = Container.sharedInstance.getAlertUtilities(self)
+        
         title = pokemon.attributes.name
         loadPokemonData(pokemon)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        ProgressHud.dismiss()
     }
     
     func loadPokemonData(pokemon: Pokemon) {
@@ -54,6 +65,33 @@ class SinglePokemonViewController: UIViewController {
                 self.heroImage.image = $0
             })
         ProgressHud.dismiss()
+    }
+    
+    @IBAction func didTapCommentsButton(sender: UIButton) {
+        serverRequestor.doGet(RequestEndpoint.forComments(pokemon.id), requestingUser: loggedInUser, callback: serverActionCallback)
+    }
+    
+    func serverActionCallback(serverResponse: ServerResponse<AnyObject>) {
+        serverResponse
+            .ifSuccessfulDo(loadAndDisplayComments)
+            .ifFailedDo({ _ in ProgressHud.indicateFailure() })
+    }
+    
+    func loadAndDisplayComments(commentData: NSData) {
+        Result
+            .ofNullable(commentData)
+            .map({ (data: NSData) in return (try! Unbox(data) as CommentList) })
+            .ifSuccessfulDo(displayComments)
+            .ifFailedDo({ _ in ProgressHud.indicateFailure("Error loading comments!") })
+    }
+    
+    func displayComments(injecting: CommentList) {
+        let commentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("commentViewController") as! CommentViewController
+        commentViewController.items = injecting
+        commentViewController.pokemon = self.pokemon
+        commentViewController.loggedInUser = loggedInUser
+        
+        self.navigationController?.pushViewController(commentViewController, animated: true)
     }
     
 }

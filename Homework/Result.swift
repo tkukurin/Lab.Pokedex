@@ -29,13 +29,15 @@ class Result<T> {
         self.error = Exception(cause: error)
     }
     
-    func map<R>(f: ((T) throws -> (R))) -> Result<R> {
+    func map<R>(f: (T throws -> R)) -> Result<R> {
         let retVal = Result<R>()
         if let _: Exception = self.error {
             retVal.error = self.error
         } else {
             do {
-                retVal.value = try f(self.value!)
+                if let value:T = self.value {
+                    retVal.value = try f(value)
+                }
             } catch {
                 retVal.error = Exception(cause: "\(error)")
             }
@@ -43,19 +45,15 @@ class Result<T> {
         return retVal
     }
     
-    func ifFailedDo(consumer: (Exception) -> ()) -> Result<T> {
+    func ifFailedDo(consumer: (Exception) -> ()) {
         if let error: Exception = self.error {
             consumer(error)
         }
-        return self
     }
     
-    func ifFailedReturn(supplier: () -> T) -> Result<T> {
-        if let _: Exception = self.error {
-            return Result<T>(value: supplier())
-        }
-        
-        return self
+    func ifFailedReturn(supplier: () -> T) -> T {
+        guard let value:T = self.value else { return supplier() }
+        return value
     }
     
     func ifSuccessfulDo(f: ((T) -> ())) -> Result<T> {

@@ -18,6 +18,8 @@ class PokemonListViewController: UITableViewController {
         initBackButton()
         initCreateNewPokemonButton()
         fetchPokemons()
+        
+        print("auth header: \(user.attributes.authToken)")
     }
     
     func initBackButton() {
@@ -80,6 +82,7 @@ extension PokemonListViewController {
         let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonViewController")
             as! SinglePokemonViewController
         singlePokemonViewController.pokemon = pokemon
+        singlePokemonViewController.loggedInUser = user
         
         self.navigationController?.pushViewController(singlePokemonViewController, animated: true)
     }

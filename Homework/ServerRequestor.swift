@@ -8,7 +8,7 @@ class RequestEndpoint {
     static let POKEMON_ACTION = "pokemons"
     
     static func forComments(pokemonId: Int) -> String {
-        return POKEMON_ACTION + ":" + String(pokemonId) + "/comments"
+        return POKEMON_ACTION + "/" + String(pokemonId) + "/comments"
     }
 }
 
@@ -56,7 +56,16 @@ class ServerRequestor {
 
     func doPost(toEndpoint: String,
                    jsonReq: JsonType,
+                   requestingUser: User? = nil,
                    callback: ServerCallbackFn) {
+        let headers = Result
+            .ofNullable(requestingUser)
+            .map(headersForUser)
+            .ifFailedReturn({ [String:String]() })
+        
+        Alamofire.Manager.sharedInstance.session.configuration
+            .HTTPAdditionalHeaders = headers
+        
         Alamofire.request(.POST,
                           resolveUrl(toEndpoint),
                           parameters: jsonReq,
@@ -74,7 +83,7 @@ class ServerRequestor {
 
     func doMultipart(toEndpoint: String,
                             user: User,
-                            pickedImage: UIImage?,
+                            pickedImage: UIImage? = nil,
                             attributes: [String: String],
                             callback: (MultipartEncodingResult -> Void)) {
         let headers = headersForUser(user)
@@ -91,13 +100,13 @@ class ServerRequestor {
 
     private func addImageMultipart(multipartFormData: MultipartFormData,
                                    _ pickedImage: UIImage?) {
-        pickedImage.flatMap({ UIImageJPEGRepresentation($0, ServerRequestor.COMPRESSION_QUALITY) })
-                   .flatMap({ multipartFormData.appendBodyPart(
+        let _ = pickedImage.flatMap({ UIImageJPEGRepresentation($0, ServerRequestor.COMPRESSION_QUALITY) })
+                           .flatMap({ multipartFormData.appendBodyPart(
                                 data: $0,
                                 name: toMultipartAttributeName("image"),
                                 fileName: "file.jpeg",
                                 mimeType: "image/jpeg")
-                    })
+                            })
     }
 
     private func addAttributesMultipart(multipartFormData: MultipartFormData,

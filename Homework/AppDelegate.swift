@@ -25,8 +25,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navigationController = (mainStoryboard?.instantiateViewControllerWithIdentifier("mainNavigationController")
             as! UINavigationController)
         window?.rootViewController = navigationController
+        serverRequestor = Container.sharedInstance.getServerRequestor()
         
-        self.serverRequestor = Container.sharedInstance.getServerRequestor()
         getExistingRegistration()
             .ifSuccessfulDo(showPokemonListScreen)
             .ifFailedDo(showLoginScreen)
@@ -70,10 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func getExistingRegistration() -> Result<UserLoginData> {
-        return Container
-            .sharedInstance
-            .getLocalStorageAdapter()
-            .loadUser()
+        return Container.sharedInstance.getLocalStorageAdapter().loadUser()
     }
 
 }
