@@ -9,26 +9,29 @@ class CommentViewController: UITableViewController {
     
     var comments: [Comment]!
     var users: [User]!
+    var cells: [CommentTableCell?]!
     
     var pokemon: Pokemon!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         serverRequestor = Container.sharedInstance.getServerRequestor()
-        //getUsernames()
+        cells = [CommentTableCell?](count: comments.count, repeatedValue: nil)
+        getUsernames()
     }
     
-//    func getUsernames() {
-//        users = Array(count: comments.count, repeatedValue: loggedInUser)
-//        
-//        var index = 0
-//        comments.forEach({
-//            serverRequestor.doGet(RequestEndpoint.forUsers($0.userId ?? ""),
-//                requestingUser: self.loggedInUser,
-//                callback: { self.fillCellUsername($0, arrayIndex: index) })
-//            index += 1
-//        })
-//    }
+    func getUsernames() {
+        users = Array(count: comments.count, repeatedValue: loggedInUser)
+        
+        var index = 0
+        comments.forEach({
+            let currentIndex = index
+            serverRequestor.doGet(RequestEndpoint.forUsers($0.userId ?? ""),
+                requestingUser: self.loggedInUser,
+                callback: { self.fillCellUsername($0, arrayIndex: currentIndex) })
+            index += 1
+        })
+    }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
@@ -51,27 +54,30 @@ class CommentViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("commentCell", forIndexPath: indexPath) as! CommentTableCell
         cell.commentLabel.text = comment.attributes?.content
         
-        serverRequestor.doGet(RequestEndpoint.forUsers(comment.userId ?? ""),
-                              requestingUser: loggedInUser,
-                              callback: {
-                                $0.ifSuccessfulDo({
-                                    let user: User = try Unbox($0)
-                                    cell.commenterUsernameLabel.text = user.attributes.username
-                                    self.tableView.reloadData()
-                                })
-                              })
+        cells[indexPath.row] = cell
+        
+//        serverRequestor.doGet(RequestEndpoint.forUsers(comment.userId ?? ""),
+//                              requestingUser: loggedInUser,
+//                              callback: {
+//                                $0.ifSuccessfulDo({
+//                                    let user: User = try Unbox($0)
+//                                    cell.commenterUsernameLabel.text = user.attributes.username
+//                                    self.tableView.reloadData()
+//                                })
+//                              })
         
         return cell
     }
     
-//    func fillCellUsername(serverResponse: ServerResponse<AnyObject>, arrayIndex: Int) {
-//        serverResponse
-//            .ifSuccessfulDo({
-//                let currentUser: User = try Unbox($0)
-//                self.comments[arrayIndex].
-//            })
-//            .ifFailedDo({ _ in ProgressHud.indicateFailure("Well crap. Failed.") })
-//    }
+    func fillCellUsername(serverResponse: ServerResponse<AnyObject>, arrayIndex: Int) {
+        serverResponse
+            .ifSuccessfulDo({
+                let currentUser: User = try Unbox($0)
+                self.cells[arrayIndex]?.commenterUsernameLabel.text = currentUser.attributes.username
+                self.tableView.reloadData()
+            })
+            .ifFailedDo({ _ in ProgressHud.indicateFailure("Well crap. Failed.") })
+    }
     
     func displayPostCommentCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("postCommentCell", forIndexPath: indexPath) as! PostCommentTableCell
