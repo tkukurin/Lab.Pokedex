@@ -2,7 +2,7 @@ import Foundation
 import Unbox
 
 struct User : Unboxable {
-    let id: Int?
+    let id: Int
     let type: String?
     let attributes: UserAttributes
     
@@ -15,7 +15,7 @@ struct User : Unboxable {
 }
 
 struct UserAttributes : Unboxable {
-    let authToken : String
+    let authToken : String?
     let email : String
     let username : String
     

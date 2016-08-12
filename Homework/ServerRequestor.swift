@@ -8,7 +8,12 @@ class RequestEndpoint {
     static let POKEMON_ACTION = "pokemons"
     
     static func forComments(pokemonId: Int) -> String {
-        return POKEMON_ACTION + "/" + String(pokemonId) + "/comments"
+        return POKEMON_ACTION + "/\(pokemonId)/comments"
+    }
+    
+    
+    static func forUsers(userId: String) -> String {
+        return USER_ACTION_CREATE_OR_DELETE + "/\(userId)"
     }
 }
 
@@ -85,8 +90,9 @@ class ServerRequestor {
                             user: User,
                             pickedImage: UIImage? = nil,
                             attributes: [String: String],
-                            callback: (MultipartEncodingResult -> Void)) {
+                            callback: ServerResponse<String>? -> Void) {
         let headers = headersForUser(user)
+        
         Alamofire.upload(.POST,
                          resolveUrl(toEndpoint),
                          headers: headers,
@@ -94,8 +100,17 @@ class ServerRequestor {
                             self.addImageMultipart(multipartFormData, pickedImage)
                             self.addAttributesMultipart(multipartFormData, attributes);
                         }, encodingCompletion: { encodingResult in
-                            callback(encodingResult)
+                            self.multipartEncodedCallback(encodingResult, delegateResultTo: callback)
                         })
+    }
+    
+    func multipartEncodedCallback(encodingResult: MultipartEncodingResult, delegateResultTo: ServerResponse<String>? -> Void) {
+        switch encodingResult {
+        case .Success(let upload, _, _):
+            upload.responseString(completionHandler: { delegateResultTo(ServerResponse($0)) })
+        default:
+            delegateResultTo(nil)
+        }
     }
 
     private func addImageMultipart(multipartFormData: MultipartFormData,
@@ -127,7 +142,7 @@ class ServerRequestor {
     }
 
     private func headersForUser(user: User) -> [String:String] {
-        return [ "Authorization": "Token token=\(user.attributes.authToken), email=\(user.attributes.email)"]
+        return [ "Authorization": "Token token=\(user.attributes.authToken ?? ""), email=\(user.attributes.email)"]
     }
 
 }

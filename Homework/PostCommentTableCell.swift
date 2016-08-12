@@ -23,35 +23,31 @@ class PostCommentTableCell: UITableViewCell {
     }
     
     @IBAction func didTapSendButton(sender: AnyObject) {
+        guard let commentText: String = self.textField.text else {
+            ProgressHud.indicateFailure("Pls enter comment")
+            return
+        }
+        
         serverRequestor.doMultipart(RequestEndpoint.forComments(pokemonId),
                                     user: user,
-                                    attributes: JsonMapBuilder.use({
-                                builder in
-                                builder.addParam("content", self.textField.text ?? "")
-                                    .wrapWithKey("attributes")
-                                    .wrapWithKey("data") }),
-                               callback: multipartEncodedCallback)
+                                    attributes: ["content":commentText],
+                                    callback: serverActionCallback)
     }
     
-    func multipartEncodedCallback(encodingResult: MultipartEncodingResult) {
-        switch encodingResult {
-        case .Success(let upload, _, _): upload.responseString(completionHandler: serverActionCallback)
-        default: break
-        }
-    
-        ProgressHud.indicateFailure()
-    }
-    
-    func serverActionCallback(response: Response<String, NSError>) {
-        guard let data = response.data else {
+    func serverActionCallback(response: ServerResponse<String>?) {
+        guard let response: ServerResponse<String> = response else {
             ProgressHud.indicateFailure("Bad server response.")
             return
         }
         
-        let commentResponse: Comment? = try? Unbox(data)
-        Result.ofNullable(commentResponse)
-            .ifSuccessfulDo({ print($0) })
+        response
+            .ifSuccessfulDo({  self.commentCreatedCallback(try Unbox($0)) })
             .ifFailedDo({ _ in ProgressHud.indicateFailure("Couldn't parse server response.") })
+        
+    }
+    
+    func commentCreatedCallback(comment: Comment) {
+        print("Created comment \(comment)")
     }
 
     

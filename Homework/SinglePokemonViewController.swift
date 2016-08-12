@@ -53,6 +53,7 @@ class SinglePokemonViewController: UIViewController {
     func loadImage(urlEndpoint: String) {
         ProgressHud.show()
         
+        // TODO requestendpoint.resolveImageUrl
         let fullPath = ServerRequestor.REQUEST_DOMAIN + urlEndpoint
         imageLoader.loadFrom(fullPath, callback: heroImageReceivedCallback)
     }
@@ -80,14 +81,27 @@ class SinglePokemonViewController: UIViewController {
     func loadAndDisplayComments(commentData: NSData) {
         Result
             .ofNullable(commentData)
-            .map({ (data: NSData) in return (try! Unbox(data) as CommentList) })
+            .map({ (data: NSData) in return (try Unbox(data) as CommentList) })
             .ifSuccessfulDo(displayComments)
+            //.ifSuccessfulDo(loadUsersForCommentsAndDisplay)
             .ifFailedDo({ _ in ProgressHud.indicateFailure("Error loading comments!") })
+    }
+    
+    func loadUsersForCommentsAndDisplay(commentList: CommentList) {
+        var usersForComments = [User?](count: commentList.comments.count, repeatedValue: nil)
+        var index = 0
+        
+        commentList.comments.forEach({
+            self.serverRequestor.doGet(RequestEndpoint.forUsers($0.userId!),
+                requestingUser: self.loggedInUser,
+                callback: { $0.ifSuccessfulDo({ usersForComments[index] = try Unbox($0) as User }) })
+            index += 1
+        })
     }
     
     func displayComments(injecting: CommentList) {
         let commentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("commentViewController") as! CommentViewController
-        commentViewController.items = injecting
+        commentViewController.comments = injecting.comments
         commentViewController.pokemon = self.pokemon
         commentViewController.loggedInUser = loggedInUser
         
