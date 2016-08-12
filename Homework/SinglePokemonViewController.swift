@@ -6,6 +6,11 @@ class SinglePokemonViewController: UIViewController {
     @IBOutlet weak var pokemonNameLabel: UILabel!
     @IBOutlet weak var pokemonDescriptionTextField: UILabel!
     
+    @IBOutlet weak var heightLabel: UILabel!
+    @IBOutlet weak var weightLabel: UILabel!
+    @IBOutlet weak var abilitiesLabel: UILabel!
+    @IBOutlet weak var typeLabel: UILabel!
+    
     var pokemon : Pokemon!
     var imageLoader: UrlImageLoader!
     
@@ -19,17 +24,19 @@ class SinglePokemonViewController: UIViewController {
     func loadPokemonData(pokemon: Pokemon) {
         pokemonNameLabel.text = pokemon.attributes.name
         pokemonDescriptionTextField.text = pokemon.attributes.description
-        
-//        let fixedWidth = pokemonDescriptionTextField.frame.size.width
-//        pokemonDescriptionTextField.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.max))
-//        let newSize = pokemonDescriptionTextField.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.max))
-//        var newFrame = pokemonDescriptionTextField.frame
-//        newFrame.size = CGSize(width: max(newSize.width, fixedWidth), height: newSize.height)
-//        pokemonDescriptionTextField.frame = newFrame;
+        heightLabel.text = getOrDefault(pokemon.attributes.height)
+        weightLabel.text = getOrDefault(pokemon.attributes.weight)
+        abilitiesLabel.text = getOrDefault(pokemon.attributes.createdAt)
+        typeLabel.text = getOrDefault(pokemon.type)
         
         Result
             .ofNullable(pokemon.attributes.imageUrl)
             .ifSuccessfulDo(loadImage)
+    }
+    
+    func getOrDefault<T>(value: T?, defaultValue:String = "?") -> String {
+        if let value: T = value { return String(value) }
+        return defaultValue
     }
     
     func loadImage(urlEndpoint: String) {
