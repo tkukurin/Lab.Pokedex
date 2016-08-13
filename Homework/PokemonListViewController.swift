@@ -41,8 +41,8 @@ class PokemonListViewController: UITableViewController {
     func newPokemonAction() {
         let createPokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("createPokemonViewController") as! CreatePokemonViewController
         
-//        createPokemonViewController.user = user
-//        createPokemonViewController.createdPokemonDelegate = self
+        createPokemonViewController.user = user
+        createPokemonViewController.createPokemonDelegate = self
         
         self.navigationController?.pushViewController(createPokemonViewController, animated: true)
     }
@@ -93,6 +93,12 @@ extension PokemonListViewController {
         cell.displayPokemon(self.items.pokemons[indexPath.row])
         
         return cell
+    }
+}
+
+extension PokemonListViewController: CreatePokemonDelegate {
+    func notify(pokemon: Pokemon) {
+        print("delegate got \(pokemon)")
     }
 }
 

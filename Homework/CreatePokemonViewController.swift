@@ -28,12 +28,20 @@ class CreatePokemonViewController: UIViewController {
         serverRequestor = Container.sharedInstance.getServerRequestor()
     }
     
-    @IBAction func didTapCreatePokemonButton(sender: AnyObject) {
-        ProgressHud.show()
+    @IBAction func didTapGetImageButton(sender: UIButton) {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = false
+        picker.sourceType = .PhotoLibrary
         
+        presentViewController(picker, animated: true, completion: nil)
+    }
+    
+    @IBAction func didTapCreatePokemonButton(sender: UIButton) {
         Result
             .ofNullable(constructPokemonAttributeMap())
             .ifSuccessfulDo({
+                ProgressHud.show()
                 self.serverRequestor.doMultipart(RequestEndpoint.POKEMON_ACTION,
                     user: self.user,
                     pickedImage: self.pickedImage,
@@ -62,12 +70,10 @@ class CreatePokemonViewController: UIViewController {
                 }
         })
         
+        attributes["gender-id"] = "1" // todo
         return fieldsAreValid ? attributes : nil
     }
     
-    private func placeholderToKey(placeholder: String) -> String {
-        return placeholder.stringByReplacingOccurrencesOfString(" ", withString: "-").lowercaseString
-    }
 }
 
 extension CreatePokemonViewController {
@@ -92,15 +98,6 @@ extension CreatePokemonViewController {
 
 
 extension CreatePokemonViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    func displayImagePicker() {
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        picker.allowsEditing = false
-        picker.sourceType = .PhotoLibrary
-        
-        presentViewController(picker, animated: true, completion: nil)
-    }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {

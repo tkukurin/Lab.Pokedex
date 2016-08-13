@@ -245,6 +245,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AHD-D2-qH1">
+                                <rect key="frame" x="522" y="195" width="30" height="60"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                <state key="normal" title="+"/>
+                                <connections>
+                                    <action selector="didTapGetImageButton:" destination="KA5-qT-kgt" eventType="touchUpInside" id="tRU-1j-Idu"/>
+                                </connections>
+                            </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="password.png" translatesAutoresizingMaskIntoConstraints="NO" id="82K-Iw-kbp">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="250"/>
                                 <accessibility key="accessibilityConfiguration">
@@ -298,11 +306,6 @@
                                     </textField>
                                 </subviews>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AHD-D2-qH1">
-                                <rect key="frame" x="522" y="229" width="30" height="26"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="29"/>
-                                <state key="normal" title="+"/>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -310,7 +313,7 @@
                             <constraint firstAttribute="trailing" secondItem="82K-Iw-kbp" secondAttribute="trailing" id="8Hl-nh-z3A"/>
                             <constraint firstAttribute="trailing" secondItem="AHD-D2-qH1" secondAttribute="trailing" constant="48" id="CTK-d3-E8C"/>
                             <constraint firstItem="kWn-wz-LjZ" firstAttribute="top" secondItem="AHD-D2-qH1" secondAttribute="bottom" constant="5" id="I6y-Yq-4Ce"/>
-                            <constraint firstItem="AHD-D2-qH1" firstAttribute="top" secondItem="ybt-EE-HHd" secondAttribute="bottom" constant="209" id="ID4-v0-S4P"/>
+                            <constraint firstItem="AHD-D2-qH1" firstAttribute="top" secondItem="ybt-EE-HHd" secondAttribute="bottom" constant="175" id="ID4-v0-S4P"/>
                             <constraint firstItem="82K-Iw-kbp" firstAttribute="top" secondItem="K67-gE-ROn" secondAttribute="top" id="Swb-LS-koX"/>
                             <constraint firstItem="tbx-x1-mXi" firstAttribute="top" secondItem="kWn-wz-LjZ" secondAttribute="bottom" constant="10" id="UCd-AX-fsd"/>
                             <constraint firstItem="82K-Iw-kbp" firstAttribute="leading" secondItem="K67-gE-ROn" secondAttribute="leading" id="Wd5-NQ-Ge7"/>

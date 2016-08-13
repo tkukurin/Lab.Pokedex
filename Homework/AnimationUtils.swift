@@ -1,11 +1,3 @@
-//
-//  AnimationUtils.swift
-//  Homework
-//
-//  Created by toni-user on 13/08/16.
-//  Copyright © 2016 Infinum. All rights reserved.
-//
-
 import UIKit
 
 class AnimationUtils {
