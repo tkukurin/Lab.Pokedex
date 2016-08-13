@@ -94,7 +94,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1141" y="341"/>
+            <point key="canvasLocation" x="1338" y="341"/>
         </scene>
         <!--Register View Controller-->
         <scene sceneID="pSu-7e-qtj">
@@ -171,7 +171,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U18-Sq-o9L" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1117" y="1044"/>
+            <point key="canvasLocation" x="1449" y="1025"/>
         </scene>
         <!--Pokedex-->
         <scene sceneID="lxE-EX-ZXd">
@@ -183,7 +183,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="pokemonTableCell" rowHeight="90" id="AaI-jh-pCC" customClass="PokemonTableCell" customModule="Homework" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="600" height="90"/>
+                                <rect key="frame" x="0.0" y="92" width="600" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="AaI-jh-pCC" id="9hz-Io-yrI">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="89"/>
@@ -233,10 +233,26 @@
                             <outlet property="delegate" destination="NgO-Cd-8lJ" id="tLN-29-itl"/>
                         </connections>
                     </tableView>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Pokedex" id="Pjc-d6-4JW">
+                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="naS-rG-M0Z">
+                            <connections>
+                                <action selector="didTapLogoutButton:" destination="NgO-Cd-8lJ" id="QXO-fo-fUV"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="upW-NM-SOr">
+                            <connections>
+                                <action selector="didTapAddPokemonAction:" destination="NgO-Cd-8lJ" id="OOl-dz-8d2"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9R7-a5-Go3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1816" y="346"/>
+            <point key="canvasLocation" x="2628" y="346"/>
         </scene>
         <!--Create Pokemon-->
         <scene sceneID="Vul-3c-8c4">
@@ -340,7 +356,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dKg-Xy-anq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1839" y="1049"/>
+            <point key="canvasLocation" x="2628" y="1025"/>
         </scene>
         <!--Single Pokemon View Controller-->
         <scene sceneID="424-fQ-H5f">
@@ -534,7 +550,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lUN-cl-Uaz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2513" y="500"/>
+            <point key="canvasLocation" x="3278" y="346"/>
         </scene>
         <!--Comment View Controller-->
         <scene sceneID="Dnt-Sb-PC8">
@@ -631,7 +647,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AhF-Zr-Nza" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3181" y="500"/>
+            <point key="canvasLocation" x="3993" y="500"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="WU2-e6-lfR">
@@ -652,7 +668,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mRb-un-Wf5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="453" y="346"/>
+            <point key="canvasLocation" x="692" y="341"/>
         </scene>
     </scenes>
     <resources>

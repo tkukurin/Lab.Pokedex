@@ -3,6 +3,14 @@ import Unbox
 
 class PokemonListViewController: UITableViewController {
     
+    @IBAction func didTapAddPokemonAction(sender: AnyObject) {
+        newPokemonAction()
+    }
+    
+    @IBAction func didTapLogoutButton(sender: AnyObject) {
+        backToLoginScreenAction(sender)
+    }
+    
     var user : User!
     var items : PokemonList!
     
@@ -14,20 +22,21 @@ class PokemonListViewController: UITableViewController {
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
         
-        initBackButton()
-        initCreateNewPokemonButton()
+        //initBackButton()
+        //initCreateNewPokemonButton()
         fetchPokemons()
         
         print("auth header: \(user.attributes.authToken)")
     }
     
-    func initBackButton() {
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: "logout",
-            style: UIBarButtonItemStyle.Plain,
-            target: self,
-            action: #selector(PokemonListViewController.backToLoginScreenAction))
-    }
+//    func initBackButton() {
+//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+//            title: "logout",
+//            style: UIBarButtonItemStyle.Plain,
+//            target: self,
+//            action: #selector(PokemonListViewController.backToLoginScreenAction))
+//        self.navigationItem.leftBarButtonItem?.action = #selector(PokemonListViewController.backToLoginScreenAction)
+//    }
     
     func initCreateNewPokemonButton() {
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -49,16 +58,7 @@ class PokemonListViewController: UITableViewController {
     func backToLoginScreenAction(sender: AnyObject) {
         serverRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
         localStorageAdapter.deleteActiveUser()
-        
-        //let loginViewController = self.storyboard?.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
-        //self.navigationController?.pushViewController(loginViewController, animated: true)
-//        
-//        let navigationViewController = (storyboard?.instantiateViewControllerWithIdentifier("mainNavigationController")
-//            as! UINavigationController)
-//        UIApplication.sharedApplication().keyWindow?.rootViewController = navigationViewController
-        
         navigationController?.popViewControllerAnimated(true)
-        
     }
     
     func fetchPokemons() {
