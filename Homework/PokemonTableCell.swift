@@ -18,10 +18,9 @@ class PokemonTableCell: UITableViewCell {
     }
     
     func initRoundedImage() {
-        // let layer = pokemonImageUIView.layer
-        
         pokemonImageUIView.layer.masksToBounds = false
-        pokemonImageUIView.layer.borderColor = UIColor.whiteColor().CGColor
+        pokemonImageUIView.layer.borderColor = UIColor.grayColor().CGColor
+        pokemonImageUIView.layer.borderWidth = 0.5
         pokemonImageUIView.layer.cornerRadius = pokemonImageUIView.frame.size.width / 2;
         pokemonImageUIView.clipsToBounds = true;
     }

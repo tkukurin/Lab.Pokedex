@@ -3,7 +3,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -176,7 +175,7 @@
         <scene sceneID="lxE-EX-ZXd">
             <objects>
                 <tableViewController storyboardIdentifier="pokemonListViewController" id="NgO-Cd-8lJ" customClass="PokemonListViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="73" sectionHeaderHeight="28" sectionFooterHeight="28" id="dy8-qq-gNO">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="90" sectionHeaderHeight="28" sectionFooterHeight="28" id="dy8-qq-gNO">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -188,19 +187,12 @@
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="89"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="password.png" translatesAutoresizingMaskIntoConstraints="NO" id="80J-Gm-A6Z">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Pokeball.png" translatesAutoresizingMaskIntoConstraints="NO" id="80J-Gm-A6Z">
                                             <rect key="frame" x="10" y="10" width="69" height="69"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="69" id="Ref-Uo-1Kf"/>
-                                                <constraint firstAttribute="width" constant="70" id="rms-wj-fnd"/>
-                                                <constraint firstAttribute="width" secondItem="80J-Gm-A6Z" secondAttribute="height" multiplier="70:70" id="tBH-Cc-EOY"/>
+                                                <constraint firstAttribute="width" constant="69" id="8Bu-5e-ckP"/>
+                                                <constraint firstAttribute="height" constant="69" id="p0Y-mw-7IY"/>
                                             </constraints>
-                                            <variation key="default">
-                                                <mask key="constraints">
-                                                    <exclude reference="Ref-Uo-1Kf"/>
-                                                    <exclude reference="rms-wj-fnd"/>
-                                                </mask>
-                                            </variation>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="esg-b7-28X">
                                             <rect key="frame" x="99" y="34" width="42" height="21"/>
@@ -211,11 +203,22 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstItem="80J-Gm-A6Z" firstAttribute="leading" secondItem="9hz-Io-yrI" secondAttribute="leading" constant="10" id="6wt-iA-O9s"/>
+                                        <constraint firstItem="80J-Gm-A6Z" firstAttribute="centerX" secondItem="9hz-Io-yrI" secondAttribute="centerX" id="Dit-U7-zgj"/>
                                         <constraint firstItem="esg-b7-28X" firstAttribute="leading" secondItem="80J-Gm-A6Z" secondAttribute="trailing" constant="20" id="DyJ-I8-9tx"/>
                                         <constraint firstItem="esg-b7-28X" firstAttribute="centerY" secondItem="9hz-Io-yrI" secondAttribute="centerY" id="GyA-L6-cFa"/>
                                         <constraint firstItem="80J-Gm-A6Z" firstAttribute="top" secondItem="9hz-Io-yrI" secondAttribute="top" constant="10" id="RKG-hg-KrN"/>
+                                        <constraint firstItem="80J-Gm-A6Z" firstAttribute="centerX" secondItem="9hz-Io-yrI" secondAttribute="centerX" id="VLN-ZN-mjI"/>
+                                        <constraint firstItem="80J-Gm-A6Z" firstAttribute="centerY" secondItem="9hz-Io-yrI" secondAttribute="centerY" id="Vqj-7l-cHb"/>
                                         <constraint firstAttribute="bottom" secondItem="80J-Gm-A6Z" secondAttribute="bottom" constant="10" id="Z50-9M-8hv"/>
                                     </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="Dit-U7-zgj"/>
+                                            <exclude reference="RKG-hg-KrN"/>
+                                            <exclude reference="VLN-ZN-mjI"/>
+                                            <exclude reference="Z50-9M-8hv"/>
+                                        </mask>
+                                    </variation>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="pokemonImageUIView" destination="80J-Gm-A6Z" id="aen-uS-NrW"/>
@@ -646,6 +649,7 @@
     </scenes>
     <resources>
         <image name="Launchscreen.png" width="320" height="568"/>
+        <image name="Pokeball.png" width="894" height="893"/>
         <image name="password.png" width="32" height="32"/>
     </resources>
 </document>
