@@ -39,11 +39,12 @@ class PokemonListViewController: UITableViewController {
     }
     
     func newPokemonAction() {
-        /*let createPokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("CreatePokemonViewController") as! CreatePokemonViewController
-        createPokemonViewController.user = user
-        createPokemonViewController.createdPokemonDelegate = self
+        let createPokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("createPokemonViewController") as! CreatePokemonViewController
         
-        self.navigationController?.pushViewController(createPokemonViewController, animated: true)*/
+//        createPokemonViewController.user = user
+//        createPokemonViewController.createdPokemonDelegate = self
+        
+        self.navigationController?.pushViewController(createPokemonViewController, animated: true)
     }
     
     func backToLoginScreenAction(sender: AnyObject) {

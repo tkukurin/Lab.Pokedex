@@ -26,21 +26,21 @@ class CommentViewController: UITableViewController {
     }
     
     func getUsernames() {
-        self.users = [User?]() //[User?](count: comments.count, repeatedValue: nil)
+        self.users = [User?]()
         
         (0..<comments.count).forEach({ i in
             serverRequestor.doGet(RequestEndpoint.forUsers(self.comments[i].userId ?? ""),
                 requestingUser: self.loggedInUser,
-                callback: { self.fillCellUsername($0, arrayIndex: i) })
+                callback: appendCell)
         })
     }
     
-    func fillCellUsername(serverResponse: ServerResponse<AnyObject>, arrayIndex: Int) {
+    func appendCell(serverResponse: ServerResponse<AnyObject>) {
         serverResponse
             .ifSuccessfulDo({
                 let user: User = try Unbox($0)
                 self.users.append(user)
-                self.updateCommentsTable(arrayIndex)
+                self.updateCommentsTable(self.users.count - 1)
             })
     }
     
@@ -95,9 +95,5 @@ extension CommentViewController : CommentCreatedDelegate {
         
         let nUsers = users.count
         updateCommentsTable(nUsers - 1)
-//        tableView.beginUpdates()
-//        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: nUsers - 1, inSection: 0)],
-//                                         withRowAnimation: .Automatic)
-//        tableView.endUpdates()
     }
 }

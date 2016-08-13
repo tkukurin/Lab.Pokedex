@@ -49,6 +49,7 @@ class PostCommentTableCell: UITableViewCell {
     }
     
     func commentCreatedCallback(commentCreatedResponse: CommentCreatedResponse) {
+        self.textField.text = ""
         delegate.notify(commentCreatedResponse.comment)
     }
 
