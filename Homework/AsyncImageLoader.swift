@@ -1,10 +1,3 @@
-//
-//  AsyncImageLoader.swift
-//  Homework
-//
-//  Created by Infinum on 8/5/16.
-//  Copyright © 2016 Infinum. All rights reserved.
-//
 
 import Foundation
 import UIKit

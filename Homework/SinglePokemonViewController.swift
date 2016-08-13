@@ -42,17 +42,21 @@ class SinglePokemonViewController: UIViewController {
         weightLabel.text = getOrDefaultString(pokemon.attributes.weight)
         genderLabel.text = getOrDefaultString(pokemon.attributes.gender)
         typeLabel.text = getOrDefaultString(pokemon.type)
-        heroImage.image = getOrDefault(self.image, defaultValue: SinglePokemonViewController.DEFAULT_IMAGE)
+        Result.ofNullable(self.image)
+            .ifSuccessfulDo({ self.heroImage.image = $0 })
+            .ifFailedDo({ _ in self.loadImageOrDisplayDefault(self.pokemon.attributes.imageUrl) })
+    }
+    
+    func loadImageOrDisplayDefault(imageUrl: String?) {
+        Result
+            .ofNullable(imageUrl)
+            .ifSuccessfulDo(loadImage)
+            .ifFailedDo({ _ in self.heroImage.image = SinglePokemonViewController.DEFAULT_IMAGE })
     }
     
     func getOrDefaultString<T>(value: T) -> String {
         if let value: T = value { return String(value) }
         return "?"
-    }
-    
-    func getOrDefault<T>(value: T?, defaultValue: T) -> T {
-        if let value: T = value { return value }
-        return defaultValue
     }
     
     func loadImage(urlEndpoint: String) {
@@ -74,7 +78,12 @@ class SinglePokemonViewController: UIViewController {
     }
     
     @IBAction func didTapCommentsButton(sender: UIButton) {
-        serverRequestor.doGet(RequestEndpoint.forComments(pokemon.id), requestingUser: loggedInUser, callback: serverActionCallback)
+        sender.enabled = false
+        ProgressHud.show()
+        
+        serverRequestor.doGet(RequestEndpoint.forComments(pokemon.id),
+                              requestingUser: loggedInUser,
+                              callback: serverActionCallback)
     }
     
     func serverActionCallback(serverResponse: ServerResponse<AnyObject>) {
@@ -105,6 +114,8 @@ class SinglePokemonViewController: UIViewController {
     }
     
     func displayComments(injecting: CommentList) {
+        ProgressHud.indicateSuccess()
+        
         let commentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("commentViewController") as! CommentViewController
         commentViewController.comments = injecting.comments
         commentViewController.pokemon = self.pokemon

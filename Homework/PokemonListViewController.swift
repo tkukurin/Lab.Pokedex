@@ -60,22 +60,24 @@ class PokemonListViewController: UITableViewController {
                                 .ofNullable(data)
                                 .ifSuccessfulDo({
                                     self.items[i]?.image = UIImage(data: $0)
+                                    self.tableView.reloadData()
                                     
-                                    self.nLoadedItems = self.nLoadedItems.successor()
-                                    if self.nLoadedItems == self.items.count {
-                                        dispatch_async(dispatch_get_main_queue(), {
-                                            self.tableView.reloadData()
-                                        })
-                                    }
+//                                    self.nLoadedItems = self.nLoadedItems.successor()
+//                                    if self.nLoadedItems == self.items.count {
+//                                        dispatch_async(dispatch_get_main_queue(), {
+//                                            self.tableView.reloadData()
+//                                        })
+//                                    }
                                 })
                         })
                 }).ifFailedDo({ _ in
-                    self.nLoadedItems = self.nLoadedItems.successor()
-                    if self.nLoadedItems == self.items.count {
-                        dispatch_async(dispatch_get_main_queue(), {
-                            self.tableView.reloadData()
-                        })
-                    }
+//                    self.nLoadedItems = self.nLoadedItems.successor()
+                    self.tableView.reloadData()
+//                    if self.nLoadedItems == self.items.count {
+//                        dispatch_async(dispatch_get_main_queue(), {
+//                            self.tableView.reloadData()
+//                        })
+//                    }
                 })
         })
         
