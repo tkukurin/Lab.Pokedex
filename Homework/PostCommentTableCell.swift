@@ -17,20 +17,22 @@ class PostCommentTableCell: UITableViewCell {
     
     var pokemonId: Int!
     var user: User!
+    var delegate: CommentCreatedDelegate!
     
     override func awakeFromNib() {
         serverRequestor = Container.sharedInstance.getServerRequestor()
     }
     
     @IBAction func didTapSendButton(sender: AnyObject) {
-        guard let commentText: String = self.textField.text else {
-            ProgressHud.indicateFailure("Pls enter comment")
+        guard let commentText: String = self.textField.text
+                where !commentText.isEmpty else {
+            ProgressHud.indicateFailure("Please enter a comment before sending")
             return
         }
         
         serverRequestor.doMultipart(RequestEndpoint.forComments(pokemonId),
                                     user: user,
-                                    attributes: ["content":commentText],
+                                    attributes: ["content": commentText],
                                     callback: serverActionCallback)
     }
     
@@ -46,8 +48,8 @@ class PostCommentTableCell: UITableViewCell {
         
     }
     
-    func commentCreatedCallback(comment: Comment) {
-        print("Created comment \(comment)")
+    func commentCreatedCallback(commentCreatedResponse: CommentCreatedResponse) {
+        delegate.notify(commentCreatedResponse.comment)
     }
 
     

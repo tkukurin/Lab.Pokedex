@@ -16,8 +16,17 @@ class CommentTableCell: UITableViewCell {
     
     func setComment(username: String, comment: Comment) {
         commenterUsernameLabel.text = username
-        dateLabel.text = String(comment.attributes?.createdAt)
+        //hideDateLabelIfNoDatePresent(comment.attributes?.createdAt)
+        dateLabel.text = comment.attributes?.createdAt
         commentLabel.text = comment.attributes?.content
+    }
+    
+    func hideDateLabelIfNoDatePresent(date: NSDate?) {
+        Result
+            .ofNullable(date)
+            .map({ String($0) })
+            .ifSuccessfulDo({ self.dateLabel.text = $0 })
+            .ifFailedDo({ _ in self.dateLabel.hidden = true })
     }
     
 }

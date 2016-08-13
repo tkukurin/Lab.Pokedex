@@ -26,9 +26,10 @@ struct PokeAttributes : Unboxable {
     var imageUrl : String?
     var description: String?
     var totalVoteCount: Int?
+    var gender: String?
     
     init(unboxer : Unboxer) {
-        PokeAttributes.DATE_FORMATTER.dateFormat = "YYYY-MM-dd'T'HH:mm:ss'Z'"
+        PokeAttributes.DATE_FORMATTER.dateFormat = "YYYY-MM-dd'T'HH:mm:ss.SSSZ"
         
         name = unboxer.unbox(RequestKeys.PokeAttributes.NAME)
         baseExperience = unboxer.unbox(RequestKeys.PokeAttributes.BASE_EXPERIENCE)
@@ -43,5 +44,6 @@ struct PokeAttributes : Unboxable {
         imageUrl = unboxer.unbox(RequestKeys.PokeAttributes.IMAGE_URL)
         description = unboxer.unbox(RequestKeys.PokeAttributes.DESCRIPTION)
         totalVoteCount = unboxer.unbox(RequestKeys.PokeAttributes.TOTAL_VOTE_COUNT)
+        gender = unboxer.unbox("gender")
     }
 }

@@ -51,22 +51,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let user : User = try Unbox(data)
         let pokemonListViewController = mainStoryboard?.instantiateViewControllerWithIdentifier("pokemonListViewController") as! PokemonListViewController
         pokemonListViewController.user = user
-        
-        //window?.rootViewController = pokemonListViewController
-        //window?.makeKeyAndVisible()
         navigationController?.pushViewController(pokemonListViewController, animated: true)
-        
-        //UIView.transitionWithView(self.window!, duration: 0.5, options: .TransitionCrossDissolve, animations: {
-          //  self.window!.rootViewController = pokemonListViewController }, completion: nil)
     }
     
     private func showLoginScreen(ignorable: Exception) {
         let loginViewController = mainStoryboard?.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
         navigationController?.pushViewController(loginViewController, animated: true)
-        
-        // window?.makeKeyAndVisible()
-        //UIView.transitionWithView(self.window!, duration: 0.5, options: .TransitionCrossDissolve, animations: {
-          //  self.window!.rootViewController = loginViewController }, completion: nil)
     }
     
     private func getExistingRegistration() -> Result<UserLoginData> {

@@ -9,7 +9,7 @@ class SinglePokemonViewController: UIViewController {
     
     @IBOutlet weak var heightLabel: UILabel!
     @IBOutlet weak var weightLabel: UILabel!
-    @IBOutlet weak var abilitiesLabel: UILabel!
+    @IBOutlet weak var genderLabel: UILabel!
     @IBOutlet weak var typeLabel: UILabel!
     
     var pokemon : Pokemon!
@@ -37,7 +37,7 @@ class SinglePokemonViewController: UIViewController {
         pokemonDescriptionTextField.text = pokemon.attributes.description
         heightLabel.text = getOrDefault(pokemon.attributes.height)
         weightLabel.text = getOrDefault(pokemon.attributes.weight)
-        abilitiesLabel.text = getOrDefault(pokemon.attributes.createdAt)
+        genderLabel.text = getOrDefault(pokemon.attributes.gender)
         typeLabel.text = getOrDefault(pokemon.type)
         
         Result

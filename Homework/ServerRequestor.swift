@@ -103,15 +103,6 @@ class ServerRequestor {
                             self.multipartEncodedCallback(encodingResult, delegateResultTo: callback)
                         })
     }
-    
-    func multipartEncodedCallback(encodingResult: MultipartEncodingResult, delegateResultTo: ServerResponse<String>? -> Void) {
-        switch encodingResult {
-        case .Success(let upload, _, _):
-            upload.responseString(completionHandler: { delegateResultTo(ServerResponse($0)) })
-        default:
-            delegateResultTo(nil)
-        }
-    }
 
     private func addImageMultipart(multipartFormData: MultipartFormData,
                                    _ pickedImage: UIImage?) {
@@ -130,6 +121,15 @@ class ServerRequestor {
             multipartFormData.appendBodyPart(
                 data: value.dataUsingEncoding(NSUTF8StringEncoding)!,
                 name: toMultipartAttributeName(key))
+        }
+    }
+    
+    func multipartEncodedCallback(encodingResult: MultipartEncodingResult, delegateResultTo: ServerResponse<String>? -> Void) {
+        switch encodingResult {
+        case .Success(let upload, _, _):
+            upload.responseString(completionHandler: { delegateResultTo(ServerResponse($0)) })
+        default:
+            delegateResultTo(nil)
         }
     }
 
