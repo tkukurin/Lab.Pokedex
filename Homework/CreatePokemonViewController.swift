@@ -11,7 +11,6 @@ class CreatePokemonViewController: UIViewController {
     @IBOutlet weak var pokemonNameTextField: UITextField!
     @IBOutlet weak var pokemonHeightTextField: UITextField!
     @IBOutlet weak var pokemonWeightTextField: UITextField!
-    @IBOutlet weak var pokemonTypeTextField: UITextField!
     @IBOutlet weak var pokemonDescriptionTextField: UITextField!
     
     var user: User!
@@ -42,6 +41,7 @@ class CreatePokemonViewController: UIViewController {
         presentViewController(picker, animated: true, completion: nil)
     }
     
+    
     @IBAction func didTapCreatePokemonButton(sender: UIButton) {
         Result
             .ofNullable(constructPokemonAttributeMap())
@@ -62,7 +62,6 @@ class CreatePokemonViewController: UIViewController {
         [ (pokemonNameTextField, RequestKeys.PokeAttributes.NAME),
             (pokemonHeightTextField, RequestKeys.PokeAttributes.HEIGHT),
             (pokemonWeightTextField, RequestKeys.PokeAttributes.WEIGHT),
-            (pokemonTypeTextField, RequestKeys.Pokemon.TYPE),
             (pokemonDescriptionTextField, RequestKeys.PokeAttributes.DESCRIPTION) ].forEach({ tuple in
                 let key = tuple.1
                 let value = tuple.0.text!
@@ -108,10 +107,11 @@ extension CreatePokemonViewController : UIImagePickerControllerDelegate, UINavig
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imageViewComponent.contentMode = .ScaleAspectFit
+            //imageViewComponent.contentMode = .ScaleAspectFit
+            imageViewComponent.image = pickedImage
             
-            let subView = UIImageView(image: pickedImage)
-            imageViewComponent.addSubview(subView)
+//            let subView = UIImageView(image: pickedImage)
+//            imageViewComponent.addSubview(subView)
             self.pickedImage = pickedImage
         }
         
