@@ -40,26 +40,16 @@ extension LoginViewController {
     
     private func requireFilledTextFields() -> Result<UserLoginData> {
         guard let username = emailTextField.text where !username.isEmpty else {
-            shakeFieldAnimation(emailTextField)
+            AnimationUtils.shakeFieldAnimation(emailTextField)
             return Result.error()
         }
         
         guard let password = passwordTextField.text where !password.isEmpty else {
-            shakeFieldAnimation(passwordTextField)
+            AnimationUtils.shakeFieldAnimation(passwordTextField)
             return Result.error()
         }
         
         return Result.of((username, password))
-    }
-    
-    func shakeFieldAnimation(txtField: UIView) {
-        let animation = CABasicAnimation(keyPath: "position")
-        animation.duration = 0.07
-        animation.repeatCount = 2
-        animation.autoreverses = true
-        animation.fromValue = NSValue(CGPoint: CGPointMake(txtField.center.x - 8, txtField.center.y))
-        animation.toValue = NSValue(CGPoint: CGPointMake(txtField.center.x + 8, txtField.center.y))
-        txtField.layer.addAnimation(animation, forKey: "position")
     }
     
     private func sendLoginRequest(userData: UserLoginData) {

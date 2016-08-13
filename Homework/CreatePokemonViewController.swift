@@ -28,19 +28,41 @@ class CreatePokemonViewController: UIViewController {
         serverRequestor = Container.sharedInstance.getServerRequestor()
     }
     
-    @IBAction func onCreateButtonPress(sender: AnyObject) {
+    @IBAction func didTapCreatePokemonButton(sender: AnyObject) {
         ProgressHud.show()
-        serverRequestor.doMultipart(RequestEndpoint.POKEMON_ACTION,
-                                    user: user,
-                                    pickedImage: pickedImage,
-                                    attributes: constructPokemonAttributeMap(),
-                                    callback: serverActionCallback)
+        
+        Result
+            .ofNullable(constructPokemonAttributeMap())
+            .ifSuccessfulDo({
+                self.serverRequestor.doMultipart(RequestEndpoint.POKEMON_ACTION,
+                    user: self.user,
+                    pickedImage: self.pickedImage,
+                    attributes: $0,
+                    callback: self.serverActionCallback)
+            })
     }
     
-    func constructPokemonAttributeMap() -> [String: String] {
+    func constructPokemonAttributeMap() -> [String: String]? {
         var attributes = [String: String]()
+        var fieldsAreValid = true
         
-        return attributes
+        [ (pokemonNameTextField, RequestKeys.PokeAttributes.NAME),
+            (pokemonHeightTextField, RequestKeys.PokeAttributes.HEIGHT),
+            (pokemonWeightTextField, RequestKeys.PokeAttributes.WEIGHT),
+            (pokemonTypeTextField, RequestKeys.Pokemon.TYPE),
+            (pokemonDescriptionTextField, RequestKeys.PokeAttributes.DESCRIPTION) ].forEach({ tuple in
+                let key = tuple.1
+                let value = tuple.0.text!
+                
+                if value.isEmpty {
+                    fieldsAreValid = false
+                    AnimationUtils.shakeFieldAnimation(tuple.0)
+                } else {
+                    attributes[key] = value
+                }
+        })
+        
+        return fieldsAreValid ? attributes : nil
     }
     
     private func placeholderToKey(placeholder: String) -> String {
