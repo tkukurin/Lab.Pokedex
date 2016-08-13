@@ -1,18 +1,12 @@
 import UIKit
 import Unbox
+import Alamofire
 
 class PokemonListViewController: UITableViewController {
     
-    @IBAction func didTapAddPokemonAction(sender: AnyObject) {
-        newPokemonAction()
-    }
-    
-    @IBAction func didTapLogoutButton(sender: AnyObject) {
-        backToLoginScreenAction(sender)
-    }
-    
-    var user : User!
-    var items : PokemonList!
+    var user: User!
+    var items: [(pokemon: Pokemon, image: UIImage?)?]!
+    var nLoadedItems: Int!
     
     private var localStorageAdapter: LocalStorageAdapter!
     private var serverRequestor: ServerRequestor!
@@ -22,31 +16,122 @@ class PokemonListViewController: UITableViewController {
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
         
-        //initBackButton()
-        //initCreateNewPokemonButton()
+        nLoadedItems = 0
         fetchPokemons()
         
+        // @debug
         print("auth header: \(user.attributes.authToken)")
     }
     
-//    func initBackButton() {
-//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
-//            title: "logout",
-//            style: UIBarButtonItemStyle.Plain,
-//            target: self,
-//            action: #selector(PokemonListViewController.backToLoginScreenAction))
-//        self.navigationItem.leftBarButtonItem?.action = #selector(PokemonListViewController.backToLoginScreenAction)
-//    }
-    
-    func initCreateNewPokemonButton() {
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "+",
-            style: UIBarButtonItemStyle.Plain,
-            target: self,
-            action: #selector(PokemonListViewController.newPokemonAction))
+    func fetchPokemons() {
+        ProgressHud.show()
+        serverRequestor.doGet(
+            RequestEndpoint.POKEMON_ACTION,
+            requestingUser: user,
+            callback: pokemonServerRequestCallback)
     }
     
-    func newPokemonAction() {
+    func pokemonServerRequestCallback(response: ServerResponse<AnyObject>) {
+        response
+            .ifSuccessfulDo(loadPokemonsFromServerResponse)
+            .ifFailedDo({ _ in ProgressHud.indicateFailure("Uh-oh... The Pokemons could not be loaded!") })
+    }
+    
+    func loadPokemonsFromServerResponse(data: NSData) throws {
+        let fetchedData: PokemonList = try Unbox(data)
+        items = [(pokemon: Pokemon, image: UIImage?)?](count: fetchedData.pokemons.count, repeatedValue: nil)
+        
+        getImages(fetchedData.pokemons)
+        ProgressHud.indicateSuccess()
+    }
+    
+    func getImages(pokemons: [Pokemon]) {
+        (0..<pokemons.count).forEach({ i in
+            self.items[i] = (pokemons[i], nil)
+            
+            Result
+                .ofNullable(pokemons[i].attributes.imageUrl)
+                .ifSuccessfulDo({
+                    Alamofire
+                        .request(.GET, ServerRequestor.REQUEST_DOMAIN + RequestEndpoint.forImages($0))
+                        .validate()
+                        .response(completionHandler: { (_, _, data, _) in
+                            Result
+                                .ofNullable(data)
+                                .ifSuccessfulDo({
+                                    self.items[i]?.image = UIImage(data: $0)
+                                    
+                                    self.nLoadedItems = self.nLoadedItems.successor()
+                                    if self.nLoadedItems == self.items.count {
+                                        dispatch_async(dispatch_get_main_queue(), {
+                                            self.tableView.reloadData()
+                                        })
+                                    }
+                                })
+                        })
+                }).ifFailedDo({ _ in
+                    self.nLoadedItems = self.nLoadedItems.successor()
+                    if self.nLoadedItems == self.items.count {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            self.tableView.reloadData()
+                        })
+                    }
+                })
+        })
+        
+        self.tableView.reloadData()
+    }
+    
+    func updateCommentsTable(forIndex: Int) {
+        tableView.beginUpdates()
+        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: forIndex, inSection: 0)],
+                                         withRowAnimation: .Automatic)
+        tableView.endUpdates()
+    }
+}
+
+
+// MARK - TableView specific methods
+
+extension PokemonListViewController {
+    
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return items?.count ?? 0
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let pokemon = items[indexPath.row]?.pokemon
+        let image = items[indexPath.row]?.image
+        
+        let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonViewController")
+            as! SinglePokemonViewController
+        
+        singlePokemonViewController.pokemon = pokemon
+        singlePokemonViewController.image = image
+        singlePokemonViewController.loggedInUser = user
+        
+        self.navigationController?.pushViewController(singlePokemonViewController, animated: true)
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("pokemonTableCell", forIndexPath: indexPath) as! PokemonTableCell
+        
+        cell.displayPokemon((items[indexPath.row]?.pokemon)!,
+                            image: items[indexPath.row]?.image)
+        
+        return cell
+    }
+}
+
+
+// MARK - Status bar actions
+
+extension PokemonListViewController {
+    @IBAction func didTapAddPokemonAction(sender: AnyObject) {
         let createPokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("createPokemonViewController") as! CreatePokemonViewController
         
         createPokemonViewController.user = user
@@ -55,76 +140,21 @@ class PokemonListViewController: UITableViewController {
         self.navigationController?.pushViewController(createPokemonViewController, animated: true)
     }
     
-    func backToLoginScreenAction(sender: AnyObject) {
+    @IBAction func didTapLogoutButton(sender: AnyObject) {
         serverRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
         localStorageAdapter.deleteActiveUser()
         navigationController?.popViewControllerAnimated(true)
     }
-    
-    func fetchPokemons() {
-        ProgressHud.show()
-        serverRequestor.doGet(
-            RequestEndpoint.POKEMON_ACTION,
-            requestingUser: user,
-            callback: serverActionCallback)
-    }
 }
 
-extension PokemonListViewController {
-    override func willMoveToParentViewController(parent: UIViewController?) {
-        super.willMoveToParentViewController(parent)
-    }
-    
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items?.pokemons.count ?? 0
-    }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let pokemon = items.pokemons[indexPath.row]
-        let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonViewController")
-            as! SinglePokemonViewController
-        singlePokemonViewController.pokemon = pokemon
-        singlePokemonViewController.loggedInUser = user
-        
-        self.navigationController?.pushViewController(singlePokemonViewController, animated: true)
-    }
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("pokemonTableCell", forIndexPath: indexPath) as! PokemonTableCell
-        cell.displayPokemon(self.items.pokemons[indexPath.row])
-        
-        return cell
-    }
-}
+
+// MARK - Delegate for newly created Pokemons
 
 extension PokemonListViewController: CreatePokemonDelegate {
-    func notify(pokemon: Pokemon) {
-        items.pokemons.insert(pokemon, atIndex: 0)
-        tableView.beginUpdates()
-        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)],
-                                         withRowAnimation: .Automatic)
-        tableView.endUpdates()
-    }
-}
-
-extension PokemonListViewController {
     
-    func serverActionCallback(response: ServerResponse<AnyObject>) {
-        response
-            .ifSuccessfulDo(loadPokemonsFromServerResponse)
-            .ifFailedDo({ _ in ProgressHud.indicateFailure("Uh-oh... The Pokemons could not be loaded!") })
+    func notify(pokemon: Pokemon, image: UIImage?) {
+        items.insert((pokemon: pokemon, image: image), atIndex: 0)
+        updateCommentsTable(0)
     }
     
-    func loadPokemonsFromServerResponse(data: NSData) throws {
-        let fetchedData: PokemonList = try Unbox(data)
-        self.items = fetchedData
-        
-        // TODO not necessary to reload entire table
-        self.tableView.reloadData()
-        ProgressHud.indicateSuccess()
-    }
 }

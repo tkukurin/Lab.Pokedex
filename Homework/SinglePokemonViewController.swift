@@ -2,6 +2,7 @@ import UIKit
 import Unbox
 
 class SinglePokemonViewController: UIViewController {
+    static let DEFAULT_IMAGE = UIImage(named: "Pokeball.png")
     
     @IBOutlet weak var heroImage: UIImageView!
     @IBOutlet weak var pokemonNameLabel: UILabel!
@@ -13,6 +14,8 @@ class SinglePokemonViewController: UIViewController {
     @IBOutlet weak var typeLabel: UILabel!
     
     var pokemon : Pokemon!
+    var image: UIImage?
+    
     var imageLoader: UrlImageLoader!
     var loggedInUser: User!
     var serverRequestor: ServerRequestor!
@@ -25,28 +28,30 @@ class SinglePokemonViewController: UIViewController {
         alertUtils = Container.sharedInstance.getAlertUtilities(self)
         
         title = pokemon.attributes.name
-        loadPokemonData(pokemon)
+        loadPokemonData()
     }
     
     override func viewWillDisappear(animated: Bool) {
         ProgressHud.dismiss()
     }
     
-    func loadPokemonData(pokemon: Pokemon) {
+    func loadPokemonData() {
         pokemonNameLabel.text = pokemon.attributes.name
         pokemonDescriptionTextField.text = pokemon.attributes.description
-        heightLabel.text = getOrDefault(pokemon.attributes.height)
-        weightLabel.text = getOrDefault(pokemon.attributes.weight)
-        genderLabel.text = getOrDefault(pokemon.attributes.gender)
-        typeLabel.text = getOrDefault(pokemon.type)
-        
-        Result
-            .ofNullable(pokemon.attributes.imageUrl)
-            .ifSuccessfulDo(loadImage)
+        heightLabel.text = getOrDefaultString(pokemon.attributes.height)
+        weightLabel.text = getOrDefaultString(pokemon.attributes.weight)
+        genderLabel.text = getOrDefaultString(pokemon.attributes.gender)
+        typeLabel.text = getOrDefaultString(pokemon.type)
+        heroImage.image = getOrDefault(self.image, defaultValue: SinglePokemonViewController.DEFAULT_IMAGE)
     }
     
-    func getOrDefault<T>(value: T?, defaultValue:String = "?") -> String {
+    func getOrDefaultString<T>(value: T) -> String {
         if let value: T = value { return String(value) }
+        return "?"
+    }
+    
+    func getOrDefault<T>(value: T?, defaultValue: T) -> T {
+        if let value: T = value { return value }
         return defaultValue
     }
     

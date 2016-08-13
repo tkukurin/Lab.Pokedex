@@ -2,7 +2,7 @@ import UIKit
 import Unbox
 
 protocol CreatePokemonDelegate {
-    func notify(pokemon: Pokemon)
+    func notify(pokemon: Pokemon, image: UIImage?)
 }
 
 class CreatePokemonViewController: UIViewController {
@@ -94,7 +94,8 @@ extension CreatePokemonViewController {
             
             ProgressHud.indicateSuccess("Successfully created pokemon!")
             self.navigationController?.popViewControllerAnimated(true)
-            self.createPokemonDelegate.notify(pokemonCreatedResponse.pokemon)
+            self.createPokemonDelegate.notify(pokemonCreatedResponse.pokemon,
+                image: self.imageViewComponent.image)
         }).ifFailedDo({ _ in
             ProgressHud.indicateFailure()
         })

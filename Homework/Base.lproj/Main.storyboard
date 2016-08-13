@@ -94,7 +94,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1338" y="341"/>
+            <point key="canvasLocation" x="1972" y="346"/>
         </scene>
         <!--Register View Controller-->
         <scene sceneID="pSu-7e-qtj">
@@ -171,7 +171,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U18-Sq-o9L" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1449" y="1025"/>
+            <point key="canvasLocation" x="1972" y="1025"/>
         </scene>
         <!--Pokedex-->
         <scene sceneID="lxE-EX-ZXd">
@@ -356,7 +356,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dKg-Xy-anq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2628" y="1025"/>
+            <point key="canvasLocation" x="3278" y="1025"/>
         </scene>
         <!--Single Pokemon View Controller-->
         <scene sceneID="424-fQ-H5f">
@@ -647,7 +647,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AhF-Zr-Nza" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3993" y="500"/>
+            <point key="canvasLocation" x="3951" y="346"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="WU2-e6-lfR">
@@ -668,7 +668,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mRb-un-Wf5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="692" y="341"/>
+            <point key="canvasLocation" x="1320" y="346"/>
         </scene>
     </scenes>
     <resources>

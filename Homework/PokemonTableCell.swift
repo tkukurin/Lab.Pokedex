@@ -9,6 +9,7 @@
 import UIKit
 
 class PokemonTableCell: UITableViewCell {
+    static let DEFAULT_CELL = UIImage(named: "Pokeball.png")
     
     @IBOutlet weak var pokemonImageUIView: UIImageView!
     @IBOutlet weak var pokemonNameLabel: UILabel!
@@ -25,21 +26,12 @@ class PokemonTableCell: UITableViewCell {
         pokemonImageUIView.clipsToBounds = true;
     }
     
-    func displayPokemon(pokemon: Pokemon) {
+    func displayPokemon(pokemon: Pokemon, image: UIImage?) {
         pokemonNameLabel.text = pokemon.attributes.name
-        loadImage(pokemon)
-    }
-    
-    func loadImage(pokemon: Pokemon) {
-        Result.ofNullable(pokemon.attributes.imageUrl)
-            .ifSuccessfulDo({ (url) in
-                let fullPath = ServerRequestor.REQUEST_DOMAIN + url
-                Container.sharedInstance.getImageLoader().loadFrom(fullPath, callback: self.imageLoadedCallback)
-            })
-    }
-    
-    func imageLoadedCallback(image: UIImage?) {
-        self.pokemonImageUIView.image = image
+        Result
+            .ofNullable(image)
+            .ifSuccessfulDo({ self.pokemonImageUIView.image = $0 })
+            .ifFailedDo({ _ in self.pokemonImageUIView.image = PokemonTableCell.DEFAULT_CELL })
     }
     
 }

@@ -3,9 +3,9 @@ import Alamofire
 typealias ServerCallbackFn = ((response: ServerResponse<AnyObject>) -> Void)
 
 class RequestEndpoint {
-    static let USER_ACTION_CREATE_OR_DELETE = "users"
-    static let USER_ACTION_LOGIN = "users/login"
-    static let POKEMON_ACTION = "pokemons"
+    static let USER_ACTION_CREATE_OR_DELETE = "api/v1/users"
+    static let USER_ACTION_LOGIN = "api/v1/users/login"
+    static let POKEMON_ACTION = "api/v1/pokemons"
     
     static func forComments(pokemonId: Int) -> String {
         return POKEMON_ACTION + "/\(pokemonId)/comments"
@@ -14,6 +14,11 @@ class RequestEndpoint {
     
     static func forUsers(userId: String) -> String {
         return USER_ACTION_CREATE_OR_DELETE + "/\(userId)"
+    }
+    
+    static func forImages(imageUrl: String) -> String {
+        let advance = min(imageUrl.characters.count, 1)
+        return imageUrl.substringFromIndex(imageUrl.startIndex.advancedBy(advance))
     }
 }
 
@@ -25,7 +30,6 @@ class ServerResponse<T> {
     }
     
     func ifSuccessfulDo(consumer: (NSData throws -> ())) -> Result<Void> {
-        print(String(self.responseDelegate.data?.bytes) ?? "no data")
         switch responseDelegate.result {
         case .Success:
             do {
@@ -43,14 +47,16 @@ class ServerResponse<T> {
 
 class ServerRequestor {
     static let REQUEST_DOMAIN = "https://pokeapi.infinum.co/"
-    static let APIREQUEST_URL = "\(ServerRequestor.REQUEST_DOMAIN)api/v1/"
-
     private static let COMPRESSION_QUALITY: CGFloat = 0.8
 
     func doGet(toEndpoint: String,
-                      requestingUser: User,
+                      requestingUser: User? = nil,
                       callback: ServerCallbackFn) {
-        let headers = headersForUser(requestingUser)
+        let headers = Result
+            .ofNullable(requestingUser)
+            .map(headersForUser)
+            .ifFailedReturn({ [String:String]() })
+        
         Alamofire.request(.GET,
                           resolveUrl(toEndpoint),
                           headers: headers)
@@ -138,7 +144,7 @@ class ServerRequestor {
     }
 
     private func resolveUrl(endpoint: String) -> String {
-      return ServerRequestor.APIREQUEST_URL + endpoint
+      return ServerRequestor.REQUEST_DOMAIN + endpoint
     }
 
     private func headersForUser(user: User) -> [String:String] {
