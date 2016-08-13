@@ -24,7 +24,7 @@ class ServerResponse<T> {
         self.responseDelegate = responseDelegate
     }
     
-    func ifSuccessfulDo(consumer: ((NSData) throws -> ())) -> Result<Void> {
+    func ifSuccessfulDo(consumer: (NSData throws -> ())) -> Result<Void> {
         print(String(self.responseDelegate.data?.bytes) ?? "no data")
         switch responseDelegate.result {
         case .Success:

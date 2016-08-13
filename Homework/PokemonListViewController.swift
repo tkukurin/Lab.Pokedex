@@ -14,7 +14,6 @@ class PokemonListViewController: UITableViewController {
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
         
-        title = "Pokedex"
         initBackButton()
         initCreateNewPokemonButton()
         fetchPokemons()
@@ -51,8 +50,14 @@ class PokemonListViewController: UITableViewController {
         serverRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
         localStorageAdapter.deleteActiveUser()
         
-        let loginViewController = self.storyboard?.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
-        self.navigationController?.pushViewController(loginViewController, animated: true)
+        //let loginViewController = self.storyboard?.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
+        //self.navigationController?.pushViewController(loginViewController, animated: true)
+//        
+//        let navigationViewController = (storyboard?.instantiateViewControllerWithIdentifier("mainNavigationController")
+//            as! UINavigationController)
+//        UIApplication.sharedApplication().keyWindow?.rootViewController = navigationViewController
+        
+        navigationController?.popViewControllerAnimated(true)
         
     }
     
@@ -117,6 +122,8 @@ extension PokemonListViewController {
     func loadPokemonsFromServerResponse(data: NSData) throws {
         let fetchedData: PokemonList = try Unbox(data)
         self.items = fetchedData
+        
+        // TODO not necessary to reload entire table
         self.tableView.reloadData()
         ProgressHud.indicateSuccess()
     }

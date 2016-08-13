@@ -16,12 +16,12 @@
 //
 
 class Result<T> {
-    private var value: T?
-    private var error: Exception?
+    var value: T?
+    var error: Exception?
     
     private init() {}
     
-    private init(value: T) {
+    init(value: T) {
         self.value = value
     }
     

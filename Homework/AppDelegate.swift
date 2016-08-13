@@ -12,36 +12,38 @@ import Unbox
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
-    var mainStoryboard: UIStoryboard?
-    var navigationController: UINavigationController?
-    
-    private var serverRequestor: ServerRequestor!
+    var window: UIWindow!
+    var mainStoryboard: UIStoryboard!
+    var navigationController: UINavigationController!
+    var serverRequestor: ServerRequestor!
 
     func application(application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        navigationController = (mainStoryboard.instantiateInitialViewController() as! UINavigationController)
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        navigationController = (mainStoryboard?.instantiateViewControllerWithIdentifier("mainNavigationController")
-            as! UINavigationController)
-        window?.rootViewController = navigationController
+        window.rootViewController = navigationController
         serverRequestor = Container.sharedInstance.getServerRequestor()
         
-        getExistingRegistration()
+        getLocalUserData()
             .ifSuccessfulDo(showPokemonListScreen)
             .ifFailedDo(showLoginScreen)
         
         return true
     }
     
+    private func getLocalUserData() -> Result<UserLoginData> {
+        return Container.sharedInstance.getLocalStorageAdapter().loadUser()
+    }
+    
     private func showPokemonListScreen(userLoginData: UserLoginData) {
         let loginRequestMap = JsonMapBuilder.buildLoginRequest(userLoginData)
         serverRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
                                jsonReq: loginRequestMap,
-                               callback: serverActionCallback)
+                               callback: userLoginCallback)
     }
     
-    func serverActionCallback(response: ServerResponse<AnyObject>) {
+    func userLoginCallback(response: ServerResponse<AnyObject>) {
         response
             .ifSuccessfulDo(loadUserAndShowPokemonListScreen)
             .ifFailedDo(showLoginScreen)
@@ -49,18 +51,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func loadUserAndShowPokemonListScreen(data: NSData) throws {
         let user : User = try Unbox(data)
-        let pokemonListViewController = mainStoryboard?.instantiateViewControllerWithIdentifier("pokemonListViewController") as! PokemonListViewController
+        let loginViewController = mainStoryboard.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
+        
+        let pokemonListViewController = mainStoryboard.instantiateViewControllerWithIdentifier("pokemonListViewController") as! PokemonListViewController
         pokemonListViewController.user = user
-        navigationController?.pushViewController(pokemonListViewController, animated: true)
+        
+        navigationController.pushViewController(loginViewController, animated: false)
+        loginViewController.navigationController?.pushViewController(pokemonListViewController, animated: false)
     }
     
     private func showLoginScreen(ignorable: Exception) {
-        let loginViewController = mainStoryboard?.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
-        navigationController?.pushViewController(loginViewController, animated: true)
-    }
-    
-    private func getExistingRegistration() -> Result<UserLoginData> {
-        return Container.sharedInstance.getLocalStorageAdapter().loadUser()
+        let loginViewController = mainStoryboard.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
+        navigationController.pushViewController(loginViewController, animated: true)
     }
 
 }
