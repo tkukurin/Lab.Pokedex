@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="E-mail" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="udw-uW-mAL">
-                                <rect key="frame" x="20" y="390" width="560" height="35"/>
+                                <rect key="frame" x="20" y="380" width="560" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="yMS-8J-7xb"/>
                                 </constraints>
@@ -27,7 +27,7 @@
                                 <textInputTraits key="textInputTraits" spellCheckingType="no"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e2I-h2-Icq">
-                                <rect key="frame" x="0.0" y="490" width="600" height="50"/>
+                                <rect key="frame" x="0.0" y="480" width="600" height="50"/>
                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="BCw-Eh-jSf"/>
@@ -40,7 +40,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZhR-mM-5sf">
-                                <rect key="frame" x="20" y="550" width="560" height="50"/>
+                                <rect key="frame" x="20" y="540" width="560" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="vcS-FL-QKy"/>
                                 </constraints>
@@ -50,7 +50,7 @@
                                 </connections>
                             </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YCQ-59-jNs">
-                                <rect key="frame" x="20" y="440" width="560" height="35"/>
+                                <rect key="frame" x="20" y="430" width="560" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="xKZ-X8-R7h"/>
                                 </constraints>
@@ -74,7 +74,7 @@
                             <constraint firstItem="ZhR-mM-5sf" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="LBm-xg-lfJ"/>
                             <constraint firstItem="YCQ-59-jNs" firstAttribute="trailing" secondItem="udw-uW-mAL" secondAttribute="trailing" id="Nn5-AQ-mVJ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ZhR-mM-5sf" secondAttribute="trailing" id="XfD-Nn-epp"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ZhR-mM-5sf" secondAttribute="bottom" id="b08-DQ-6OV"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ZhR-mM-5sf" secondAttribute="bottom" constant="10" id="b08-DQ-6OV"/>
                             <constraint firstAttribute="trailing" secondItem="YCQ-59-jNs" secondAttribute="trailing" constant="20" id="bmD-NU-xia"/>
                             <constraint firstItem="e2I-h2-Icq" firstAttribute="top" secondItem="YCQ-59-jNs" secondAttribute="bottom" constant="15" id="cPT-Fz-h85"/>
                             <constraint firstItem="e2I-h2-Icq" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="dPt-zK-8Yy"/>
