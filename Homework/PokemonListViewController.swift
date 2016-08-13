@@ -98,7 +98,11 @@ extension PokemonListViewController {
 
 extension PokemonListViewController: CreatePokemonDelegate {
     func notify(pokemon: Pokemon) {
-        print("delegate got \(pokemon)")
+        items.pokemons.insert(pokemon, atIndex: 0)
+        tableView.beginUpdates()
+        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)],
+                                         withRowAnimation: .Automatic)
+        tableView.endUpdates()
     }
 }
 

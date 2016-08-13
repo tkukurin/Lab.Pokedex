@@ -47,3 +47,13 @@ struct PokeAttributes : Unboxable {
         gender = unboxer.unbox("gender")
     }
 }
+
+struct PokemonCreatedResponse: Unboxable {
+    
+    let pokemon: Pokemon
+    
+    init(unboxer: Unboxer) {
+        pokemon = unboxer.unbox(RequestKeys.DATA)
+    }
+    
+}

@@ -26,6 +26,11 @@ class CreatePokemonViewController: UIViewController {
         
         alertUtils = Container.sharedInstance.getAlertUtilities(self)
         serverRequestor = Container.sharedInstance.getServerRequestor()
+        
+        pokemonNameTextField.text = "Test pokemon"
+        pokemonHeightTextField.text = "12"
+        pokemonWeightTextField.text = "22"
+        pokemonDescriptionTextField.text = "Test Pokemon description also"
     }
     
     @IBAction func didTapGetImageButton(sender: UIButton) {
@@ -85,10 +90,11 @@ extension CreatePokemonViewController {
         }
         
         response.ifSuccessfulDo({
-            let pokemon: Pokemon = try Unbox($0)
+            let pokemonCreatedResponse: PokemonCreatedResponse = try Unbox($0)
             
             ProgressHud.indicateSuccess("Successfully created pokemon!")
-            self.createPokemonDelegate.notify(pokemon)
+            self.navigationController?.popViewControllerAnimated(true)
+            self.createPokemonDelegate.notify(pokemonCreatedResponse.pokemon)
         }).ifFailedDo({ _ in
             ProgressHud.indicateFailure()
         })
