@@ -20,15 +20,16 @@ struct CommentAttributes: Unboxable {
     private static let DATE_FORMATTER = NSDateFormatter()
     
     let content: String?
-    let createdAt: String?
+    let createdAt: NSDate?
     
     init(unboxer: Unboxer) {
         CommentAttributes.DATE_FORMATTER.dateFormat = "YYYY-MM-dd'T'HH:mm:ss.SSSZ"
         
         self.content = unboxer.unbox("content")
-        self.createdAt = unboxer.unbox("created-at")
+        let createdAtStr: String = unboxer.unbox("created-at")
+        self.createdAt = CommentAttributes.DATE_FORMATTER.dateFromString(createdAtStr)
         
-//        self.createdAt = unboxer.unbox(RequestKeys.PokeAttributes.CREATED_AT,
+//            unboxer.unbox(RequestKeys.PokeAttributes.CREATED_AT,
 //                                       formatter: CommentAttributes.DATE_FORMATTER)
     }
     

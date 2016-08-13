@@ -34,7 +34,7 @@ class ServerResponse<T> {
                 return Result.error("\(error)")
             }
         case .Failure(let error):
-            return Result.error("Error code: \(error.code)")
+            return Result.error(error.localizedDescription)
         }
         
         return Result.of()

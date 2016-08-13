@@ -43,6 +43,7 @@
 		8EBB94311D5E22F60098B41A /* CommentList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94301D5E22F60098B41A /* CommentList.swift */; };
 		8EBB94341D5E35D20098B41A /* PostCommentTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94331D5E35D20098B41A /* PostCommentTableCell.swift */; };
 		8EBB94361D5E710C0098B41A /* UserList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94351D5E710C0098B41A /* UserList.swift */; };
+		8EBB94381D5F206B0098B41A /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94371D5F206B0098B41A /* RegisterViewController.swift */; };
 		C27E372A94B259DA310FD615 /* Pods_HomeworkTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22ABFD6E8E80A253684177AF /* Pods_HomeworkTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +107,7 @@
 		8EBB94301D5E22F60098B41A /* CommentList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentList.swift; sourceTree = "<group>"; };
 		8EBB94331D5E35D20098B41A /* PostCommentTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCommentTableCell.swift; sourceTree = "<group>"; };
 		8EBB94351D5E710C0098B41A /* UserList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserList.swift; sourceTree = "<group>"; };
+		8EBB94371D5F206B0098B41A /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		B24D32D3AC143C6C3664D8E9 /* Pods-Homework.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Homework.release.xcconfig"; path = "Pods/Target Support Files/Pods-Homework/Pods-Homework.release.xcconfig"; sourceTree = "<group>"; };
 		BB2BB73FEB52175A0A90E7FC /* Pods-HomeworkTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeworkTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeworkTests/Pods-HomeworkTests.release.xcconfig"; sourceTree = "<group>"; };
 		C936BF2C91978BD45140DBB0 /* Pods-Homework.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Homework.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Homework/Pods-Homework.debug.xcconfig"; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 			children = (
 				8EBB94321D5E233B0098B41A /* Comments */,
 				4234DD731D546B7000CEBA18 /* LoginViewController.swift */,
+				8EBB94371D5F206B0098B41A /* RegisterViewController.swift */,
 			);
 			name = ControllerToServerUserFrontend;
 			sourceTree = "<group>";
@@ -645,6 +648,7 @@
 				4234DD741D546B7000CEBA18 /* LoginViewController.swift in Sources */,
 				4234DD961D5474A800CEBA18 /* PokemonList.swift in Sources */,
 				8EBB942F1D5E21840098B41A /* Comment.swift in Sources */,
+				8EBB94381D5F206B0098B41A /* RegisterViewController.swift in Sources */,
 				4234DD441D5469A900CEBA18 /* AppDelegate.swift in Sources */,
 				4234DD9D1D54772B00CEBA18 /* JsonMapBuilder.swift in Sources */,
 				8EBB942D1D5E20240098B41A /* CommentTableCell.swift in Sources */,

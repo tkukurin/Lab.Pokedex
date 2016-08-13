@@ -26,7 +26,7 @@ class CommentViewController: UITableViewController {
     }
     
     func getUsernames() {
-        self.users = [User?](count: comments.count, repeatedValue: nil)
+        self.users = [User?]() //[User?](count: comments.count, repeatedValue: nil)
         
         (0..<comments.count).forEach({ i in
             serverRequestor.doGet(RequestEndpoint.forUsers(self.comments[i].userId ?? ""),
@@ -39,10 +39,16 @@ class CommentViewController: UITableViewController {
         serverResponse
             .ifSuccessfulDo({
                 let user: User = try Unbox($0)
-                self.users[arrayIndex] = user
-                self.cells[arrayIndex]?.commenterUsernameLabel.text = self.users[arrayIndex]!.attributes.username
-                self.tableView.reloadData()
+                self.users.append(user)
+                self.updateCommentsTable(arrayIndex)
             })
+    }
+    
+    func updateCommentsTable(forIndex: Int) {
+        tableView.beginUpdates()
+        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: forIndex, inSection: 0)],
+                                         withRowAnimation: .Automatic)
+        tableView.endUpdates()
     }
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -50,7 +56,7 @@ class CommentViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? comments.count : 1
+        return section == 0 ? users.count : 1
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -62,7 +68,11 @@ class CommentViewController: UITableViewController {
         let comment = comments[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier("commentCell", forIndexPath: indexPath) as! CommentTableCell
         cell.commentLabel.text = comment.attributes?.content
-        cell.dateLabel.text = comment.attributes?.createdAt
+        cell.setDate(comment.attributes?.createdAt)
+        
+        if users.count > indexPath.row {
+            cell.commenterUsernameLabel.text = users[indexPath.row]?.attributes.username
+        }
         
         cells.append(cell)
         return cell
@@ -84,6 +94,10 @@ extension CommentViewController : CommentCreatedDelegate {
         users.append(loggedInUser)
         
         let nUsers = users.count
-        tableView(self.tableView, cellForRowAtIndexPath: NSIndexPath(forItem: nUsers - 1, inSection: 0))
+        updateCommentsTable(nUsers - 1)
+//        tableView.beginUpdates()
+//        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: nUsers - 1, inSection: 0)],
+//                                         withRowAnimation: .Automatic)
+//        tableView.endUpdates()
     }
 }

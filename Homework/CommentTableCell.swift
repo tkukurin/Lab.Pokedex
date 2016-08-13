@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 
 class CommentTableCell: UITableViewCell {
     
@@ -14,17 +15,11 @@ class CommentTableCell: UITableViewCell {
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var commentLabel: UILabel!
     
-    func setComment(username: String, comment: Comment) {
-        commenterUsernameLabel.text = username
-        //hideDateLabelIfNoDatePresent(comment.attributes?.createdAt)
-        dateLabel.text = comment.attributes?.createdAt
-        commentLabel.text = comment.attributes?.content
-    }
-    
-    func hideDateLabelIfNoDatePresent(date: NSDate?) {
+    func setDate(date: NSDate?) {
         Result
             .ofNullable(date)
-            .map({ String($0) })
+            .map({ $0.description })
+            //.map({ $0.substringToIndex($0.endIndex.advancedBy(-5)) })
             .ifSuccessfulDo({ self.dateLabel.text = $0 })
             .ifFailedDo({ _ in self.dateLabel.hidden = true })
     }

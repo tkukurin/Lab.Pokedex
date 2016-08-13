@@ -48,4 +48,16 @@ class JsonMapBuilder {
         })
     }
     
+    static func buildRegisterRequest(userData: UserRegisterData) -> [String: AnyObject] {
+        return  JsonMapBuilder.use({ builder in
+            builder.addParam(RequestKeys.UserAttributes.USERNAME, userData.username)
+                .addParam(RequestKeys.UserAttributes.EMAIL, userData.email)
+                .addParam(RequestKeys.UserAttributes.PASSWORD, userData.password)
+                .addParam(RequestKeys.UserAttributes.CONFIRMED_PASSWORD, userData.confirmedPassword)
+                .wrapWithKey(RequestKeys.User.ATTRIBUTES)
+                .addParam("type", "users")
+                .wrapWithKey(RequestKeys.User.DATA_PREFIX)
+        })
+    }
+    
 }

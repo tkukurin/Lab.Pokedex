@@ -17,7 +17,7 @@ class LoginViewController: UIViewController {
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
         
-        emailTextField.text = "tkukurin@gmail.com"
+        emailTextField.text = "nottestmail@email.com"
         passwordTextField.text = "longpassword"
     }
     
@@ -25,19 +25,41 @@ class LoginViewController: UIViewController {
 
 extension LoginViewController {
     
-    @IBAction func loginButtonTap(sender: UIButton) {
+    @IBAction func didTapLoginButton(sender: UIButton) {
         requireFilledTextFields()
-            .map(sendLoginRequest)
-            .ifFailedDo({ self.alertUtils.alert("\($0.cause)") })
+            .ifSuccessfulDo(sendLoginRequest)
+            // .ifFailedDo({ self.alertUtils.alert("\($0.cause)") })
+    }
+    
+    @IBAction func didTapRegisterButton(sender: AnyObject) {
+        let registerViewController = storyboard?
+            .instantiateViewControllerWithIdentifier("registerViewController") as! RegisterViewController
+        
+        navigationController?.pushViewController(registerViewController, animated: true)
     }
     
     private func requireFilledTextFields() -> Result<UserLoginData> {
-        guard let username = emailTextField.text where !username.isEmpty,
-              let password = passwordTextField.text where !password.isEmpty else {
-                return Result.error("Please enter username and password.")
+        guard let username = emailTextField.text where !username.isEmpty else {
+            shakeFieldAnimation(emailTextField)
+            return Result.error()
+        }
+        
+        guard let password = passwordTextField.text where !password.isEmpty else {
+            shakeFieldAnimation(passwordTextField)
+            return Result.error()
         }
         
         return Result.of((username, password))
+    }
+    
+    func shakeFieldAnimation(txtField: UIView) {
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.duration = 0.07
+        animation.repeatCount = 2
+        animation.autoreverses = true
+        animation.fromValue = NSValue(CGPoint: CGPointMake(txtField.center.x - 8, txtField.center.y))
+        animation.toValue = NSValue(CGPoint: CGPointMake(txtField.center.x + 8, txtField.center.y))
+        txtField.layer.addAnimation(animation, forKey: "position")
     }
     
     private func sendLoginRequest(userData: UserLoginData) {

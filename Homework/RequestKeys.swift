@@ -14,7 +14,7 @@ struct RequestKeys {
         static let AUTH_TOKEN = "auth-token"
         static let USERNAME = "username"
         static let PASSWORD = "password"
-        static let CONFIRMED_PASSWORD = "confirmedPassword"
+        static let CONFIRMED_PASSWORD = "password_confirmation"
         static let EMAIL = "email"
     }
     
