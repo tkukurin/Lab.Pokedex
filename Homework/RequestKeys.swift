@@ -44,5 +44,12 @@ struct RequestKeys {
         static let IMAGE_URL = "image-url"
         static let DESCRIPTION = "description"
         static let TOTAL_VOTE_COUNT = "total-vote-count"
+        static let GENDER = "gender"
+    }
+    
+    struct Comment {
+        private init() {}
+        
+        static let CONTENT = "content"
     }
 }

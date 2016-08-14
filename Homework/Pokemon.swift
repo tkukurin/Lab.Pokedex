@@ -44,7 +44,7 @@ struct PokeAttributes : Unboxable {
         imageUrl = unboxer.unbox(RequestKeys.PokeAttributes.IMAGE_URL)
         description = unboxer.unbox(RequestKeys.PokeAttributes.DESCRIPTION)
         totalVoteCount = unboxer.unbox(RequestKeys.PokeAttributes.TOTAL_VOTE_COUNT)
-        gender = unboxer.unbox("gender")
+        gender = unboxer.unbox(RequestKeys.PokeAttributes.GENDER)
     }
 }
 

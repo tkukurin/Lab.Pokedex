@@ -25,12 +25,10 @@ struct CommentAttributes: Unboxable {
     init(unboxer: Unboxer) {
         CommentAttributes.DATE_FORMATTER.dateFormat = "YYYY-MM-dd'T'HH:mm:ss.SSSZ"
         
-        self.content = unboxer.unbox("content")
+        self.content = unboxer.unbox(RequestKeys.Comment.CONTENT)
+        
         let createdAtStr: String = unboxer.unbox("created-at")
         self.createdAt = CommentAttributes.DATE_FORMATTER.dateFromString(createdAtStr)
-        
-//            unboxer.unbox(RequestKeys.PokeAttributes.CREATED_AT,
-//                                       formatter: CommentAttributes.DATE_FORMATTER)
     }
     
 }
@@ -39,6 +37,6 @@ struct CommentCreatedResponse: Unboxable {
     var comment: Comment
     
     init(unboxer: Unboxer) {
-        comment = unboxer.unbox("data")
+        comment = unboxer.unbox(RequestKeys.DATA)
     }
 }
