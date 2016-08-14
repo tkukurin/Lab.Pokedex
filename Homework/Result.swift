@@ -38,18 +38,13 @@ class Result<T> {
         if let value: T = self.value {
             f(value)
         }
+        
         return self
     }
     
     func ifFailedDo(consumer: (Exception) -> ()) {
         if let error: Exception = self.error {
             consumer(error)
-        }
-    }
-    
-    func ifFailedDo(runnable: () -> ()) {
-        if let _: Exception = self.error {
-            runnable()
         }
     }
     

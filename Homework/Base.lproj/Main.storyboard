@@ -526,7 +526,7 @@
                                 </constraints>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="W4c-uZ-yV0">
-                                <rect key="frame" x="20" y="439" width="560" height="30"/>
+                                <rect key="frame" x="20" y="449" width="560" height="30"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IFS-cO-AwU">
                                         <rect key="frame" x="0.0" y="0.0" width="280" height="30"/>
@@ -539,7 +539,7 @@
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uRt-S1-7ZV">
-                                <rect key="frame" x="20" y="479" width="560" height="30"/>
+                                <rect key="frame" x="20" y="499" width="560" height="30"/>
                                 <state key="normal" title="View Comments"/>
                                 <connections>
                                     <action selector="didTapCommentsButton:" destination="SFy-GB-XCN" eventType="touchUpInside" id="AgL-gl-8ed"/>
@@ -552,9 +552,9 @@
                             <constraint firstItem="cAJ-Oj-gnM" firstAttribute="leading" secondItem="cgw-yq-3dK" secondAttribute="leading" constant="20" id="8H9-VQ-fnj"/>
                             <constraint firstItem="rtv-dD-Iam" firstAttribute="leading" secondItem="cgw-yq-3dK" secondAttribute="leading" constant="20" id="HcG-L9-KXW"/>
                             <constraint firstItem="uRt-S1-7ZV" firstAttribute="leading" secondItem="cgw-yq-3dK" secondAttribute="leadingMargin" id="KWN-83-mwP"/>
-                            <constraint firstItem="W4c-uZ-yV0" firstAttribute="top" secondItem="cAJ-Oj-gnM" secondAttribute="bottom" constant="10" id="LH5-AL-ue4"/>
+                            <constraint firstItem="W4c-uZ-yV0" firstAttribute="top" secondItem="cAJ-Oj-gnM" secondAttribute="bottom" constant="20" id="LH5-AL-ue4"/>
                             <constraint firstAttribute="trailing" secondItem="rtv-dD-Iam" secondAttribute="trailing" constant="20" id="SmY-d2-Vvv"/>
-                            <constraint firstItem="uRt-S1-7ZV" firstAttribute="top" secondItem="W4c-uZ-yV0" secondAttribute="bottom" constant="10" id="Sy3-6F-Wr1"/>
+                            <constraint firstItem="uRt-S1-7ZV" firstAttribute="top" secondItem="W4c-uZ-yV0" secondAttribute="bottom" constant="20" id="Sy3-6F-Wr1"/>
                             <constraint firstItem="W4c-uZ-yV0" firstAttribute="leading" secondItem="cgw-yq-3dK" secondAttribute="leading" constant="20" id="VVq-3m-fGQ"/>
                             <constraint firstItem="bGL-Dz-mjX" firstAttribute="leading" secondItem="cgw-yq-3dK" secondAttribute="leading" id="XVK-wf-Cr1"/>
                             <constraint firstItem="cAJ-Oj-gnM" firstAttribute="top" secondItem="rtv-dD-Iam" secondAttribute="bottom" constant="20" id="YYI-kB-fmh"/>
@@ -565,6 +565,11 @@
                             <constraint firstAttribute="trailing" secondItem="W4c-uZ-yV0" secondAttribute="trailing" constant="20" id="oDM-vI-Tgz"/>
                             <constraint firstAttribute="trailing" secondItem="bGL-Dz-mjX" secondAttribute="trailing" id="vAL-hJ-c4R"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="oDM-vI-Tgz"/>
+                            </mask>
+                        </variation>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <connections>
