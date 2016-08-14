@@ -1,12 +1,13 @@
+
 import Unbox
 
-struct PokemonList : Unboxable {
-    var pokemons : [Pokemon]
+struct PokemonList: Unboxable {
+    var pokemons: [Pokemon]
     var links: PokeListPagination?
     
     init(unboxer: Unboxer) {
-        pokemons = unboxer.unbox("data")
-        links = unboxer.unbox("links")
+        pokemons = unboxer.unbox(ApiRequestConstants.DATA)
+        links = unboxer.unbox(ApiRequestConstants.Pokemon.LINKS)
     }
     
     func get(atIndex: Int) -> Pokemon {
@@ -20,8 +21,8 @@ struct PokeListPagination: Unboxable {
     let last: NSURL?
     
     init(unboxer: Unboxer) {
-        current = unboxer.unbox("self")
-        next = unboxer.unbox("next")
-        last = unboxer.unbox("last")
+        current = unboxer.unbox(ApiRequestConstants.PokeListLinks.CURRENT)
+        next = unboxer.unbox(ApiRequestConstants.PokeListLinks.NEXT)
+        last = unboxer.unbox(ApiRequestConstants.PokeListLinks.PREV)
     }
 }

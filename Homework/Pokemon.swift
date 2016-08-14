@@ -1,3 +1,4 @@
+
 import Unbox
 
 struct Pokemon : Unboxable {
@@ -6,14 +7,13 @@ struct Pokemon : Unboxable {
     var attributes : PokeAttributes
     
     init(unboxer: Unboxer) {
-        id = unboxer.unbox(RequestKeys.Pokemon.ID)
-        type = unboxer.unbox(RequestKeys.Pokemon.TYPE)
-        attributes = unboxer.unbox(RequestKeys.Pokemon.ATTRIBUTES)
+        id = unboxer.unbox(ApiRequestConstants.ID)
+        type = unboxer.unbox(ApiRequestConstants.TYPE)
+        attributes = unboxer.unbox(ApiRequestConstants.ATTRIBUTES)
     }
 }
 
 struct PokeAttributes : Unboxable {
-    private static let DATE_FORMATTER = NSDateFormatter()
     
     var name : String?
     var baseExperience: Int?
@@ -29,22 +29,20 @@ struct PokeAttributes : Unboxable {
     var gender: String?
     
     init(unboxer : Unboxer) {
-        PokeAttributes.DATE_FORMATTER.dateFormat = "YYYY-MM-dd'T'HH:mm:ss.SSSZ"
-        
-        name = unboxer.unbox(RequestKeys.PokeAttributes.NAME)
-        baseExperience = unboxer.unbox(RequestKeys.PokeAttributes.BASE_EXPERIENCE)
-        isDefault = unboxer.unbox(RequestKeys.PokeAttributes.IS_DEFAULT)
-        order = unboxer.unbox(RequestKeys.PokeAttributes.ORDER)
-        height = unboxer.unbox(RequestKeys.PokeAttributes.HEIGHT)
-        weight = unboxer.unbox(RequestKeys.PokeAttributes.WEIGHT)
-        createdAt = unboxer.unbox(RequestKeys.PokeAttributes.CREATED_AT,
-                                  formatter: PokeAttributes.DATE_FORMATTER)
-        updatedAt = unboxer.unbox(RequestKeys.PokeAttributes.UPDATED_AT,
-                                  formatter: PokeAttributes.DATE_FORMATTER)
-        imageUrl = unboxer.unbox(RequestKeys.PokeAttributes.IMAGE_URL)
-        description = unboxer.unbox(RequestKeys.PokeAttributes.DESCRIPTION)
-        totalVoteCount = unboxer.unbox(RequestKeys.PokeAttributes.TOTAL_VOTE_COUNT)
-        gender = unboxer.unbox(RequestKeys.PokeAttributes.GENDER)
+        name = unboxer.unbox(ApiRequestConstants.PokeAttributes.NAME)
+        baseExperience = unboxer.unbox(ApiRequestConstants.PokeAttributes.BASE_EXPERIENCE)
+        isDefault = unboxer.unbox(ApiRequestConstants.PokeAttributes.IS_DEFAULT)
+        order = unboxer.unbox(ApiRequestConstants.PokeAttributes.ORDER)
+        height = unboxer.unbox(ApiRequestConstants.PokeAttributes.HEIGHT)
+        weight = unboxer.unbox(ApiRequestConstants.PokeAttributes.WEIGHT)
+        createdAt = unboxer.unbox(ApiRequestConstants.CREATED_AT,
+                                  formatter: ApiRequestConstants.DATE_FORMATTER)
+        updatedAt = unboxer.unbox(ApiRequestConstants.UPDATED_AT,
+                                  formatter: ApiRequestConstants.DATE_FORMATTER)
+        imageUrl = unboxer.unbox(ApiRequestConstants.PokeAttributes.IMAGE_URL)
+        description = unboxer.unbox(ApiRequestConstants.PokeAttributes.DESCRIPTION)
+        totalVoteCount = unboxer.unbox(ApiRequestConstants.PokeAttributes.TOTAL_VOTE_COUNT)
+        gender = unboxer.unbox(ApiRequestConstants.PokeAttributes.GENDER)
     }
 }
 
@@ -53,7 +51,7 @@ struct PokemonCreatedResponse: Unboxable {
     let pokemon: Pokemon
     
     init(unboxer: Unboxer) {
-        pokemon = unboxer.unbox(RequestKeys.DATA)
+        pokemon = unboxer.unbox(ApiRequestConstants.DATA)
     }
     
 }

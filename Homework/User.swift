@@ -1,4 +1,4 @@
-import Foundation
+
 import Unbox
 
 struct User : Unboxable {
@@ -7,9 +7,9 @@ struct User : Unboxable {
     let attributes: UserAttributes
     
     init(unboxer : Unboxer) {
-        id = unboxer.unbox(RequestKeys.User.DATA_PREFIX + "." + RequestKeys.User.ID)
-        type = unboxer.unbox(RequestKeys.User.DATA_PREFIX + "." + RequestKeys.User.TYPE)
-        attributes = unboxer.unbox(RequestKeys.User.DATA_PREFIX + "." + RequestKeys.User.ATTRIBUTES)
+        id = unboxer.unbox(ApiRequestConstants.DATA + "." + ApiRequestConstants.ID)
+        type = unboxer.unbox(ApiRequestConstants.DATA + "." + ApiRequestConstants.TYPE)
+        attributes = unboxer.unbox(ApiRequestConstants.DATA + "." + ApiRequestConstants.ATTRIBUTES)
     }
     
 }
@@ -20,8 +20,8 @@ struct UserAttributes : Unboxable {
     let username : String
     
     init(unboxer : Unboxer) {
-        authToken = unboxer.unbox(RequestKeys.UserAttributes.AUTH_TOKEN)
-        email = unboxer.unbox(RequestKeys.UserAttributes.EMAIL)
-        username = unboxer.unbox(RequestKeys.UserAttributes.USERNAME)
+        authToken = unboxer.unbox(ApiRequestConstants.UserAttributes.AUTH_TOKEN)
+        email = unboxer.unbox(ApiRequestConstants.UserAttributes.EMAIL)
+        username = unboxer.unbox(ApiRequestConstants.UserAttributes.USERNAME)
     }
 }

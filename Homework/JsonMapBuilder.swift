@@ -40,23 +40,23 @@ class JsonMapBuilder {
     
     static func buildLoginRequest(userData: UserLoginData) -> JsonType {
         return  JsonMapBuilder.use({ builder in
-            builder.addParam(RequestKeys.UserAttributes.EMAIL, userData.email)
-                .addParam(RequestKeys.UserAttributes.PASSWORD, userData.password)
-                .wrapWithKey(RequestKeys.User.ATTRIBUTES)
-                .addParam("type", "session")
-                .wrapWithKey(RequestKeys.User.DATA_PREFIX)
+            builder.addParam(ApiRequestConstants.UserAttributes.EMAIL, userData.email)
+                .addParam(ApiRequestConstants.UserAttributes.PASSWORD, userData.password)
+                .wrapWithKey(ApiRequestConstants.ATTRIBUTES)
+                .addParam(ApiRequestConstants.TYPE, "session")
+                .wrapWithKey(ApiRequestConstants.DATA)
         })
     }
     
     static func buildRegisterRequest(userData: UserRegisterData) -> [String: AnyObject] {
         return  JsonMapBuilder.use({ builder in
-            builder.addParam(RequestKeys.UserAttributes.USERNAME, userData.username)
-                .addParam(RequestKeys.UserAttributes.EMAIL, userData.email)
-                .addParam(RequestKeys.UserAttributes.PASSWORD, userData.password)
-                .addParam(RequestKeys.UserAttributes.CONFIRMED_PASSWORD, userData.confirmedPassword)
-                .wrapWithKey(RequestKeys.User.ATTRIBUTES)
-                .addParam("type", "users")
-                .wrapWithKey(RequestKeys.User.DATA_PREFIX)
+            builder.addParam(ApiRequestConstants.UserAttributes.USERNAME, userData.username)
+                .addParam(ApiRequestConstants.UserAttributes.EMAIL, userData.email)
+                .addParam(ApiRequestConstants.UserAttributes.PASSWORD, userData.password)
+                .addParam(ApiRequestConstants.UserAttributes.CONFIRMED_PASSWORD, userData.confirmedPassword)
+                .wrapWithKey(ApiRequestConstants.ATTRIBUTES)
+                .addParam(ApiRequestConstants.TYPE, "users")
+                .wrapWithKey(ApiRequestConstants.DATA)
         })
     }
     

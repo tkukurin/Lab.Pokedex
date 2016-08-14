@@ -22,7 +22,7 @@
 		4234DD841D546F7F00CEBA18 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD831D546F7F00CEBA18 /* Container.swift */; };
 		4234DD871D54720E00CEBA18 /* LocalStorageAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD861D54720E00CEBA18 /* LocalStorageAdapter.swift */; };
 		4234DD8A1D5472C100CEBA18 /* Typealiases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD891D5472C100CEBA18 /* Typealiases.swift */; };
-		4234DD921D54747100CEBA18 /* RequestKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD911D54747100CEBA18 /* RequestKeys.swift */; };
+		4234DD921D54747100CEBA18 /* ApiRequestConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD911D54747100CEBA18 /* ApiRequestConstants.swift */; };
 		4234DD941D54748300CEBA18 /* Pokemon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD931D54748300CEBA18 /* Pokemon.swift */; };
 		4234DD961D5474A800CEBA18 /* PokemonList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD951D5474A800CEBA18 /* PokemonList.swift */; };
 		4234DD981D5474BC00CEBA18 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD971D5474BC00CEBA18 /* User.swift */; };
@@ -88,7 +88,7 @@
 		4234DD831D546F7F00CEBA18 /* Container.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		4234DD861D54720E00CEBA18 /* LocalStorageAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalStorageAdapter.swift; sourceTree = "<group>"; };
 		4234DD891D5472C100CEBA18 /* Typealiases.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Typealiases.swift; sourceTree = "<group>"; };
-		4234DD911D54747100CEBA18 /* RequestKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestKeys.swift; sourceTree = "<group>"; };
+		4234DD911D54747100CEBA18 /* ApiRequestConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiRequestConstants.swift; sourceTree = "<group>"; };
 		4234DD931D54748300CEBA18 /* Pokemon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pokemon.swift; sourceTree = "<group>"; };
 		4234DD951D5474A800CEBA18 /* PokemonList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokemonList.swift; sourceTree = "<group>"; };
 		4234DD971D5474BC00CEBA18 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -288,7 +288,7 @@
 		4234DD901D54746200CEBA18 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				4234DD911D54747100CEBA18 /* RequestKeys.swift */,
+				4234DD911D54747100CEBA18 /* ApiRequestConstants.swift */,
 				4234DD931D54748300CEBA18 /* Pokemon.swift */,
 				4234DD951D5474A800CEBA18 /* PokemonList.swift */,
 				8EBB942E1D5E21840098B41A /* Comment.swift */,
@@ -640,7 +640,7 @@
 				4234DDB11D54A35D00CEBA18 /* SinglePokemonViewController.swift in Sources */,
 				4234DDAB1D54841E00CEBA18 /* PokemonTableCell.swift in Sources */,
 				8EBB94361D5E710C0098B41A /* UserList.swift in Sources */,
-				4234DD921D54747100CEBA18 /* RequestKeys.swift in Sources */,
+				4234DD921D54747100CEBA18 /* ApiRequestConstants.swift in Sources */,
 				8EBB942B1D5E1F3B0098B41A /* CommentViewController.swift in Sources */,
 				4234DD8A1D5472C100CEBA18 /* Typealiases.swift in Sources */,
 				4234DDAF1D548D7E00CEBA18 /* PokemonListViewController.swift in Sources */,

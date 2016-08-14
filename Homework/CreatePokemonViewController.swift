@@ -59,10 +59,10 @@ class CreatePokemonViewController: UIViewController {
         var attributes = [String: String]()
         var fieldsAreValid = true
         
-        [ (pokemonNameTextField, RequestKeys.PokeAttributes.NAME),
-            (pokemonHeightTextField, RequestKeys.PokeAttributes.HEIGHT),
-            (pokemonWeightTextField, RequestKeys.PokeAttributes.WEIGHT),
-            (pokemonDescriptionTextField, RequestKeys.PokeAttributes.DESCRIPTION) ].forEach({ tuple in
+        [ (pokemonNameTextField, ApiRequestConstants.PokeAttributes.NAME),
+            (pokemonHeightTextField, ApiRequestConstants.PokeAttributes.HEIGHT),
+            (pokemonWeightTextField, ApiRequestConstants.PokeAttributes.WEIGHT),
+            (pokemonDescriptionTextField, ApiRequestConstants.PokeAttributes.DESCRIPTION) ].forEach({ tuple in
                 let key = tuple.1
                 let value = tuple.0.text!
                 
