@@ -9,7 +9,7 @@
 import UIKit
 
 class PokemonTableCell: UITableViewCell {
-    static let DEFAULT_CELL = UIImage(named: "Pokeball.png")
+    static let DEFAULT_IMAGE = UIImage(named: "Pokeball.png")
     
     @IBOutlet weak var pokemonImageUIView: UIImageView!
     @IBOutlet weak var pokemonNameLabel: UILabel!
@@ -31,7 +31,7 @@ class PokemonTableCell: UITableViewCell {
         Result
             .ofNullable(image)
             .ifSuccessfulDo({ self.pokemonImageUIView.image = $0 })
-            .ifFailedDo({ _ in self.pokemonImageUIView.image = PokemonTableCell.DEFAULT_CELL })
+            .ifFailedDo({ _ in self.pokemonImageUIView.image = PokemonTableCell.DEFAULT_IMAGE })
     }
     
 }

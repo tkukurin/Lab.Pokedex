@@ -53,31 +53,23 @@ extension LoginViewController {
     }
     
     private func sendLoginRequest(userData: UserLoginData) {
-        let loginRequest = JsonMapBuilder.buildLoginRequest(userData)
-        print("Using request \(loginRequest)")
-        
         ProgressHud.show()
-        serverRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
-                               jsonReq: loginRequest,
-                               callback: serverActionCallback)
+        
+        ApiLoginRequest()
+//            .ifSuccessfulDo(persistUserAndGoToHomescreen)
+//            .ifFailedDo({ ProgressHud.indicateFailure("Failed login!") })
+            
+            .doLogin(userData,
+                     success: persistUserAndGoToHomescreen,
+                     failure: { ProgressHud.indicateFailure() })
     }
     
-    func serverActionCallback(response: ServerResponse<AnyObject>) {
-        response
-            .ifSuccessfulDo(loadUserAndLogin)
-            .ifFailedDo({ ProgressHud.indicateFailure("\($0.cause)") })
-    }
-    
-    private func loadUserAndLogin(data: NSData) throws {
-        let user : User = try Unbox(data)
+    private func persistUserAndGoToHomescreen(user: User) {
+        ProgressHud.indicateSuccess()
+        
         localStorageAdapter
             .persistUser(emailTextField.text!, passwordTextField.text!)
         
-        goToHomescreen(user)
-        ProgressHud.indicateSuccess("Login: \(user.attributes.username)")
-    }
-    
-    private func goToHomescreen(user: User) {
         let pokemonListViewController = storyboard?
             .instantiateViewControllerWithIdentifier("pokemonListViewController") as! PokemonListViewController
         pokemonListViewController.user = user

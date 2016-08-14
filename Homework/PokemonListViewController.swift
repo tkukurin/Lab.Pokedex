@@ -11,24 +11,26 @@ class PokemonListViewController: UITableViewController {
     private var localStorageAdapter: LocalStorageAdapter!
     private var serverRequestor: ServerRequestor!
     
+    private var activeRequests: [Request?]!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
+        activeRequests = [Request?]()
         
         nLoadedItems = 0
         fetchPokemons()
         
-        // @debug
         print("auth header: \(user.attributes.authToken)")
     }
     
     func fetchPokemons() {
         ProgressHud.show()
-        serverRequestor.doGet(
+        activeRequests.append(serverRequestor.doGet(
             RequestEndpoint.POKEMON_ACTION,
             requestingUser: user,
-            callback: pokemonServerRequestCallback)
+            callback: pokemonServerRequestCallback))
     }
     
     func pokemonServerRequestCallback(response: ServerResponse<AnyObject>) {
@@ -52,15 +54,23 @@ class PokemonListViewController: UITableViewController {
             Result
                 .ofNullable(pokemons[i].attributes.imageUrl)
                 .ifSuccessfulDo({
-                    Alamofire
+//                    self.serverRequestor.doGet(
+//                        RequestEndpoint.forImages($0),
+//                        callback: { ... })
+                    
+                    let requestIndex = self.activeRequests.count
+                    
+                    let req = Alamofire
                         .request(.GET, ServerRequestor.REQUEST_DOMAIN + RequestEndpoint.forImages($0))
                         .validate()
                         .response(completionHandler: { (_, _, data, _) in
+                            
                             Result
                                 .ofNullable(data)
                                 .ifSuccessfulDo({
                                     self.items[i]?.image = UIImage(data: $0)
                                     self.tableView.reloadData()
+                                    self.activeRequests[requestIndex] = nil
                                     
 //                                    self.nLoadedItems = self.nLoadedItems.successor()
 //                                    if self.nLoadedItems == self.items.count {
@@ -70,6 +80,8 @@ class PokemonListViewController: UITableViewController {
 //                                    }
                                 })
                         })
+                    
+                    self.activeRequests.append(req)
                 }).ifFailedDo({ _ in
 //                    self.nLoadedItems = self.nLoadedItems.successor()
                     self.tableView.reloadData()
@@ -145,6 +157,15 @@ extension PokemonListViewController {
     @IBAction func didTapLogoutButton(sender: AnyObject) {
         serverRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
         localStorageAdapter.deleteActiveUser()
+        
+        // Alamofire.Manager.sharedInstance.session.resetWithCompletionHandler({})
+        
+        activeRequests.forEach({ request in
+            if let request: Request = request {
+                request.cancel()
+            }
+        })
+        
         navigationController?.popViewControllerAnimated(true)
     }
 }

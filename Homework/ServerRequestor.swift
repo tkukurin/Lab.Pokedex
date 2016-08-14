@@ -51,13 +51,13 @@ class ServerRequestor {
 
     func doGet(toEndpoint: String,
                       requestingUser: User? = nil,
-                      callback: ServerCallbackFn) {
+                      callback: ServerCallbackFn) -> Request {
         let headers = Result
             .ofNullable(requestingUser)
             .map(headersForUser)
             .ifFailedReturn({ [String:String]() })
         
-        Alamofire.request(.GET,
+        return Alamofire.request(.GET,
                           resolveUrl(toEndpoint),
                           headers: headers)
             .validate().responseJSON { response in
@@ -68,7 +68,7 @@ class ServerRequestor {
     func doPost(toEndpoint: String,
                    jsonReq: JsonType,
                    requestingUser: User? = nil,
-                   callback: ServerCallbackFn) {
+                   callback: ServerCallbackFn) -> Request {
         let headers = Result
             .ofNullable(requestingUser)
             .map(headersForUser)
@@ -77,7 +77,7 @@ class ServerRequestor {
         Alamofire.Manager.sharedInstance.session.configuration
             .HTTPAdditionalHeaders = headers
         
-        Alamofire.request(.POST,
+        return Alamofire.request(.POST,
                           resolveUrl(toEndpoint),
                           parameters: jsonReq,
                           encoding: .JSON)
