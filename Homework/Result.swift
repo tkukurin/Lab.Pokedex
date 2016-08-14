@@ -3,17 +3,6 @@
 // Allows for perhaps more elegant, functional-style error handling.
 // Static methods should be used to construct objects of type Result<T>.
 //
-// One potential pitfall with using this class is that ifFailed and ifSuccessful
-// can potentially be abused in a notation such as:
-// result.ifFailedDo(...).ifSuccessfulDo(...).ifFailedDo(...) (...)
-//
-// A possible solution to the problem above would be restricting only one
-// (for instance, ifSuccessful) method to return Result<R>, and then
-// renaming the ifFailed method to orElse and returning void:
-// result.ifSuccessfulDo(...)
-//       .ifSuccessfulDo(...)
-//       .orElse(...) // returns void, no further chaining allowed.
-//
 
 class Result<T> {
     var value: T?
@@ -21,7 +10,7 @@ class Result<T> {
     
     private init() {}
     
-    init(value: T) {
+    private init(value: T) {
         self.value = value
     }
     
@@ -31,18 +20,25 @@ class Result<T> {
     
     func map<R>(f: (T throws -> R)) -> Result<R> {
         let retVal = Result<R>()
+        
         if let _: Exception = self.error {
             retVal.error = self.error
-        } else {
+        } else if let value:T = self.value {
             do {
-                if let value:T = self.value {
-                    retVal.value = try f(value)
-                }
+                retVal.value = try f(value)
             } catch {
                 retVal.error = Exception(cause: "\(error)")
             }
         }
+        
         return retVal
+    }
+    
+    func ifSuccessfulDo(f: ((T) -> ())) -> Result<T> {
+        if let value: T = self.value {
+            f(value)
+        }
+        return self
     }
     
     func ifFailedDo(consumer: (Exception) -> ()) {
@@ -51,16 +47,15 @@ class Result<T> {
         }
     }
     
+    func ifFailedDo(runnable: () -> ()) {
+        if let _: Exception = self.error {
+            runnable()
+        }
+    }
+    
     func ifFailedReturn(supplier: () -> T) -> T {
         guard let value:T = self.value else { return supplier() }
         return value
-    }
-    
-    func ifSuccessfulDo(f: ((T) -> ())) -> Result<T> {
-        if let value: T = self.value {
-            f(value)
-        }
-        return self
     }
     
 }
