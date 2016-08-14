@@ -3,6 +3,7 @@ import Unbox
 
 class SinglePokemonViewController: UIViewController {
     static let DEFAULT_IMAGE = UIImage(named: "Pokeball.png")
+    static let DEFAULT_STRING_IF_DATA_UNAVAILABLE = "?"
     
     @IBOutlet weak var heroImage: UIImageView!
     @IBOutlet weak var pokemonNameLabel: UILabel!
@@ -38,33 +39,43 @@ class SinglePokemonViewController: UIViewController {
     func loadPokemonData() {
         pokemonNameLabel.text = pokemon.attributes.name
         pokemonDescriptionTextField.text = pokemon.attributes.description
-        heightLabel.text = getOrDefaultString(pokemon.attributes.height)
-        weightLabel.text = getOrDefaultString(pokemon.attributes.weight)
-        genderLabel.text = getOrDefaultString(pokemon.attributes.gender)
-        typeLabel.text = getOrDefaultString(pokemon.type)
-        Result.ofNullable(self.image)
+        
+        heightLabel.text = getOrDefaultFromDouble(pokemon.attributes.height)
+        weightLabel.text = getOrDefaultFromDouble(pokemon.attributes.weight)
+        genderLabel.text = getOrDefaultFromString(pokemon.attributes.gender)
+        typeLabel.text = getOrDefaultFromString(pokemon.type)
+        
+        Result.ofNullable(image)
             .ifSuccessfulDo({ self.heroImage.image = $0 })
             .ifFailedDo({ _ in self.loadImageOrDisplayDefault(self.pokemon.attributes.imageUrl) })
+    }
+    
+    func getOrDefaultFromDouble(value: Double?) -> String {
+        if let value: Double = value { return String(format:"%.2f", value) }
+        return SinglePokemonViewController.DEFAULT_STRING_IF_DATA_UNAVAILABLE
+    }
+    
+    func getOrDefaultFromString(value: String?) -> String {
+        if let value: String = value { return value }
+        return SinglePokemonViewController.DEFAULT_STRING_IF_DATA_UNAVAILABLE
     }
     
     func loadImageOrDisplayDefault(imageUrl: String?) {
         Result
             .ofNullable(imageUrl)
             .ifSuccessfulDo(loadImage)
-            .ifFailedDo({ _ in self.heroImage.image = SinglePokemonViewController.DEFAULT_IMAGE })
-    }
-    
-    func getOrDefaultString<T>(value: T) -> String {
-        if let value: T = value { return String(value) }
-        return "?"
+            .ifFailedDo(setDefaultImage)
     }
     
     func loadImage(urlEndpoint: String) {
         ProgressHud.show()
         
-        // TODO requestendpoint.resolveImageUrl
         let fullPath = ServerRequestor.REQUEST_DOMAIN + urlEndpoint
         imageLoader.loadFrom(fullPath, callback: heroImageReceivedCallback)
+    }
+    
+    func setDefaultImage(ignorable: Exception) {
+        self.heroImage.image = SinglePokemonViewController.DEFAULT_IMAGE
     }
     
     func heroImageReceivedCallback(image: UIImage?) {
