@@ -6,7 +6,7 @@ struct Comment: Unboxable {
     let id: Int?
     let type: String?
     let attributes: CommentAttributes?
-    let userId: String?
+    let userId: String
     
     init(unboxer: Unboxer) {
         self.id = unboxer.unbox(ApiRequestConstants.ID)

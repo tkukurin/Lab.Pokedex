@@ -17,14 +17,15 @@ class SinglePokemonViewController: UIViewController {
     var pokemon : Pokemon!
     var image: UIImage?
     
-    var imageLoader: UrlImageLoader!
     var loggedInUser: User!
-    var serverRequestor: ServerRequestor!
+    private var serverRequestor: ServerRequestor!
+    private var imageLoader: ApiPhotoRequest!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageLoader = Container.sharedInstance.get(UrlImageLoader.self)
+        
         serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
+        imageLoader = Container.sharedInstance.get(ApiPhotoRequest.self)
         
         title = pokemon.attributes.name
         loadPokemonData()
@@ -45,7 +46,7 @@ class SinglePokemonViewController: UIViewController {
         
         Result.ofNullable(image)
             .ifPresent({ self.heroImage.image = $0 })
-            .orElseDo({ _ in self.loadImageOrDisplayDefault(self.pokemon.attributes.imageUrl) })
+            .orElseDo({ self.loadImageOrDisplayDefault(self.pokemon.attributes.imageUrl) })
     }
     
     func getOrDefaultFromDouble(value: Double?) -> String {
@@ -67,22 +68,19 @@ class SinglePokemonViewController: UIViewController {
     
     func loadImage(urlEndpoint: String) {
         ProgressHud.show()
-        
-        let fullPath = ServerRequestor.REQUEST_DOMAIN + urlEndpoint
-        imageLoader.loadFrom(fullPath, callback: heroImageReceivedCallback)
+        imageLoader
+            .setSuccessHandler(heroImageReceivedCallback)
+            .prepareRequest(urlEndpoint)
+            .doGetPhoto()
     }
     
-    func setDefaultImage(ignorable: Exception) {
+    func setDefaultImage() {
         self.heroImage.image = SinglePokemonViewController.DEFAULT_IMAGE
     }
     
-    func heroImageReceivedCallback(image: UIImage?) {
-        Result
-            .ofNullable(image)
-            .ifPresent({
-                self.heroImage.contentMode = .ScaleAspectFit
-                self.heroImage.image = $0
-            })
+    func heroImageReceivedCallback(image: UIImage) {
+        self.heroImage.contentMode = .ScaleAspectFit
+        self.heroImage.image = image
         ProgressHud.dismiss()
     }
     
@@ -94,18 +92,6 @@ class SinglePokemonViewController: UIViewController {
             .setSuccessHandler(displayComments)
             .setFailureHandler({ ProgressHud.indicateFailure() })
             .doGetComments(loggedInUser, pokemonId: pokemon.id)
-    }
-    
-    func loadUsersForCommentsAndDisplay(commentList: CommentList) {
-        //var usersForComments = [User?](count: commentList.comments.count, repeatedValue: nil)
-//        var index = 0
-//        
-//        commentList.comments.forEach({
-//            self.serverRequestor.doGet(RequestEndpoint.forUsers($0.userId!),
-//                requestingUser: self.loggedInUser,
-//                callback: { $0.ifPresent({ usersForComments[index] = try Unbox($0) as User }) })
-//            index += 1
-//        })
     }
     
     func displayComments(injecting: CommentList) {

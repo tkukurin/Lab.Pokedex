@@ -6,14 +6,14 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     
     private var localStorageAdapter: LocalStorageAdapter!
-    private var serverRequestor: ServerRequestor!
+    private var loginRequest: ApiUserRequest!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.setHidesBackButton(true, animated: false)
         
         localStorageAdapter = Container.sharedInstance.get(LocalStorageAdapter.self)
-        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
+        loginRequest = Container.sharedInstance.get(ApiUserRequest.self)
         
         emailTextField.text = "nottestmail@email.com"
         passwordTextField.text = "longpassword"
@@ -45,7 +45,7 @@ extension LoginViewController {
     private func sendLoginRequest(userData: UserLoginData) {
         ProgressHud.show()
         
-        ApiLoginRequest()
+        loginRequest
             .setSuccessHandler(persistUserAndGoToHomescreen)
             .setFailureHandler({ ProgressHud.indicateFailure("Error logging in") })
             .doLogin(userData)

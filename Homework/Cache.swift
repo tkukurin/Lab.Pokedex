@@ -1,7 +1,4 @@
 
-
-import UIKit
-
 class Cache<KeyType: Hashable, ValueType> {
     
     var cache: [KeyType: ValueType]
@@ -24,7 +21,7 @@ class Cache<KeyType: Hashable, ValueType> {
         cache[key] = value
     }
     
-    func updateInsertionIndexAndClearCacheIfNecessary() {
+    private func updateInsertionIndexAndClearCacheIfNecessary() {
         keyInsertionIndex = (keyInsertionIndex + 1) % maxCacheSize
         
         Result
@@ -38,6 +35,16 @@ class Cache<KeyType: Hashable, ValueType> {
     
     func getAndClear(key: KeyType) -> Result<ValueType> {
         return Result.ofNullable(cache.removeValueForKey(key))
+    }
+    
+    func forEach(keyValueConsumer: (KeyType, ValueType) -> ()) {
+        cache.forEach(keyValueConsumer)
+    }
+    
+    func emptyCache() {
+        self.cache = [KeyType: ValueType]()
+        self.keyInsertionIndex = 0
+        self.keys = [KeyType?](count: maxCacheSize, repeatedValue: nil)
     }
     
 }

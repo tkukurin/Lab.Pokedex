@@ -58,15 +58,18 @@ class Result<T> {
         return self
     }
     
-    func orElseDo(consumer: (Exception) -> ()) {
-        if let error: Exception = self.error {
-            consumer(error)
+    func orElseDo(runnable: () -> ()) {
+        if let _: Exception = self.error {
+            runnable()
         }
     }
     
     func orElseGet(supplier: () -> T) -> T {
-        guard let value:T = self.value else { return supplier() }
-        return value
+        if let value: T = self.value {
+            return value
+        }
+        
+        return supplier()
     }
     
 }

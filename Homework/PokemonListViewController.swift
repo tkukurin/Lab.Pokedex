@@ -8,21 +8,42 @@ class PokemonListViewController: UITableViewController {
     var items: [Pokemon]!
     
     private var localStorageAdapter: LocalStorageAdapter!
-    private var serverRequestor: ServerRequestor!
+    private var userRequest: ApiUserRequest!
+    private var listRequest: ApiPokemonListRequest!
+    private var imageLoader: ApiPhotoRequest!
+    
+    
+    
     private let requestCache = Cache<UITableViewCell, Request>(maxCacheSize: 500)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        localStorageAdapter = Container.sharedInstance.get(LocalStorageAdapter.self)
-        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
+        let container = Container.sharedInstance
+        localStorageAdapter = container.get(LocalStorageAdapter.self)
+        userRequest = container.get(ApiUserRequest.self)
+        listRequest = container.get(ApiPokemonListRequest.self)
+        imageLoader = container.get(ApiPhotoRequest.self)
         
+        setupPullToRefresh()
         fetchPokemons()
+    }
+    
+    func setupPullToRefresh() {
+        refreshControl = UIRefreshControl()
+        refreshControl!.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl!.addTarget(self, action: #selector(refresh), forControlEvents: UIControlEvents.ValueChanged)
+    }
+    
+    func refresh() {
+        fetchPokemons()
+        refreshControl?.endRefreshing()
     }
     
     func fetchPokemons() {
         ProgressHud.show()
-        ApiPokemonListRequest()
+        
+        listRequest
             .setSuccessHandler(loadPokemons)
             .setFailureHandler({ ProgressHud.indicateFailure("Uh-oh... The Pokemons could not be loaded!")  })
             .doGetPokemons(user)
@@ -73,10 +94,7 @@ extension PokemonListViewController {
         let cell = getDefaultCell(pokemon, indexPath: indexPath)
         
         stopIfHasRequestInProgress(cell)
-        
-        Result
-            .ofNullable(pokemon.attributes.imageUrl)
-            .ifPresent({ self.updateCellImage(cell, row: indexPath, imageUrl: $0) })
+        invokeAsyncCellImageUpdate(cell, row: indexPath, imageUrl: pokemon.attributes.imageUrl)
         
         return cell
     }
@@ -96,7 +114,7 @@ extension PokemonListViewController {
             .ifPresent({ $0.cancel() })
     }
     
-    func updateCellImage(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String?) {
+    func invokeAsyncCellImageUpdate(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String?) {
         Result
             .ofNullable(imageUrl)
             .ifPresent({ self.setCellImage(cell, row: row, imageUrl: $0) })
@@ -104,17 +122,15 @@ extension PokemonListViewController {
     
     func setCellImage(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String) {
         let req = Alamofire.request(.GET, ServerRequestor.REQUEST_DOMAIN + RequestEndpoint.forImages(imageUrl))
-        
         requestCache.store(cell, value: req)
+        
         req.validate()
             .response(completionHandler: { (_, _, data, error) in
                 if error == nil {
                     Result
                         .ofNullable(data)
-                        .ifPresent({
-                            let image = UIImage(data: $0)
-                            cell.pokemonImageUIView.image = image
-                        })
+                        .flatMap({ Result.ofNullable(UIImage(data: $0)) })
+                        .ifPresent({ cell.pokemonImageUIView.image = $0 })
                 }
             })
     }
@@ -134,7 +150,7 @@ extension PokemonListViewController {
     }
     
     @IBAction func didTapLogoutButton(sender: AnyObject) {
-        serverRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
+        userRequest.doLogout(user)
         localStorageAdapter.deleteActiveUser()
         navigationController?.popViewControllerAnimated(true)
     }

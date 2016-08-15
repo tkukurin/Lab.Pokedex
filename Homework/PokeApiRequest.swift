@@ -51,12 +51,12 @@ class PokeApiJsonRequest<T: Unboxable>: ApiRequest<T> {
         Result.ofNullable(data)
             .flatMap({ Result.ofNullable(try? Unbox($0) as T) })
             .ifPresent(successCallbackConsumer)
-            .orElseDo({ _ in self.failureCallback() })
+            .orElseDo({ self.failureCallback() })
     }
     
 }
 
-class ApiLoginRequest: PokeApiJsonRequest<User> {
+class ApiUserRequest: PokeApiJsonRequest<User> {
     
     func doLogin(userLoginData: UserLoginData) -> Request {
         let json = JsonMapBuilder.buildLoginRequest(userLoginData)
@@ -66,15 +66,22 @@ class ApiLoginRequest: PokeApiJsonRequest<User> {
                                callback: deserialize)
     }
     
-}
-
-class ApiRegisterRequest: PokeApiJsonRequest<User> {
-    
     func doRegister(userRegisterData: UserRegisterData) -> Request {
         let json = JsonMapBuilder.buildRegisterRequest(userRegisterData)
         return serverRequestor.doPost(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE,
                                       jsonReq: json,
                                       callback: deserialize)
+    }
+    
+    func doGet(requestingUser: User, userId: String) -> Request {
+        return serverRequestor.doGet(RequestEndpoint.forUsers(userId),
+                              requestingUser: requestingUser,
+                              callback: deserialize)
+    }
+    
+    func doLogout(user: User) -> Request {
+        return serverRequestor.doDelete(RequestEndpoint.USER_ACTION_LOGOUT,
+                                        user: user)
     }
     
 }
@@ -115,15 +122,38 @@ class ApiPokemonCreateRequest: PokeApiJsonRequest<Pokemon> {
     }
 }
 
-class ApiPhotoRequest: ApiRequest<UIImage?> {
+class ApiPhotoRequest: ApiRequest<UIImage> {
+    
+    private var request: Request?
     
     init() {
         super.init()
     }
     
-    func doGetPhoto(imageUrl: String) {
-        AsyncImageLoader().loadFrom(RequestEndpoint.forImages(imageUrl),
-                                    callback: self.successCallbackConsumer)
+    func prepareRequest(imageUrl: String) -> ApiPhotoRequest {
+        request = Alamofire.request(.GET, ServerRequestor.REQUEST_DOMAIN + RequestEndpoint.forImages(imageUrl))
+        return self
+    }
+    
+    func getRequest() -> Request {
+        return self.request!
+    }
+    
+    func doGetPhoto() -> Request? {
+        request?.validate()
+            .response(completionHandler: { (_, _, data, error) in
+                if error != nil {
+                    self.failureCallback()
+                } else {
+                    Result
+                        .ofNullable(data)
+                        .flatMap({ Result.ofNullable(UIImage(data: $0)) })
+                        .ifPresent(self.successCallbackConsumer)
+                        .orElseDo(self.failureCallback)
+                }
+            })
+        
+        return request
     }
     
 }

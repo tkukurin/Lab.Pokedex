@@ -2,37 +2,6 @@
 import Foundation
 import UIKit
 
-//class Container {
-//    static let sharedInstance = Container();
-//    
-//    private let localStorageAdapter: LocalStorageAdapter
-//    private let imageLoader: UrlImageLoader
-//    private let serverRequestor: ServerRequestor
-//    
-//    private init() {
-//        localStorageAdapter = LocalStorageAdapter()
-//        imageLoader = AsyncImageLoader()
-//        serverRequestor = ServerRequestor()
-//    }
-//    
-//    func getLocalStorageAdapter() -> LocalStorageAdapter {
-//        return localStorageAdapter
-//    }
-//    
-//    func getAlertUtilities(caller: UIViewController) -> AlertUtils {
-//        return AlertUtils(caller)
-//    }
-//    
-//    func getImageLoader() -> UrlImageLoader {
-//        return imageLoader
-//    }
-//    
-//    func get(ServerRequestor.self) -> ServerRequestor {
-//        return serverRequestor
-//    }
-//    
-//}
-
 class Instantiator {
     let initialize: (() -> Any);
     init(_ i: (() -> Any)) {

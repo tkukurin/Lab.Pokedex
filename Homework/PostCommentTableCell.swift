@@ -13,24 +13,25 @@ import Alamofire
 class PostCommentTableCell: UITableViewCell {
     
     @IBOutlet weak var textField: UITextField!
-    var serverRequestor: ServerRequestor!
+    private var apiCommentPostRequest: ApiCommentPostRequest!
     
     var pokemonId: Int!
     var user: User!
     var delegate: CommentCreatedDelegate!
     
     override func awakeFromNib() {
-        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
+        apiCommentPostRequest = Container.sharedInstance.get(ApiCommentPostRequest.self)
     }
     
     @IBAction func didTapSendButton(sender: AnyObject) {
         guard let commentText: String = self.textField.text
                 where !commentText.isEmpty else {
-            ProgressHud.indicateFailure("Please enter a comment before sending")
+            AnimationUtils.shakeFieldAnimation(self.textField)
+            //ProgressHud.indicateFailure("Please enter a comment before sending")
             return
         }
         
-        ApiCommentPostRequest()
+        apiCommentPostRequest
             .setSuccessHandler(commentCreatedCallback)
             .setFailureHandler({ ProgressHud.indicateFailure("Bad server response.") })
             .doPostComment(user, pokemonId: pokemonId, content: commentText)

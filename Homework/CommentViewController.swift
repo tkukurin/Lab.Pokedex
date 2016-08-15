@@ -1,6 +1,7 @@
 
 import UIKit
 import Unbox
+import Alamofire
 
 protocol CommentCreatedDelegate {
     func notify(comment: Comment)
@@ -12,37 +13,23 @@ class CommentViewController: UITableViewController {
     var loggedInUser: User!
     
     var comments: [Comment]!
-    var users: [User?]!
     var cells: [CommentTableCell?]!
     
     var pokemon: Pokemon!
     
+    private let cache = Cache<UITableViewCell, Request>(maxCacheSize: 30)
+    private var commentRequest: ApiCommentRequest!
+    private var userRequest: ApiUserRequest!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
-        cells = [CommentTableCell]()
+        commentRequest = Container.sharedInstance.get(ApiCommentRequest.self)
+        userRequest = Container.sharedInstance.get(ApiUserRequest.self)
         
-        getUsernames()
+        tableView.reloadData()
     }
-    
-    func getUsernames() {
-        self.users = [User?]()
-        
-//        (0..<comments.count).forEach({ i in
-//            serverRequestor.doGet(RequestEndpoint.forUsers(self.comments[i].userId ?? ""),
-//                requestingUser: self.loggedInUser,
-//                callback: appendCell)
-//        })
-    }
-    
-//    func appendCell(serverResponse: ServerResponse<AnyObject>) {
-//        serverResponse
-//            .ifPresent({
-//                let user: User = try Unbox($0)
-//                self.users.append(user)
-//                self.updateCommentsTable(self.users.count - 1)
-//            })
-//    }
     
     func updateCommentsTable(forIndex: Int) {
         tableView.beginUpdates()
@@ -56,7 +43,7 @@ class CommentViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? users.count : 1
+        return section == 0 ? comments.count : 1
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -65,16 +52,20 @@ class CommentViewController: UITableViewController {
     }
     
     func getViewCommentCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
         let comment = comments[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier("commentCell", forIndexPath: indexPath) as! CommentTableCell
         cell.commentLabel.text = comment.attributes?.content
         cell.setDate(comment.attributes?.createdAt)
         
-        if users.count > indexPath.row {
-            cell.commenterUsernameLabel.text = users[indexPath.row]?.attributes.username
-        }
+        cache
+            .getAndClear(cell)
+            .ifPresent({ $0.cancel() })
+        userRequest
+            .setSuccessHandler({ cell.commenterUsernameLabel.text = $0.attributes.username })
+            .setFailureHandler({ cell.commenterUsernameLabel.text = "unknown commenter" })
+            .doGet(loggedInUser, userId: comment.userId)
         
-        cells.append(cell)
         return cell
     }
     
@@ -91,9 +82,6 @@ class CommentViewController: UITableViewController {
 extension CommentViewController : CommentCreatedDelegate {
     func notify(comment: Comment) {
         comments.append(comment)
-        users.append(loggedInUser)
-        
-        let nUsers = users.count
-        updateCommentsTable(nUsers - 1)
+        updateCommentsTable(comments.count - 1)
     }
 }

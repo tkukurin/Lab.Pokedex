@@ -13,13 +13,13 @@ class RegisterViewController : UIViewController {
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     
     private var localStorageAdapter: LocalStorageAdapter!
-    private var serverRequestor: ServerRequestor!
+    private var registerRequest: ApiUserRequest!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         localStorageAdapter = Container.sharedInstance.get(LocalStorageAdapter.self)
-        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
+        registerRequest = Container.sharedInstance.get(ApiUserRequest.self)
         
         emailTextField.text = "nottestmail@email.com"
         usernameTextField.text = "nottestuser"
@@ -33,7 +33,7 @@ extension  RegisterViewController {
     @IBAction func didTapSignUpButton(sender: AnyObject) {
         requireFilledTextFields()
             .ifPresent(sendRegisterRequest)
-            .orElseDo({ _ in ProgressHud.indicateFailure() })
+            .orElseDo({ ProgressHud.indicateFailure("Please fill out all the fields.") })
     }
     
     private func requireFilledTextFields() -> Result<UserRegisterData> {
@@ -41,7 +41,7 @@ extension  RegisterViewController {
             let username = usernameTextField.text where !username.isEmpty,
             let password = passwordTextField.text where !password.isEmpty,
             let confirmedPassword = confirmPasswordTextField?.text where !confirmedPassword.isEmpty else {
-                return Result.error("Please fill out all the fields.")
+                return Result.error()
         }
         
         return Result.of((email, username, password, confirmedPassword))
@@ -50,7 +50,7 @@ extension  RegisterViewController {
     private func sendRegisterRequest(userData: UserRegisterData) {
         ProgressHud.show()
         
-        ApiRegisterRequest()
+        registerRequest
             .setSuccessHandler(persistUserAndGoToHomescreen)
             .setFailureHandler({ ProgressHud.indicateFailure("Could not send data to server") })
             .doRegister(userData)

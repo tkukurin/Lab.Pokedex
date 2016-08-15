@@ -19,7 +19,7 @@ class CommentTableCell: UITableViewCell {
             .ofNullable(date)
             .map({ CommentTableCell.DISPLAY_DATE_FORMAT.stringFromDate($0) })
             .ifPresent({ self.dateLabel.text = $0 })
-            .orElseDo({ _ in self.dateLabel.hidden = true })
+            .orElseDo({ self.dateLabel.hidden = true })
     }
     
 }

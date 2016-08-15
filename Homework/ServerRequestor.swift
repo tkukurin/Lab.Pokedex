@@ -1,25 +1,5 @@
 import Alamofire
 
-class RequestEndpoint {
-    static let USER_ACTION_CREATE_OR_DELETE = "api/v1/users"
-    static let USER_ACTION_LOGIN = "api/v1/users/login"
-    static let POKEMON_ACTION = "api/v1/pokemons"
-    
-    static func forComments(pokemonId: Int) -> String {
-        return POKEMON_ACTION + "/\(pokemonId)/comments"
-    }
-    
-    
-    static func forUsers(userId: String) -> String {
-        return USER_ACTION_CREATE_OR_DELETE + "/\(userId)"
-    }
-    
-    static func forImages(imageUrl: String) -> String {
-        let advance = min(imageUrl.characters.count, 1)
-        return imageUrl.substringFromIndex(imageUrl.startIndex.advancedBy(advance))
-    }
-}
-
 class ServerRequestor {
     
     typealias DefaultResponseConsumer = NSData? -> ()
@@ -28,12 +8,9 @@ class ServerRequestor {
     private static let COMPRESSION_QUALITY: CGFloat = 0.8
 
     func doGet(toEndpoint: String,
-                      requestingUser: User? = nil,
-                      callback: DefaultResponseConsumer) -> Request {
-        let headers = Result
-            .ofNullable(requestingUser)
-            .map(headersForUser)
-            .orElseGet({ [String:String]() })
+               requestingUser: User? = nil,
+               callback: DefaultResponseConsumer) -> Request {
+        let headers = headersForUser(requestingUser)
         
         return Alamofire.request(.GET,
                           resolveUrl(toEndpoint),
@@ -47,10 +24,7 @@ class ServerRequestor {
                    jsonReq: JsonType,
                    requestingUser: User? = nil,
                    callback: DefaultResponseConsumer) -> Request {
-        let headers = Result
-            .ofNullable(requestingUser)
-            .map(headersForUser)
-            .orElseGet({ [String:String]() })
+        let headers = headersForUser(requestingUser)
         
         Alamofire.Manager.sharedInstance.session.configuration
             .HTTPAdditionalHeaders = headers
@@ -62,60 +36,6 @@ class ServerRequestor {
             .validate().responseJSON { response in
                 callback(self.extractNSData(response))
             }
-    }
-
-    func doDelete(toEndpoint: String) {
-        Alamofire.request(.DELETE,
-                          resolveUrl(toEndpoint),
-                          headers: [ "Content-type" : "text\\html" ])
-    }
-
-    func doMultipart(toEndpoint: String,
-                            user: User,
-                            pickedImage: UIImage? = nil,
-                            attributes: [String: String],
-                            callback: DefaultResponseConsumer) {
-        let headers = headersForUser(user)
-        
-        Alamofire.upload(.POST,
-                         resolveUrl(toEndpoint),
-                         headers: headers,
-                         multipartFormData: { multipartFormData in
-                            self.addImageMultipart(multipartFormData, pickedImage)
-                            self.addAttributesMultipart(multipartFormData, attributes);
-                        }, encodingCompletion: { encodingResult in
-                            self.multipartEncodedCallback(encodingResult, delegateResultTo: callback)
-                        })
-    }
-
-    private func addImageMultipart(multipartFormData: MultipartFormData,
-                                   _ pickedImage: UIImage?) {
-        let _ = pickedImage.flatMap({ UIImageJPEGRepresentation($0, ServerRequestor.COMPRESSION_QUALITY) })
-                           .flatMap({ multipartFormData.appendBodyPart(
-                                data: $0,
-                                name: toMultipartAttributeName("image"),
-                                fileName: "file.jpeg",
-                                mimeType: "image/jpeg")
-                            })
-    }
-
-    private func addAttributesMultipart(multipartFormData: MultipartFormData,
-                                               _ attributes: [String: String]) {
-        for (key, value) in attributes {
-            multipartFormData.appendBodyPart(
-                data: value.dataUsingEncoding(NSUTF8StringEncoding)!,
-                name: toMultipartAttributeName(key))
-        }
-    }
-    
-    func multipartEncodedCallback(encodingResult: MultipartEncodingResult,
-                                  delegateResultTo: DefaultResponseConsumer) {
-        switch encodingResult {
-        case .Success(let upload, _, _):
-            upload.responseString(completionHandler: { delegateResultTo($0.data) })
-        default:
-            delegateResultTo(nil)
-        }
     }
     
     func extractNSData(response: Response<AnyObject, NSError>) -> NSData? {
@@ -130,16 +50,72 @@ class ServerRequestor {
         return nil
     }
 
+    func doMultipart(toEndpoint: String,
+                     user: User,
+                     pickedImage: UIImage? = nil,
+                     attributes: [String: String],
+                     callback: DefaultResponseConsumer) {
+        
+        let headers = headersForUser(user)
+        Alamofire.upload(.POST,
+                         resolveUrl(toEndpoint),
+                         headers: headers,
+                         multipartFormData: { multipartFormData in
+                            self.addImageMultipart(multipartFormData, pickedImage)
+                            self.addAttributesMultipart(multipartFormData, attributes);
+                        }, encodingCompletion: { encodingResult in
+                            self.extractMultipartNSData(encodingResult, delegateResultTo: callback)
+                        })
+    }
+
+    private func addImageMultipart(multipartFormData: MultipartFormData, _ pickedImage: UIImage?) {
+        let _ = pickedImage.flatMap({ UIImageJPEGRepresentation($0, ServerRequestor.COMPRESSION_QUALITY) })
+                           .flatMap({ multipartFormData.appendBodyPart(
+                                data: $0,
+                                name: toMultipartAttributeName("image"),
+                                fileName: "file.jpeg",
+                                mimeType: "image/jpeg")
+                            })
+    }
+
+    private func addAttributesMultipart(multipartFormData: MultipartFormData, _ attributes: [String: String]) {
+        for (key, value) in attributes {
+            multipartFormData.appendBodyPart(
+                data: value.dataUsingEncoding(NSUTF8StringEncoding)!,
+                name: toMultipartAttributeName(key))
+        }
+    }
+    
     private func toMultipartAttributeName(key: String) -> String {
-      return "data[attributes][\(key)]"
+        return "data[attributes][\(key)]"
+    }
+    
+    func extractMultipartNSData(encodingResult: Alamofire.Manager.MultipartFormDataEncodingResult,
+                                delegateResultTo: DefaultResponseConsumer) {
+        switch encodingResult {
+        case .Success(let upload, _, _):
+            upload.responseString(completionHandler: { delegateResultTo($0.data) })
+        default:
+            delegateResultTo(nil)
+        }
+    }
+    
+    func doDelete(toEndpoint: String,
+                  user: User) -> Request {
+        return Alamofire.request(.DELETE, resolveUrl(toEndpoint),
+                                 headers: headersForUser(user))
     }
 
     private func resolveUrl(endpoint: String) -> String {
       return ServerRequestor.REQUEST_DOMAIN + endpoint
     }
 
-    private func headersForUser(user: User) -> [String:String] {
-        return [ "Authorization": "Token token=\(user.attributes.authToken ?? ""), email=\(user.attributes.email)"]
+    private func headersForUser(user: User?) -> [String:String] {
+        return Result
+            .ofNullable(user)
+            .map({ [ "Authorization":
+                     "Token token=\($0.attributes.authToken ?? ""), email=\($0.attributes.email)"] })
+            .orElseGet({ [String:String]() })
     }
 
 }
