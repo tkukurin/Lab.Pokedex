@@ -1,7 +1,5 @@
 import Alamofire
 
-typealias ServerCallbackFn = ((response: ServerResponse<AnyObject>) -> Void)
-
 class RequestEndpoint {
     static let USER_ACTION_CREATE_OR_DELETE = "api/v1/users"
     static let USER_ACTION_LOGIN = "api/v1/users/login"
@@ -22,36 +20,16 @@ class RequestEndpoint {
     }
 }
 
-class ServerResponse<T> {
-    let responseDelegate: Response<T, NSError>
-    
-    init(_ responseDelegate: Response<T, NSError>) {
-        self.responseDelegate = responseDelegate
-    }
-    
-    func ifPresent(consumer: (NSData throws -> ())) -> Result<Void> {
-        switch responseDelegate.result {
-        case .Success:
-            do {
-                try consumer(responseDelegate.data ?? NSData(contentsOfFile: "")!)
-            } catch {
-                return Result.error("\(error)")
-            }
-        case .Failure(let error):
-            return Result.error(error.localizedDescription)
-        }
-        
-        return Result.of()
-    }
-}
-
 class ServerRequestor {
+    
+    typealias DefaultResponseConsumer = NSData? -> ()
+    
     static let REQUEST_DOMAIN = "https://pokeapi.infinum.co/"
     private static let COMPRESSION_QUALITY: CGFloat = 0.8
 
     func doGet(toEndpoint: String,
                       requestingUser: User? = nil,
-                      callback: ServerCallbackFn) -> Request {
+                      callback: DefaultResponseConsumer) -> Request {
         let headers = Result
             .ofNullable(requestingUser)
             .map(headersForUser)
@@ -61,14 +39,14 @@ class ServerRequestor {
                           resolveUrl(toEndpoint),
                           headers: headers)
             .validate().responseJSON { response in
-                callback(response: ServerResponse(response))
+                callback(self.extractNSData(response))
             }
     }
 
     func doPost(toEndpoint: String,
                    jsonReq: JsonType,
                    requestingUser: User? = nil,
-                   callback: ServerCallbackFn) -> Request {
+                   callback: DefaultResponseConsumer) -> Request {
         let headers = Result
             .ofNullable(requestingUser)
             .map(headersForUser)
@@ -82,7 +60,7 @@ class ServerRequestor {
                           parameters: jsonReq,
                           encoding: .JSON)
             .validate().responseJSON { response in
-                callback(response: ServerResponse(response))
+                callback(self.extractNSData(response))
             }
     }
 
@@ -96,7 +74,7 @@ class ServerRequestor {
                             user: User,
                             pickedImage: UIImage? = nil,
                             attributes: [String: String],
-                            callback: ServerResponse<String>? -> Void) {
+                            callback: DefaultResponseConsumer) {
         let headers = headersForUser(user)
         
         Alamofire.upload(.POST,
@@ -130,13 +108,26 @@ class ServerRequestor {
         }
     }
     
-    func multipartEncodedCallback(encodingResult: MultipartEncodingResult, delegateResultTo: ServerResponse<String>? -> Void) {
+    func multipartEncodedCallback(encodingResult: MultipartEncodingResult,
+                                  delegateResultTo: DefaultResponseConsumer) {
         switch encodingResult {
         case .Success(let upload, _, _):
-            upload.responseString(completionHandler: { delegateResultTo(ServerResponse($0)) })
+            upload.responseString(completionHandler: { delegateResultTo($0.data) })
         default:
             delegateResultTo(nil)
         }
+    }
+    
+    func extractNSData(response: Response<AnyObject, NSError>) -> NSData? {
+        switch response.result {
+        case .Success:
+            if let data = response.data {
+                return data
+            }
+        default: break
+        }
+        
+        return nil
     }
 
     private func toMultipartAttributeName(key: String) -> String {

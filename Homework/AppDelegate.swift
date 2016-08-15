@@ -62,20 +62,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func showPokemonListScreen(userLoginData: UserLoginData) {
-        let loginRequestMap = JsonMapBuilder.buildLoginRequest(userLoginData)
-        serverRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
-                               jsonReq: loginRequestMap,
-                               callback: userLoginCallback)
+        ApiLoginRequest()
+            .setSuccessHandler(loadUserAndShowPokemonListScreen)
+            .doLogin(userLoginData)
     }
     
-    func userLoginCallback(response: ServerResponse<AnyObject>) {
-        response
-            .ifPresent(loadUserAndShowPokemonListScreen)
-            .orElseDo(showLoginScreen)
-    }
-    
-    private func loadUserAndShowPokemonListScreen(data: NSData) throws {
-        let user : User = try Unbox(data)
+    private func loadUserAndShowPokemonListScreen(user: User) {
         let loginViewController = mainStoryboard.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
         
         let pokemonListViewController = mainStoryboard.instantiateViewControllerWithIdentifier("pokemonListViewController") as! PokemonListViewController

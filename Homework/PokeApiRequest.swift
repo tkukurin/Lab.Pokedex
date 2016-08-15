@@ -39,7 +39,6 @@ class ApiRequest<T>: ChainableApiCallback {
         
         self.serverRequestor =  Container.sharedInstance.get(ServerRequestor.self)
     }
-    
 }
 
 class PokeApiJsonRequest<T: Unboxable>: ApiRequest<T> {
@@ -48,14 +47,11 @@ class PokeApiJsonRequest<T: Unboxable>: ApiRequest<T> {
         super.init()
     }
     
-    private func deserialize(response: ServerResponse<AnyObject>) {
-        response
-            .ifPresent({
-                let data: T = try Unbox($0) as T
-                self.successCallbackConsumer(data)
-            }).orElseDo({ _ in
-                self.failureCallback()
-            })
+    private func deserialize(data: NSData?) {
+        Result.ofNullable(data)
+            .flatMap({ Result.ofNullable(try? Unbox($0) as T) })
+            .ifPresent(successCallbackConsumer)
+            .orElseDo({ _ in self.failureCallback() })
     }
     
 }
@@ -64,6 +60,7 @@ class ApiLoginRequest: PokeApiJsonRequest<User> {
     
     func doLogin(userLoginData: UserLoginData) -> Request {
         let json = JsonMapBuilder.buildLoginRequest(userLoginData)
+        
         return serverRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
                                jsonReq: json,
                                callback: deserialize)
@@ -96,6 +93,25 @@ class ApiCommentRequest: PokeApiJsonRequest<CommentList> {
         return serverRequestor.doGet(RequestEndpoint.forComments(pokemonId),
                               requestingUser: requestingUser,
                               callback: deserialize)
+    }
+}
+
+class ApiCommentPostRequest: PokeApiJsonRequest<CommentCreatedResponse> {
+    func doPostComment(requestingUser: User, pokemonId: Int, content: String) {
+        serverRequestor.doMultipart(RequestEndpoint.forComments(pokemonId),
+                                           user: requestingUser,
+                                           attributes: [ApiRequestConstants.Comment.CONTENT: content],
+                                           callback: deserialize)
+    }
+}
+
+class ApiPokemonCreateRequest: PokeApiJsonRequest<Pokemon> {
+    func doCreate(requestingUser: User, image: UIImage, attributes: [String:String]) {
+        serverRequestor.doMultipart(RequestEndpoint.POKEMON_ACTION,
+                                    user: requestingUser,
+                                    pickedImage: image,
+                                    attributes: attributes,
+                                    callback: deserialize)
     }
 }
 

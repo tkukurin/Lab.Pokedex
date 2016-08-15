@@ -28,21 +28,21 @@ class CommentViewController: UITableViewController {
     func getUsernames() {
         self.users = [User?]()
         
-        (0..<comments.count).forEach({ i in
-            serverRequestor.doGet(RequestEndpoint.forUsers(self.comments[i].userId ?? ""),
-                requestingUser: self.loggedInUser,
-                callback: appendCell)
-        })
+//        (0..<comments.count).forEach({ i in
+//            serverRequestor.doGet(RequestEndpoint.forUsers(self.comments[i].userId ?? ""),
+//                requestingUser: self.loggedInUser,
+//                callback: appendCell)
+//        })
     }
     
-    func appendCell(serverResponse: ServerResponse<AnyObject>) {
-        serverResponse
-            .ifPresent({
-                let user: User = try Unbox($0)
-                self.users.append(user)
-                self.updateCommentsTable(self.users.count - 1)
-            })
-    }
+//    func appendCell(serverResponse: ServerResponse<AnyObject>) {
+//        serverResponse
+//            .ifPresent({
+//                let user: User = try Unbox($0)
+//                self.users.append(user)
+//                self.updateCommentsTable(self.users.count - 1)
+//            })
+//    }
     
     func updateCommentsTable(forIndex: Int) {
         tableView.beginUpdates()

@@ -30,28 +30,15 @@ class PostCommentTableCell: UITableViewCell {
             return
         }
         
-        serverRequestor.doMultipart(RequestEndpoint.forComments(pokemonId),
-                                    user: user,
-                                    attributes: ["content": commentText],
-                                    callback: serverActionCallback)
-    }
-    
-    func serverActionCallback(response: ServerResponse<String>?) {
-        guard let response: ServerResponse<String> = response else {
-            ProgressHud.indicateFailure("Bad server response.")
-            return
-        }
-        
-        response
-            .ifPresent({  self.commentCreatedCallback(try Unbox($0)) })
-            .orElseDo({ _ in ProgressHud.indicateFailure("Couldn't parse server response.") })
-        
+        ApiCommentPostRequest()
+            .setSuccessHandler(commentCreatedCallback)
+            .setFailureHandler({ ProgressHud.indicateFailure("Bad server response.") })
+            .doPostComment(user, pokemonId: pokemonId, content: commentText)
     }
     
     func commentCreatedCallback(commentCreatedResponse: CommentCreatedResponse) {
         self.textField.text = ""
         delegate.notify(commentCreatedResponse.comment)
     }
-
     
 }

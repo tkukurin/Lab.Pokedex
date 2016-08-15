@@ -41,19 +41,22 @@ class CreatePokemonViewController: UIViewController {
     
     
     @IBAction func didTapCreatePokemonButton(sender: UIButton) {
-        Result
-            .ofNullable(constructPokemonAttributeMap())
+        constructPokemonAttributeMap()
             .ifPresent({
                 ProgressHud.show()
-                self.serverRequestor.doMultipart(RequestEndpoint.POKEMON_ACTION,
-                    user: self.user,
-                    pickedImage: self.pickedImage,
-                    attributes: $0,
-                    callback: self.serverActionCallback)
+                ApiPokemonCreateRequest()
+                    .setSuccessHandler(self.closeWindowAndNotifyDelegate)
+                    .doCreate(self.user, image: self.pickedImage, attributes: $0)
             })
     }
     
-    func constructPokemonAttributeMap() -> [String: String]? {
+    func closeWindowAndNotifyDelegate(createdPokemon: Pokemon) -> Void {
+        self.navigationController?.popViewControllerAnimated(true)
+        self.createPokemonDelegate.notify(createdPokemon,
+                                          image: self.imageViewComponent.image)
+    }
+    
+    func constructPokemonAttributeMap() -> Result<[String: String]> {
         var attributes = [String: String]()
         var fieldsAreValid = true
         
@@ -73,43 +76,16 @@ class CreatePokemonViewController: UIViewController {
         })
         
         attributes["gender-id"] = "1" // todo
-        return fieldsAreValid ? attributes : nil
+        return Result.ofNullable(fieldsAreValid ? attributes : nil)
     }
     
 }
-
-extension CreatePokemonViewController {
-    
-    func serverActionCallback(response: ServerResponse<String>?) -> Void {
-        guard let response = response else {
-            ProgressHud.indicateFailure()
-            return
-        }
-        
-        response.ifPresent({
-            let pokemonCreatedResponse: PokemonCreatedResponse = try Unbox($0)
-            
-            ProgressHud.indicateSuccess("Successfully created pokemon!")
-            self.navigationController?.popViewControllerAnimated(true)
-            self.createPokemonDelegate.notify(pokemonCreatedResponse.pokemon,
-                image: self.imageViewComponent.image)
-        }).orElseDo({ _ in
-            ProgressHud.indicateFailure()
-        })
-    }
-    
-}
-
 
 extension CreatePokemonViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            //imageViewComponent.contentMode = .ScaleAspectFit
             imageViewComponent.image = pickedImage
-            
-//            let subView = UIImageView(image: pickedImage)
-//            imageViewComponent.addSubview(subView)
             self.pickedImage = pickedImage
         }
         

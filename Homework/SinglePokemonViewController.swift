@@ -90,36 +90,22 @@ class SinglePokemonViewController: UIViewController {
         sender.enabled = false
         ProgressHud.show()
         
-        serverRequestor.doGet(RequestEndpoint.forComments(pokemon.id),
-                              requestingUser: loggedInUser,
-                              callback: serverActionCallback)
-    }
-    
-    func serverActionCallback(serverResponse: ServerResponse<AnyObject>) {
-        serverResponse
-            .ifPresent(loadAndDisplayComments)
-            .orElseDo({ _ in ProgressHud.indicateFailure() })
-    }
-    
-    func loadAndDisplayComments(commentData: NSData) {
-        Result
-            .ofNullable(commentData)
-            .map({ (data: NSData) in return (try Unbox(data) as CommentList) })
-            .ifPresent(displayComments)
-            //.ifPresent(loadUsersForCommentsAndDisplay)
-            .orElseDo({ _ in ProgressHud.indicateFailure("Error loading comments!") })
+        ApiCommentRequest()
+            .setSuccessHandler(displayComments)
+            .setFailureHandler({ ProgressHud.indicateFailure() })
+            .doGetComments(loggedInUser, pokemonId: pokemon.id)
     }
     
     func loadUsersForCommentsAndDisplay(commentList: CommentList) {
-        var usersForComments = [User?](count: commentList.comments.count, repeatedValue: nil)
-        var index = 0
-        
-        commentList.comments.forEach({
-            self.serverRequestor.doGet(RequestEndpoint.forUsers($0.userId!),
-                requestingUser: self.loggedInUser,
-                callback: { $0.ifPresent({ usersForComments[index] = try Unbox($0) as User }) })
-            index += 1
-        })
+        //var usersForComments = [User?](count: commentList.comments.count, repeatedValue: nil)
+//        var index = 0
+//        
+//        commentList.comments.forEach({
+//            self.serverRequestor.doGet(RequestEndpoint.forUsers($0.userId!),
+//                requestingUser: self.loggedInUser,
+//                callback: { $0.ifPresent({ usersForComments[index] = try Unbox($0) as User }) })
+//            index += 1
+//        })
     }
     
     func displayComments(injecting: CommentList) {
