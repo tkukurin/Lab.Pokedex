@@ -12,15 +12,15 @@ class PokemonListViewController: UITableViewController {
     private var localStorageAdapter: LocalStorageAdapter!
     private var serverRequestor: ServerRequestor!
     
-    private var activeRequests: [Int: Request]!
-    private let cache = Cache<UITableViewCell, (request: Request, image: UIImage?)>()
-    private let imageCache = Cache<String, UIImage>()
+    //private var activeRequests: [Int: Request]!
+    private let requestCache = Cache<UITableViewCell, Request>(maxCacheSize: 500)
+    //private let cache = Cache<UITableViewCell, (request: Request, image: UIImage?)>(maxCacheSize: 500)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
-        activeRequests = [Int: Request]()
+        //activeRequests = [Int: Request]()
         
         nLoadedItems = 0
         fetchPokemons()
@@ -31,7 +31,7 @@ class PokemonListViewController: UITableViewController {
     func fetchPokemons() {
         ProgressHud.show()
         
-        activeRequests[-1] = serverRequestor.doGet(
+        serverRequestor.doGet(
             RequestEndpoint.POKEMON_ACTION,
             requestingUser: user,
             callback: pokemonServerRequestCallback)
@@ -85,6 +85,12 @@ extension PokemonListViewController {
         self.navigationController?.pushViewController(singlePokemonViewController, animated: true)
     }
     
+    override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        requestCache
+            .get(cell)
+            .ifPresent({ $0.cancel() })
+    }
+    
     override func tableView(tableView: UITableView,
                             cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let pokemon = items[indexPath.row]
@@ -93,11 +99,8 @@ extension PokemonListViewController {
         cell.pokemonNameLabel.text = pokemon.attributes.name
         cell.setDefaultImage()
         
-        cache.get(cell)
-            .ifPresent({
-                print("found present request.")
-                $0.request.cancel()
-            })
+        requestCache.get(cell)
+            .ifPresent({ $0.cancel() })
         
         Result
             .ofNullable(pokemon.attributes.imageUrl)
@@ -110,24 +113,22 @@ extension PokemonListViewController {
         Result
             .ofNullable(imageUrl)
             .ifPresent({ self.setCellImage(cell, row: row, imageUrl: $0) })
-            .orElseDo({ _ in cell.setDefaultImage() })
     }
     
     func setCellImage(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String) {
         let req = Alamofire.request(.GET, ServerRequestor.REQUEST_DOMAIN + RequestEndpoint.forImages(imageUrl))
         
+        requestCache.store(cell, value: req)
         req.validate()
-            .response(completionHandler: { (_, _, data, _) in
-                Result
-                    .ofNullable(data)
-                    .ifPresent({
-                        let image = UIImage(data: $0)
-                        
-                        cell.pokemonImageUIView.image = image
-                        self.cache.store(cell, value: (req, image))
-                    }).orElseDo({ _ in
-                        cell.setDefaultImage()
-                    })
+            .response(completionHandler: { (_, _, data, error) in
+                if error == nil {
+                    Result
+                        .ofNullable(data)
+                        .ifPresent({
+                            let image = UIImage(data: $0)
+                            cell.pokemonImageUIView.image = image
+                        })
+                }
             })
     }
 }
@@ -149,7 +150,7 @@ extension PokemonListViewController {
         serverRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
         localStorageAdapter.deleteActiveUser()
         
-        activeRequests.forEach({ (i, request) in request.cancel() })
+        //activeRequests.forEach({ (i, request) in request.cancel() })
         navigationController?.popViewControllerAnimated(true)
     }
     
