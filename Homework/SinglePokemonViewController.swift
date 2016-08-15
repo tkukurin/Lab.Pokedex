@@ -89,12 +89,12 @@ class SinglePokemonViewController: UIViewController {
         ProgressHud.show()
         
         ApiCommentRequest()
-            .setSuccessHandler(displayComments)
+            .setSuccessHandler({ self.displayComments($0, sender: sender) })
             .setFailureHandler({ ProgressHud.indicateFailure() })
             .doGetComments(loggedInUser, pokemonId: pokemon.id)
     }
     
-    func displayComments(injecting: CommentList) {
+    func displayComments(injecting: CommentList, sender: UIButton) {
         ProgressHud.indicateSuccess()
         
         let commentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("commentViewController") as! CommentViewController
@@ -103,6 +103,7 @@ class SinglePokemonViewController: UIViewController {
         commentViewController.loggedInUser = loggedInUser
         
         self.navigationController?.pushViewController(commentViewController, animated: true)
+        sender.enabled = true
     }
     
 }
