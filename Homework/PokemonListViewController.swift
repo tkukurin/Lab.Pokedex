@@ -71,9 +71,10 @@ extension PokemonListViewController {
         let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonTableView") as! SinglePokemonTableView
         
         //self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonViewController") as! SinglePokemonViewController
-//        singlePokemonViewController.pokemon = pokemon
-//        singlePokemonViewController.image = image
-//        singlePokemonViewController.loggedInUser = user
+        
+        singlePokemonViewController.pokemon = pokemon
+        singlePokemonViewController.image = image
+        singlePokemonViewController.loggedInUser = user
         
         self.navigationController?.pushViewController(singlePokemonViewController, animated: true)
     }

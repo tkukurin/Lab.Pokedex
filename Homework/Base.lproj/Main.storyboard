@@ -274,7 +274,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         </imageView>
                         <button key="tableFooterView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="xop-ka-9Er">
-                            <rect key="frame" x="0.0" y="470" width="600" height="44"/>
+                            <rect key="frame" x="0.0" y="514" width="600" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             <state key="normal" title="Save Pokemon">
@@ -367,6 +367,35 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Qq2-8d-iWB">
+                                        <rect key="frame" x="0.0" y="470" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Qq2-8d-iWB" id="DNs-JC-j9u">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="bap-f7-QhE">
+                                                    <rect key="frame" x="473" y="8" width="117" height="29"/>
+                                                    <segments>
+                                                        <segment title="Male"/>
+                                                        <segment title="Female"/>
+                                                    </segments>
+                                                </segmentedControl>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gender" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FOA-sv-sQW">
+                                                    <rect key="frame" x="8" y="11" width="57" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="FOA-sv-sQW" firstAttribute="leading" secondItem="DNs-JC-j9u" secondAttribute="leadingMargin" id="3Qb-VY-YmE"/>
+                                                <constraint firstItem="FOA-sv-sQW" firstAttribute="centerY" secondItem="DNs-JC-j9u" secondAttribute="centerY" id="V23-jO-WIQ"/>
+                                                <constraint firstItem="bap-f7-QhE" firstAttribute="trailing" secondItem="DNs-JC-j9u" secondAttribute="trailingMargin" id="YPA-ld-7NX"/>
+                                                <constraint firstItem="bap-f7-QhE" firstAttribute="centerY" secondItem="DNs-JC-j9u" secondAttribute="centerY" id="xRg-K9-oh0"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -384,6 +413,7 @@
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <connections>
+                        <outlet property="genderSegmentedControl" destination="bap-f7-QhE" id="oNl-vF-vn7"/>
                         <outlet property="imageViewComponent" destination="sag-YW-pZz" id="tWa-De-ta5"/>
                         <outlet property="pokemonDescriptionTextField" destination="8zA-Pf-hTV" id="XVb-wA-CiW"/>
                         <outlet property="pokemonHeightTextField" destination="Jua-hF-K6e" id="yx7-aO-kl3"/>
@@ -811,18 +841,18 @@
             </objects>
             <point key="canvasLocation" x="1320" y="346"/>
         </scene>
-        <!--Single Pokemon Table View-->
+        <!--Title-->
         <scene sceneID="2SE-u5-vRf">
             <objects>
                 <tableViewController storyboardIdentifier="singlePokemonTableView" id="mFF-0V-eFj" customClass="SinglePokemonTableView" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="90" sectionHeaderHeight="28" sectionFooterHeight="28" id="KGv-ba-iba">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="separatorColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="heroImageCell" id="t16-kR-2de" customClass="PokemonImageTableCell" customModule="Homework" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="600" height="90"/>
+                                <rect key="frame" x="0.0" y="92" width="600" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="t16-kR-2de" id="iid-pk-RFj">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="90"/>
@@ -844,7 +874,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="pokemonDescriptionCell" rowHeight="90" id="Ig8-PD-C03" customClass="PokemonDescriptionTableCell" customModule="Homework" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="118" width="600" height="90"/>
+                                <rect key="frame" x="0.0" y="182" width="600" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Ig8-PD-C03" id="ki2-qe-8dt">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="90"/>
@@ -892,7 +922,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="pokemonAttributeCell" textLabel="ObA-fL-nCH" detailTextLabel="NQo-aa-eYg" style="IBUITableViewCellStyleValue1" id="vk4-Lg-pr2" customClass="PokemonAttributeTableCell" customModule="Homework" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="208" width="600" height="90"/>
+                                <rect key="frame" x="0.0" y="272" width="600" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vk4-Lg-pr2" id="cvc-4h-AGC">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="90"/>
@@ -921,11 +951,15 @@
                             <outlet property="delegate" destination="mFF-0V-eFj" id="mMo-S4-lgg"/>
                         </connections>
                     </tableView>
-                    <toolbarItems>
-                        <barButtonItem title="Item" id="XSr-Am-66e"/>
-                        <barButtonItem title="Item" id="WNr-Nb-S5w"/>
-                    </toolbarItems>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Title" id="Ha7-jJ-Mtz">
+                        <barButtonItem key="rightBarButtonItem" title="Comments" id="lOD-Eb-QIX">
+                            <connections>
+                                <action selector="didTapCommentsButton:" destination="mFF-0V-eFj" id="VcE-As-ztc"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IR0-wJ-8V4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -2,31 +2,94 @@
 import UIKit
 
 class SinglePokemonTableView: UITableViewController {
-    static let HERO_IMAGE_HEIGHT: CGFloat = 250.0
-    static let DEFAULT_IMAGE = UIImage(named: "Pokeball.png")
-    static let DEFAULT_STRING_IF_DATA_UNAVAILABLE = "?"
+    typealias TableCellInitializer = (cell: UITableViewCell, row: Int) -> UITableViewCell
+    typealias SectionDescriptor = (identifier: String, nItems: Int, initializer: TableCellInitializer)
+    
+    private static let HERO_IMAGE_HEIGHT: CGFloat = 250.0
+    private static let DEFAULT_IMAGE = UIImage(named: "Pokeball.png")
+    private static let DEFAULT_STRING_IF_DATA_UNAVAILABLE = "?"
     
     var pokemon : Pokemon!
     var image: UIImage?
-    
     var loggedInUser: User!
+    
     private var imageLoader: ApiPhotoRequest!
     private var commentRequest: ApiCommentListRequest!
-    
-    typealias SectionDescription = (identifier: String,
-                                    nItems: Int,
-                                    initializer: (cell: UITableViewCell, row: Int) -> UITableViewCell)
-    private var SECTIONS: [SectionDescription]!
+    private var SECTIONS: [SectionDescriptor]!
     
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 60
+        title = pokemon.attributes.name
         
         SECTIONS = [
             (identifier: "heroImageCell", nItems: 1, initializer: createHeroImageCell),
             (identifier: "pokemonDescriptionCell", nItems: 1, initializer: createPokemonDescriptionCell),
             (identifier: "pokemonAttributeCell", nItems: 4, initializer: createPokemonAttributesCell)
         ]
+        
+        imageLoader = Container.sharedInstance.get(ApiPhotoRequest.self)
+        commentRequest = Container.sharedInstance.get(ApiCommentListRequest.self)
+        
+        loadImageOrDisplayDefault(pokemon.attributes.imageUrl)
+    }
+
+    override func viewWillDisappear(animated: Bool) {
+        ProgressHud.dismiss()
+    }
+    
+    func loadImageOrDisplayDefault(imageUrl: String?) {
+        Result
+            .ofNullable(imageUrl)
+            .ifPresent(loadImage)
+            .orElseDo({ self.updatePhotoAndCloseProgressHud(SinglePokemonTableView.DEFAULT_IMAGE) })
+    }
+    
+    func loadImage(urlEndpoint: String) {
+        ProgressHud.show()
+        
+        imageLoader
+            .setSuccessHandler(updatePhotoAndCloseProgressHud)
+            .setFailureHandler({
+                self.updatePhotoAndCloseProgressHud(SinglePokemonTableView.DEFAULT_IMAGE)
+            })
+            .prepareRequest(urlEndpoint)
+            .doGetPhoto()
+    }
+    
+    func updatePhotoAndCloseProgressHud(image: UIImage?) {
+        self.image = image
+        ProgressHud.dismiss()
+        tableView.reloadData()
+    }
+    
+    @IBAction func didTapCommentsButton(sender: UIBarButtonItem) {
+        disallowMultipleTaps(sender)
+        
+        ProgressHud.show()
+        commentRequest
+            .setSuccessHandler({ self.displayComments($0, sender: sender) })
+            .setFailureHandler({ ProgressHud.indicateFailure() })
+            .doGetComments(loggedInUser, pokemonId: pokemon.id)
+    }
+    
+    func disallowMultipleTaps(sender: UIBarButtonItem) {
+        sender.enabled = false
+    }
+    
+    func displayComments(injecting: CommentList, sender: UIBarButtonItem) {
+        ProgressHud.indicateSuccess()
+        
+        let commentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("commentViewController") as! CommentViewController
+        commentViewController.comments = injecting.comments
+        commentViewController.pokemon = self.pokemon
+        commentViewController.loggedInUser = loggedInUser
+        
+        self.navigationController?.pushViewController(commentViewController, animated: true)
+        
+        sender.enabled = true
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -57,24 +120,50 @@ class SinglePokemonTableView: UITableViewController {
     }
     
     func createHeroImageCell(cell: UITableViewCell, row: Int) -> UITableViewCell {
-        return cell as! PokemonImageTableCell
+        let cell = cell as! PokemonImageTableCell
+        cell.pokemonImage.image = self.image
+        
+        return cell
     }
     
     func createPokemonDescriptionCell(cell: UITableViewCell, row: Int) -> UITableViewCell {
-        return cell as! PokemonDescriptionTableCell
+        let cell = cell as! PokemonDescriptionTableCell
+        cell.setPokemonNameAndDescription(pokemon.attributes.name, pokemon.attributes.description)
+        
+        return cell
     }
     
     func createPokemonAttributesCell(cell: UITableViewCell, row: Int) -> UITableViewCell {
         let cell = cell as! PokemonAttributeTableCell
+        var key = "", value = ""
         
         switch row {
-        case 1: cell.textLabel?.text = "Gender"; cell.detailTextLabel?.text = "Some"
-        case 2: cell.textLabel?.text = "Height"; cell.detailTextLabel?.text = "Some"
-        case 3: cell.textLabel?.text = "Weight"; cell.detailTextLabel?.text = "Some"
-        default: cell.textLabel?.text = "Type"; cell.detailTextLabel?.text = "Some"
+        case 0:
+            key = "Gender"
+            value = getOrDefaultFromString(pokemon.attributes.gender)
+        case 1:
+            key = "Height"
+            value = getOrDefaultFromDouble(pokemon.attributes.height)
+        case 2:
+            key = "Weight"
+            value = getOrDefaultFromDouble(pokemon.attributes.weight)
+        default:
+            key = "Type"
+            value = getOrDefaultFromString(pokemon.type)
         }
         
+        cell.setKeyValuePair(key, value)
         return cell
+    }
+    
+    func getOrDefaultFromDouble(value: Double?) -> String {
+        if let value: Double = value { return String(format:"%.2f", value) }
+        return SinglePokemonViewController.DEFAULT_STRING_IF_DATA_UNAVAILABLE
+    }
+    
+    func getOrDefaultFromString(value: String?) -> String {
+        if let value: String = value { return value }
+        return SinglePokemonViewController.DEFAULT_STRING_IF_DATA_UNAVAILABLE
     }
     
 }
@@ -83,10 +172,6 @@ class PokemonImageTableCell: UITableViewCell {
     
     @IBOutlet weak var pokemonImage: UIImageView!
     
-    override func awakeFromNib() {
-        pokemonImage.image = SinglePokemonTableView.DEFAULT_IMAGE
-    }
-    
 }
 
 class PokemonDescriptionTableCell: UITableViewCell {
@@ -94,16 +179,17 @@ class PokemonDescriptionTableCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     
-    override func awakeFromNib() {
-        self.nameLabel.text = "Bulbasaur test label"
-        self.descriptionLabel.text = "And a description, too. The description will now become much much much much much much longer. The description will now become much much much much much much longer."
+    func setPokemonNameAndDescription(name: String?, _ description: String?) {
+        self.nameLabel.text = name
+        self.descriptionLabel.text = description
     }
 }
 
 class PokemonAttributeTableCell: UITableViewCell {
     
-    override func awakeFromNib() {
-        self.textLabel?.text = "Attribute"
+    func setKeyValuePair(key: String, _ value: String) {
+        self.textLabel?.text = key
+        self.detailTextLabel?.text = value
     }
     
 }

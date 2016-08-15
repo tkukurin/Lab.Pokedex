@@ -46,6 +46,7 @@ struct ApiRequestConstants {
         static let DESCRIPTION = "description"
         static let TOTAL_VOTE_COUNT = "total-vote-count"
         static let GENDER = "gender"
+        static let GENDER_ID = "gender-id"
     }
     
     struct PokeListLinks {

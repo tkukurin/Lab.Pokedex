@@ -12,17 +12,18 @@ class CreatePokemonViewController: UITableViewController {
     @IBOutlet weak var pokemonHeightTextField: UITextField!
     @IBOutlet weak var pokemonWeightTextField: UITextField!
     @IBOutlet weak var pokemonDescriptionTextField: UITextField!
+    @IBOutlet weak var genderSegmentedControl: UISegmentedControl!
     
     var user: User!
     var createPokemonDelegate: CreatePokemonDelegate!
     
     private var pickedImage: UIImage!
-    private var serverRequestor: ServerRequestor!
+    private var pokemonCreateRequest: ApiPokemonCreateRequest!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
+        pokemonCreateRequest = Container.sharedInstance.get(ApiPokemonCreateRequest.self)
         
         pokemonNameTextField.text = "Test pokemon"
         pokemonHeightTextField.text = "12"
@@ -44,15 +45,17 @@ class CreatePokemonViewController: UITableViewController {
         constructPokemonAttributeMap()
             .ifPresent({
                 ProgressHud.show()
-                ApiPokemonCreateRequest()
+                self.pokemonCreateRequest
                     .setSuccessHandler(self.closeWindowAndNotifyDelegate)
+                    .setFailureHandler({ ProgressHud.indicateFailure() })
                     .doCreate(self.user, image: self.pickedImage, attributes: $0)
             })
     }
     
-    func closeWindowAndNotifyDelegate(createdPokemon: Pokemon) -> Void {
+    func closeWindowAndNotifyDelegate(createdPokemon: PokemonCreatedResponse) -> Void {
+        ProgressHud.indicateSuccess()
         self.navigationController?.popViewControllerAnimated(true)
-        self.createPokemonDelegate.notify(createdPokemon,
+        self.createPokemonDelegate.notify(createdPokemon.pokemon,
                                           image: self.imageViewComponent.image)
     }
     
@@ -75,8 +78,16 @@ class CreatePokemonViewController: UITableViewController {
                 }
         })
         
-        attributes["gender-id"] = "1" // todo
+        attributes[ApiRequestConstants.PokeAttributes.GENDER_ID] = getGenderFromSegment()
+        
         return Result.ofNullable(fieldsAreValid ? attributes : nil)
+    }
+    
+    func getGenderFromSegment() -> String {
+        let index = genderSegmentedControl.selectedSegmentIndex
+        let zeroBasedIndexToValidOneBasedGenderId = index + 1
+        
+        return String(zeroBasedIndexToValidOneBasedGenderId)
     }
     
 }

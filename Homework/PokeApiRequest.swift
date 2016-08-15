@@ -112,8 +112,8 @@ class ApiCommentPostRequest: PokeApiJsonRequest<CommentCreatedResponse> {
     }
 }
 
-class ApiPokemonCreateRequest: PokeApiJsonRequest<Pokemon> {
-    func doCreate(requestingUser: User, image: UIImage, attributes: [String:String]) {
+class ApiPokemonCreateRequest: PokeApiJsonRequest<PokemonCreatedResponse> {
+    func doCreate(requestingUser: User, image: UIImage?, attributes: [String:String]) {
         serverRequestor.doMultipart(RequestEndpoint.POKEMON_ACTION,
                                     user: requestingUser,
                                     pickedImage: image,

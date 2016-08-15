@@ -8,8 +8,8 @@ class ServerRequestor {
     
     init() {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
-        configuration.timeoutIntervalForRequest = 10
-        configuration.timeoutIntervalForResource = 10
+        //configuration.timeoutIntervalForRequest = 10
+        //configuration.timeoutIntervalForResource = 10
         
         self.requestManager = Alamofire.Manager(configuration: configuration)
     }
@@ -101,7 +101,9 @@ class ServerRequestor {
                                 delegateResultTo: DefaultResponseConsumer) {
         switch encodingResult {
         case .Success(let upload, _, _):
-            upload.responseString(completionHandler: { delegateResultTo($0.data) })
+            upload.responseString(completionHandler: { response in
+                delegateResultTo(response.data)
+            })
         default:
             delegateResultTo(nil)
         }
