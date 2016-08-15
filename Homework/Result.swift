@@ -34,7 +34,23 @@ class Result<T> {
         return retVal
     }
     
-    func ifSuccessfulDo(f: ((T) -> ())) -> Result<T> {
+    func flatMap<R>(f: (T throws -> Result<R>)) -> Result<R> {
+        var retVal = Result<R>()
+        
+        if let _: Exception = self.error {
+            retVal.error = self.error
+        } else if let value:T = self.value {
+            do {
+                retVal = try f(value)
+            } catch {
+                retVal.error = Exception(cause: "\(error)")
+            }
+        }
+        
+        return retVal
+    }
+    
+    func ifPresent(f: (T -> ())) -> Result<T> {
         if let value: T = self.value {
             f(value)
         }
@@ -42,13 +58,13 @@ class Result<T> {
         return self
     }
     
-    func ifFailedDo(consumer: (Exception) -> ()) {
+    func orElseDo(consumer: (Exception) -> ()) {
         if let error: Exception = self.error {
             consumer(error)
         }
     }
     
-    func ifFailedReturn(supplier: () -> T) -> T {
+    func orElseGet(supplier: () -> T) -> T {
         guard let value:T = self.value else { return supplier() }
         return value
     }

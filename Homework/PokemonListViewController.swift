@@ -3,21 +3,24 @@ import Unbox
 import Alamofire
 
 class PokemonListViewController: UITableViewController {
+    static let DEFAULT_IMAGE = UIImage(named: "Pokeball.png")
     
     var user: User!
-    var items: [(pokemon: Pokemon, image: UIImage?)?]!
+    var items: [Pokemon]!
     var nLoadedItems: Int!
     
     private var localStorageAdapter: LocalStorageAdapter!
     private var serverRequestor: ServerRequestor!
     
-    private var activeRequests: [Request?]!
+    private var activeRequests: [Int: Request]!
+    private let cache = Cache<UITableViewCell, (request: Request, image: UIImage?)>()
+    private let imageCache = Cache<String, UIImage>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
-        activeRequests = [Request?]()
+        activeRequests = [Int: Request]()
         
         nLoadedItems = 0
         fetchPokemons()
@@ -27,79 +30,30 @@ class PokemonListViewController: UITableViewController {
     
     func fetchPokemons() {
         ProgressHud.show()
-        activeRequests.append(serverRequestor.doGet(
+        
+        activeRequests[-1] = serverRequestor.doGet(
             RequestEndpoint.POKEMON_ACTION,
             requestingUser: user,
-            callback: pokemonServerRequestCallback))
+            callback: pokemonServerRequestCallback)
     }
     
     func pokemonServerRequestCallback(response: ServerResponse<AnyObject>) {
         response
-            .ifSuccessfulDo(loadPokemonsFromServerResponse)
-            .ifFailedDo({ _ in ProgressHud.indicateFailure("Uh-oh... The Pokemons could not be loaded!") })
+            .ifPresent(loadPokemonsFromServerResponse)
+            .orElseDo({ _ in ProgressHud.indicateFailure("Uh-oh... The Pokemons could not be loaded!") })
     }
     
     func loadPokemonsFromServerResponse(data: NSData) throws {
         let fetchedData: PokemonList = try Unbox(data)
-        items = [(pokemon: Pokemon, image: UIImage?)?](count: fetchedData.pokemons.count, repeatedValue: nil)
+        items = fetchedData.pokemons
         
-        getImages(fetchedData.pokemons)
         ProgressHud.indicateSuccess()
+        tableView.reloadData()
     }
     
-    func getImages(pokemons: [Pokemon]) {
-        (0..<pokemons.count).forEach({ i in
-            self.items[i] = (pokemons[i], nil)
-            
-            Result
-                .ofNullable(pokemons[i].attributes.imageUrl)
-                .ifSuccessfulDo({
-//                    self.serverRequestor.doGet(
-//                        RequestEndpoint.forImages($0),
-//                        callback: { ... })
-                    
-                    let requestIndex = self.activeRequests.count
-                    
-                    let req = Alamofire
-                        .request(.GET, ServerRequestor.REQUEST_DOMAIN + RequestEndpoint.forImages($0))
-                        .validate()
-                        .response(completionHandler: { (_, _, data, _) in
-                            
-                            Result
-                                .ofNullable(data)
-                                .ifSuccessfulDo({
-                                    self.items[i]?.image = UIImage(data: $0)
-                                    self.tableView.reloadData()
-                                    self.activeRequests[requestIndex] = nil
-                                    
-//                                    self.nLoadedItems = self.nLoadedItems.successor()
-//                                    if self.nLoadedItems == self.items.count {
-//                                        dispatch_async(dispatch_get_main_queue(), {
-//                                            self.tableView.reloadData()
-//                                        })
-//                                    }
-                                })
-                        })
-                    
-                    self.activeRequests.append(req)
-                }).ifFailedDo({ _ in
-//                    self.nLoadedItems = self.nLoadedItems.successor()
-                    self.tableView.reloadData()
-//                    if self.nLoadedItems == self.items.count {
-//                        dispatch_async(dispatch_get_main_queue(), {
-//                            self.tableView.reloadData()
-//                        })
-//                    }
-                })
-        })
-        
-        self.tableView.reloadData()
-    }
-    
-    func updateCommentsTable(forIndex: Int) {
+    func updateCommentsTable(forIndex: NSIndexPath) {
         tableView.beginUpdates()
-        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: forIndex, inSection: 0)],
-                                         withRowAnimation: .Automatic)
+        tableView.reloadRowsAtIndexPaths([forIndex], withRowAnimation: .Left)
         tableView.endUpdates()
     }
 }
@@ -118,8 +72,8 @@ extension PokemonListViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let pokemon = items[indexPath.row]?.pokemon
-        let image = items[indexPath.row]?.image
+        let pokemon = items[indexPath.row] //.pokemon
+        let image: UIImage? = nil
         
         let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonViewController")
             as! SinglePokemonViewController
@@ -131,13 +85,50 @@ extension PokemonListViewController {
         self.navigationController?.pushViewController(singlePokemonViewController, animated: true)
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(tableView: UITableView,
+                            cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let pokemon = items[indexPath.row]
         let cell = tableView.dequeueReusableCellWithIdentifier("pokemonTableCell", forIndexPath: indexPath) as! PokemonTableCell
         
-        cell.displayPokemon((items[indexPath.row]?.pokemon)!,
-                            image: items[indexPath.row]?.image)
+        cell.pokemonNameLabel.text = pokemon.attributes.name
+        cell.setDefaultImage()
+        
+        cache.get(cell)
+            .ifPresent({
+                print("found present request.")
+                $0.request.cancel()
+            })
+        
+        Result
+            .ofNullable(pokemon.attributes.imageUrl)
+            .ifPresent({ self.updateCellImage(cell, row: indexPath, imageUrl: $0) })
         
         return cell
+    }
+    
+    func updateCellImage(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String?) {
+        Result
+            .ofNullable(imageUrl)
+            .ifPresent({ self.setCellImage(cell, row: row, imageUrl: $0) })
+            .orElseDo({ _ in cell.setDefaultImage() })
+    }
+    
+    func setCellImage(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String) {
+        let req = Alamofire.request(.GET, ServerRequestor.REQUEST_DOMAIN + RequestEndpoint.forImages(imageUrl))
+        
+        req.validate()
+            .response(completionHandler: { (_, _, data, _) in
+                Result
+                    .ofNullable(data)
+                    .ifPresent({
+                        let image = UIImage(data: $0)
+                        
+                        cell.pokemonImageUIView.image = image
+                        self.cache.store(cell, value: (req, image))
+                    }).orElseDo({ _ in
+                        cell.setDefaultImage()
+                    })
+            })
     }
 }
 
@@ -158,16 +149,17 @@ extension PokemonListViewController {
         serverRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
         localStorageAdapter.deleteActiveUser()
         
-        // Alamofire.Manager.sharedInstance.session.resetWithCompletionHandler({})
-        
-        activeRequests.forEach({ request in
-            if let request: Request = request {
-                request.cancel()
-            }
-        })
-        
+        activeRequests.forEach({ (i, request) in request.cancel() })
         navigationController?.popViewControllerAnimated(true)
     }
+    
+//    override func viewWillDisappear(animated: Bool) {
+//        activeRequests.forEach({ (i, request) in request.cancel() })
+//    }
+//    
+//    override func viewWillAppear(animated: Bool) {
+//        activeRequests.forEach({ (i, request) in request.resume() })
+//    }
 }
 
 
@@ -176,8 +168,12 @@ extension PokemonListViewController {
 extension PokemonListViewController: CreatePokemonDelegate {
     
     func notify(pokemon: Pokemon, image: UIImage?) {
-        items.insert((pokemon: pokemon, image: image), atIndex: 0)
-        updateCommentsTable(0)
+        // items.insert((pokemon: pokemon, image: image), atIndex: 0)
+        items.insert(pokemon, atIndex: 0)
+        tableView.beginUpdates()
+        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)],
+                                         withRowAnimation: .Automatic)
+        tableView.endUpdates()
     }
     
 }

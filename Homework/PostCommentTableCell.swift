@@ -43,8 +43,8 @@ class PostCommentTableCell: UITableViewCell {
         }
         
         response
-            .ifSuccessfulDo({  self.commentCreatedCallback(try Unbox($0)) })
-            .ifFailedDo({ _ in ProgressHud.indicateFailure("Couldn't parse server response.") })
+            .ifPresent({  self.commentCreatedCallback(try Unbox($0)) })
+            .orElseDo({ _ in ProgressHud.indicateFailure("Couldn't parse server response.") })
         
     }
     

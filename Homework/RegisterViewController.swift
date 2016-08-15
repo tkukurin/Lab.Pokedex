@@ -34,8 +34,8 @@ extension  RegisterViewController {
     
     @IBAction func didTapSignUpButton(sender: AnyObject) {
         requireFilledTextFields()
-            .ifSuccessfulDo(sendRegisterRequest)
-            .ifFailedDo({ self.alertUtils.alert($0.cause) })
+            .ifPresent(sendRegisterRequest)
+            .orElseDo({ self.alertUtils.alert($0.cause) })
     }
     
     private func requireFilledTextFields() -> Result<UserRegisterData> {
@@ -58,8 +58,8 @@ extension  RegisterViewController {
     
     func serverActionCallback(response: ServerResponse<AnyObject>) {
         response
-            .ifSuccessfulDo(loadUserAndLogin)
-            .ifFailedDo({ ProgressHud.indicateFailure("\($0.cause)") })
+            .ifPresent(loadUserAndLogin)
+            .orElseDo({ ProgressHud.indicateFailure("\($0.cause)") })
     }
     
     private func loadUserAndLogin(data: NSData) throws {

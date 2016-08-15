@@ -6,13 +6,16 @@ import Alamofire
 typealias UserConsumer = User -> ()
 
 protocol Chainable {
-    func ifSuccessfulDo() -> Self
-    func ifFailedDo() -> Self
+    associatedtype ValueObject
+    
+    func ifPresent(successCallbackConsumer: ValueObject -> ()) -> Self
+    func orElseDo(failureCallback: () -> ()) -> Self
 }
 
-class ApiRequest<T: Unboxable> {
+class ApiRequest<T: Unboxable>: Chainable {
+    typealias ValueObject = T
     
-    typealias TConsumer = T -> ()
+    typealias TConsumer = ValueObject -> ()
     typealias FailureRunnable = () -> ()
     
     private var successCallbackConsumer: TConsumer
@@ -23,12 +26,12 @@ class ApiRequest<T: Unboxable> {
         self.failureCallback = {}
     }
     
-    func ifSuccessfulDo(successCallbackConsumer: TConsumer) -> ApiRequest<T> {
+    func ifPresent(successCallbackConsumer: TConsumer) -> Self {
         self.successCallbackConsumer = successCallbackConsumer
         return self
     }
     
-    func ifFailedDo(failureCallback: FailureRunnable) -> ApiRequest<T> {
+    func orElseDo(failureCallback: FailureRunnable) -> Self{
         self.failureCallback = failureCallback
         return self
     }
@@ -49,11 +52,11 @@ class PokeApiRequest<T: Unboxable>: ApiRequest<T> {
                              success: TConsumer,
                              failure: FailureRunnable) {
         response
-            .ifSuccessfulDo({
+            .ifPresent({
                 let data: T = try Unbox($0) as T
                 success(data)
                 // self.successCallbackConsumer(data)
-            }).ifFailedDo({ _ in
+            }).orElseDo({ _ in
                 failure()
                 //self.failureCallback()
             })
@@ -63,12 +66,12 @@ class PokeApiRequest<T: Unboxable>: ApiRequest<T> {
 
 class ApiLoginRequest: PokeApiRequest<User> {
     
-    override func ifSuccessfulDo(successCallbackConsumer: TConsumer) -> ApiLoginRequest {
+    override func ifPresent(successCallbackConsumer: TConsumer) -> ApiLoginRequest {
         self.successCallbackConsumer = successCallbackConsumer
         return self
     }
     
-    override func ifFailedDo(failureCallback: FailureRunnable) -> ApiLoginRequest {
+    override func orElseDo(failureCallback: FailureRunnable) -> ApiLoginRequest {
         self.failureCallback = failureCallback
         return self
     }

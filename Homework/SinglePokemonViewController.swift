@@ -46,8 +46,8 @@ class SinglePokemonViewController: UIViewController {
         typeLabel.text = getOrDefaultFromString(pokemon.type)
         
         Result.ofNullable(image)
-            .ifSuccessfulDo({ self.heroImage.image = $0 })
-            .ifFailedDo({ _ in self.loadImageOrDisplayDefault(self.pokemon.attributes.imageUrl) })
+            .ifPresent({ self.heroImage.image = $0 })
+            .orElseDo({ _ in self.loadImageOrDisplayDefault(self.pokemon.attributes.imageUrl) })
     }
     
     func getOrDefaultFromDouble(value: Double?) -> String {
@@ -63,8 +63,8 @@ class SinglePokemonViewController: UIViewController {
     func loadImageOrDisplayDefault(imageUrl: String?) {
         Result
             .ofNullable(imageUrl)
-            .ifSuccessfulDo(loadImage)
-            .ifFailedDo(setDefaultImage)
+            .ifPresent(loadImage)
+            .orElseDo(setDefaultImage)
     }
     
     func loadImage(urlEndpoint: String) {
@@ -81,7 +81,7 @@ class SinglePokemonViewController: UIViewController {
     func heroImageReceivedCallback(image: UIImage?) {
         Result
             .ofNullable(image)
-            .ifSuccessfulDo({
+            .ifPresent({
                 self.heroImage.contentMode = .ScaleAspectFit
                 self.heroImage.image = $0
             })
@@ -99,17 +99,17 @@ class SinglePokemonViewController: UIViewController {
     
     func serverActionCallback(serverResponse: ServerResponse<AnyObject>) {
         serverResponse
-            .ifSuccessfulDo(loadAndDisplayComments)
-            .ifFailedDo({ _ in ProgressHud.indicateFailure() })
+            .ifPresent(loadAndDisplayComments)
+            .orElseDo({ _ in ProgressHud.indicateFailure() })
     }
     
     func loadAndDisplayComments(commentData: NSData) {
         Result
             .ofNullable(commentData)
             .map({ (data: NSData) in return (try Unbox(data) as CommentList) })
-            .ifSuccessfulDo(displayComments)
-            //.ifSuccessfulDo(loadUsersForCommentsAndDisplay)
-            .ifFailedDo({ _ in ProgressHud.indicateFailure("Error loading comments!") })
+            .ifPresent(displayComments)
+            //.ifPresent(loadUsersForCommentsAndDisplay)
+            .orElseDo({ _ in ProgressHud.indicateFailure("Error loading comments!") })
     }
     
     func loadUsersForCommentsAndDisplay(commentList: CommentList) {
@@ -119,7 +119,7 @@ class SinglePokemonViewController: UIViewController {
         commentList.comments.forEach({
             self.serverRequestor.doGet(RequestEndpoint.forUsers($0.userId!),
                 requestingUser: self.loggedInUser,
-                callback: { $0.ifSuccessfulDo({ usersForComments[index] = try Unbox($0) as User }) })
+                callback: { $0.ifPresent({ usersForComments[index] = try Unbox($0) as User }) })
             index += 1
         })
     }

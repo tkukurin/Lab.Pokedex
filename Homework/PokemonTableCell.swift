@@ -18,6 +18,20 @@ class PokemonTableCell: UITableViewCell {
         initRoundedImage()
     }
     
+    func setDefaultImage() {
+        //initRoundedImage()
+        self.pokemonImageUIView.image = PokemonTableCell.DEFAULT_IMAGE
+    }
+    
+//    func updateImage(image: UIImage?) {
+//        initRoundedImage()
+//        
+//        Result
+//            .ofNullable(image)
+//            .ifPresent({ self.pokemonImageUIView.image = $0 })
+//            .orElseDo({ _ in self.pokemonImageUIView.image = PokemonTableCell.DEFAULT_IMAGE })
+//    }
+    
     func initRoundedImage() {
         pokemonImageUIView.layer.masksToBounds = false
         pokemonImageUIView.layer.borderColor = UIColor.grayColor().CGColor
@@ -26,12 +40,12 @@ class PokemonTableCell: UITableViewCell {
         pokemonImageUIView.clipsToBounds = true;
     }
     
-    func displayPokemon(pokemon: Pokemon, image: UIImage?) {
-        pokemonNameLabel.text = pokemon.attributes.name
-        Result
-            .ofNullable(image)
-            .ifSuccessfulDo({ self.pokemonImageUIView.image = $0 })
-            .ifFailedDo({ _ in self.pokemonImageUIView.image = PokemonTableCell.DEFAULT_IMAGE })
-    }
+//    func displayPokemon(pokemon: Pokemon, image: UIImage?) {
+//        pokemonNameLabel.text = pokemon.attributes.name
+//        Result
+//            .ofNullable(image)
+//            .ifPresent({ self.pokemonImageUIView.image = $0 })
+//            .orElseDo({ _ in self.pokemonImageUIView.image = PokemonTableCell.DEFAULT_IMAGE })
+//    }
     
 }

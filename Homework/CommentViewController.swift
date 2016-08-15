@@ -37,7 +37,7 @@ class CommentViewController: UITableViewController {
     
     func appendCell(serverResponse: ServerResponse<AnyObject>) {
         serverResponse
-            .ifSuccessfulDo({
+            .ifPresent({
                 let user: User = try Unbox($0)
                 self.users.append(user)
                 self.updateCommentsTable(self.users.count - 1)

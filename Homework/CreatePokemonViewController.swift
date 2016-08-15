@@ -45,7 +45,7 @@ class CreatePokemonViewController: UIViewController {
     @IBAction func didTapCreatePokemonButton(sender: UIButton) {
         Result
             .ofNullable(constructPokemonAttributeMap())
-            .ifSuccessfulDo({
+            .ifPresent({
                 ProgressHud.show()
                 self.serverRequestor.doMultipart(RequestEndpoint.POKEMON_ACTION,
                     user: self.user,
@@ -88,14 +88,14 @@ extension CreatePokemonViewController {
             return
         }
         
-        response.ifSuccessfulDo({
+        response.ifPresent({
             let pokemonCreatedResponse: PokemonCreatedResponse = try Unbox($0)
             
             ProgressHud.indicateSuccess("Successfully created pokemon!")
             self.navigationController?.popViewControllerAnimated(true)
             self.createPokemonDelegate.notify(pokemonCreatedResponse.pokemon,
                 image: self.imageViewComponent.image)
-        }).ifFailedDo({ _ in
+        }).orElseDo({ _ in
             ProgressHud.indicateFailure()
         })
     }

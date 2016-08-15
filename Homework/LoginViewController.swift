@@ -27,8 +27,8 @@ extension LoginViewController {
     
     @IBAction func didTapLoginButton(sender: UIButton) {
         requireFilledTextFields()
-            .ifSuccessfulDo(sendLoginRequest)
-            // .ifFailedDo({ self.alertUtils.alert("\($0.cause)") })
+            .ifPresent(sendLoginRequest)
+            // .orElseDo({ self.alertUtils.alert("\($0.cause)") })
     }
     
     @IBAction func didTapRegisterButton(sender: AnyObject) {
@@ -56,8 +56,8 @@ extension LoginViewController {
         ProgressHud.show()
         
         ApiLoginRequest()
-//            .ifSuccessfulDo(persistUserAndGoToHomescreen)
-//            .ifFailedDo({ ProgressHud.indicateFailure("Failed login!") })
+//            .ifPresent(persistUserAndGoToHomescreen)
+//            .orElseDo({ ProgressHud.indicateFailure("Failed login!") })
             
             .doLogin(userData,
                      success: persistUserAndGoToHomescreen,

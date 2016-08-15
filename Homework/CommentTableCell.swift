@@ -18,8 +18,8 @@ class CommentTableCell: UITableViewCell {
         Result
             .ofNullable(date)
             .map({ CommentTableCell.DISPLAY_DATE_FORMAT.stringFromDate($0) })
-            .ifSuccessfulDo({ self.dateLabel.text = $0 })
-            .ifFailedDo({ _ in self.dateLabel.hidden = true })
+            .ifPresent({ self.dateLabel.text = $0 })
+            .orElseDo({ _ in self.dateLabel.hidden = true })
     }
     
 }

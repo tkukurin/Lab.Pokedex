@@ -46,6 +46,7 @@
 		8EBB943C1D5F3C2C0098B41A /* AnimationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB943B1D5F3C2C0098B41A /* AnimationUtils.swift */; };
 		8EBB94BB1D5F59460098B41A /* Pokeball.png in Resources */ = {isa = PBXBuildFile; fileRef = 8EBB94BA1D5F59460098B41A /* Pokeball.png */; };
 		8EBB94C71D60D1A90098B41A /* PokeApiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94C61D60D1A90098B41A /* PokeApiRequest.swift */; };
+		8EBB94C91D6116400098B41A /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94C81D6116400098B41A /* Cache.swift */; };
 		C27E372A94B259DA310FD615 /* Pods_HomeworkTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22ABFD6E8E80A253684177AF /* Pods_HomeworkTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -112,6 +113,7 @@
 		8EBB943B1D5F3C2C0098B41A /* AnimationUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnimationUtils.swift; sourceTree = "<group>"; };
 		8EBB94BA1D5F59460098B41A /* Pokeball.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Pokeball.png; sourceTree = "<group>"; };
 		8EBB94C61D60D1A90098B41A /* PokeApiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokeApiRequest.swift; sourceTree = "<group>"; };
+		8EBB94C81D6116400098B41A /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		B24D32D3AC143C6C3664D8E9 /* Pods-Homework.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Homework.release.xcconfig"; path = "Pods/Target Support Files/Pods-Homework/Pods-Homework.release.xcconfig"; sourceTree = "<group>"; };
 		BB2BB73FEB52175A0A90E7FC /* Pods-HomeworkTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeworkTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeworkTests/Pods-HomeworkTests.release.xcconfig"; sourceTree = "<group>"; };
 		C936BF2C91978BD45140DBB0 /* Pods-Homework.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Homework.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Homework/Pods-Homework.debug.xcconfig"; sourceTree = "<group>"; };
@@ -284,6 +286,7 @@
 				4234DD991D5474F100CEBA18 /* ServerRequestor.swift */,
 				4234DDB21D54A47800CEBA18 /* AsyncImageLoader.swift */,
 				8EBB94C61D60D1A90098B41A /* PokeApiRequest.swift */,
+				8EBB94C81D6116400098B41A /* Cache.swift */,
 			);
 			name = ServerRequest;
 			sourceTree = "<group>";
@@ -648,6 +651,7 @@
 				8EBB942B1D5E1F3B0098B41A /* CommentViewController.swift in Sources */,
 				4234DD8A1D5472C100CEBA18 /* Typealiases.swift in Sources */,
 				4234DDAF1D548D7E00CEBA18 /* PokemonListViewController.swift in Sources */,
+				8EBB94C91D6116400098B41A /* Cache.swift in Sources */,
 				4234DD871D54720E00CEBA18 /* LocalStorageAdapter.swift in Sources */,
 				4234DD981D5474BC00CEBA18 /* User.swift in Sources */,
 				8EBB94341D5E35D20098B41A /* PostCommentTableCell.swift in Sources */,

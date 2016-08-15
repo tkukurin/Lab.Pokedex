@@ -29,7 +29,7 @@ class ServerResponse<T> {
         self.responseDelegate = responseDelegate
     }
     
-    func ifSuccessfulDo(consumer: (NSData throws -> ())) -> Result<Void> {
+    func ifPresent(consumer: (NSData throws -> ())) -> Result<Void> {
         switch responseDelegate.result {
         case .Success:
             do {
@@ -55,7 +55,7 @@ class ServerRequestor {
         let headers = Result
             .ofNullable(requestingUser)
             .map(headersForUser)
-            .ifFailedReturn({ [String:String]() })
+            .orElseGet({ [String:String]() })
         
         return Alamofire.request(.GET,
                           resolveUrl(toEndpoint),
@@ -72,7 +72,7 @@ class ServerRequestor {
         let headers = Result
             .ofNullable(requestingUser)
             .map(headersForUser)
-            .ifFailedReturn({ [String:String]() })
+            .orElseGet({ [String:String]() })
         
         Alamofire.Manager.sharedInstance.session.configuration
             .HTTPAdditionalHeaders = headers

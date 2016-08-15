@@ -26,8 +26,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         serverRequestor = Container.sharedInstance.getServerRequestor()
         
         getLocalUserData()
-            .ifSuccessfulDo(showPokemonListScreen)
-            .ifFailedDo(showLoginScreen)
+            .ifPresent(showPokemonListScreen)
+            .orElseDo(showLoginScreen)
         
         return true
     }
@@ -45,8 +45,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func userLoginCallback(response: ServerResponse<AnyObject>) {
         response
-            .ifSuccessfulDo(loadUserAndShowPokemonListScreen)
-            .ifFailedDo(showLoginScreen)
+            .ifPresent(loadUserAndShowPokemonListScreen)
+            .orElseDo(showLoginScreen)
     }
     
     private func loadUserAndShowPokemonListScreen(data: NSData) throws {
