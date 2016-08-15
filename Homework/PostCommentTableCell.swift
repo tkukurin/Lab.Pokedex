@@ -20,7 +20,7 @@ class PostCommentTableCell: UITableViewCell {
     var delegate: CommentCreatedDelegate!
     
     override func awakeFromNib() {
-        serverRequestor = Container.sharedInstance.getServerRequestor()
+        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
     }
     
     @IBAction func didTapSendButton(sender: AnyObject) {

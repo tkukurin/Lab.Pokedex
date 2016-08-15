@@ -37,7 +37,7 @@ class ApiRequest<T>: ChainableApiCallback {
         self.successCallbackConsumer = onSuccess
         self.failureCallback = onFailure
         
-        self.serverRequestor =  Container.sharedInstance.getServerRequestor()
+        self.serverRequestor =  Container.sharedInstance.get(ServerRequestor.self)
     }
     
 }

@@ -12,8 +12,8 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         self.navigationItem.setHidesBackButton(true, animated: false)
         
-        localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
-        serverRequestor = Container.sharedInstance.getServerRequestor()
+        localStorageAdapter = Container.sharedInstance.get(LocalStorageAdapter.self)
+        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
         
         emailTextField.text = "nottestmail@email.com"
         passwordTextField.text = "longpassword"

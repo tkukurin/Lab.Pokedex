@@ -17,14 +17,12 @@ class CreatePokemonViewController: UIViewController {
     var createPokemonDelegate: CreatePokemonDelegate!
     
     private var pickedImage: UIImage!
-    private var alertUtils: AlertUtils!
     private var serverRequestor: ServerRequestor!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        alertUtils = Container.sharedInstance.getAlertUtilities(self)
-        serverRequestor = Container.sharedInstance.getServerRequestor()
+        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
         
         pokemonNameTextField.text = "Test pokemon"
         pokemonHeightTextField.text = "12"

@@ -12,15 +12,14 @@ class RegisterViewController : UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var confirmPasswordTextField: UITextField!
     
-    private var alertUtils: AlertUtils!
     private var localStorageAdapter: LocalStorageAdapter!
     private var serverRequestor: ServerRequestor!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        alertUtils = Container.sharedInstance.getAlertUtilities(self)
-        localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
-        serverRequestor = Container.sharedInstance.getServerRequestor()
+        
+        localStorageAdapter = Container.sharedInstance.get(LocalStorageAdapter.self)
+        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
         
         emailTextField.text = "nottestmail@email.com"
         usernameTextField.text = "nottestuser"
@@ -34,7 +33,7 @@ extension  RegisterViewController {
     @IBAction func didTapSignUpButton(sender: AnyObject) {
         requireFilledTextFields()
             .ifPresent(sendRegisterRequest)
-            .orElseDo({ self.alertUtils.alert($0.cause) })
+            .orElseDo({ _ in ProgressHud.indicateFailure() })
     }
     
     private func requireFilledTextFields() -> Result<UserRegisterData> {

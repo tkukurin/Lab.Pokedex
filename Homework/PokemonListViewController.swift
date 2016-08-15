@@ -14,8 +14,8 @@ class PokemonListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
-        serverRequestor = Container.sharedInstance.getServerRequestor()
+        localStorageAdapter = Container.sharedInstance.get(LocalStorageAdapter.self)
+        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
         
         fetchPokemons()
     }

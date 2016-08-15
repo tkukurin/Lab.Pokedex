@@ -19,7 +19,7 @@ class CommentViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        serverRequestor = Container.sharedInstance.getServerRequestor()
+        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
         cells = [CommentTableCell]()
         
         getUsernames()

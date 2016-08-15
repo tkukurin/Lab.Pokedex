@@ -20,13 +20,11 @@ class SinglePokemonViewController: UIViewController {
     var imageLoader: UrlImageLoader!
     var loggedInUser: User!
     var serverRequestor: ServerRequestor!
-    var alertUtils: AlertUtils!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageLoader = Container.sharedInstance.getImageLoader()
-        serverRequestor = Container.sharedInstance.getServerRequestor()
-        alertUtils = Container.sharedInstance.getAlertUtilities(self)
+        imageLoader = Container.sharedInstance.get(UrlImageLoader.self)
+        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
         
         title = pokemon.attributes.name
         loadPokemonData()
