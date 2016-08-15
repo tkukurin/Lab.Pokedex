@@ -5,7 +5,7 @@ protocol CreatePokemonDelegate {
     func notify(pokemon: Pokemon, image: UIImage?)
 }
 
-class CreatePokemonViewController: UIViewController {
+class CreatePokemonViewController: UITableViewController {
     
     @IBOutlet weak var imageViewComponent: UIImageView!
     @IBOutlet weak var pokemonNameTextField: UITextField!
@@ -30,7 +30,8 @@ class CreatePokemonViewController: UIViewController {
         pokemonDescriptionTextField.text = "Test Pokemon description also"
     }
     
-    @IBAction func didTapGetImageButton(sender: UIButton) {
+    
+    @IBAction func didTapAddImageButton(sender: AnyObject) {
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.allowsEditing = false
@@ -38,7 +39,6 @@ class CreatePokemonViewController: UIViewController {
         
         presentViewController(picker, animated: true, completion: nil)
     }
-    
     
     @IBAction func didTapCreatePokemonButton(sender: UIButton) {
         constructPokemonAttributeMap()

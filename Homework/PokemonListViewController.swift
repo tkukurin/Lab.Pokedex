@@ -26,19 +26,12 @@ class PokemonListViewController: UITableViewController {
         
         requestCache.priorToCleanupAction = { request in request.cancel() }
         
-        setupPullToRefresh()
         fetchPokemons()
     }
     
-    func setupPullToRefresh() {
-        refreshControl = UIRefreshControl()
-        refreshControl!.attributedTitle = NSAttributedString(string: "Pull to refresh")
-        refreshControl!.addTarget(self, action: #selector(refresh), forControlEvents: UIControlEvents.ValueChanged)
-    }
-    
-    func refresh() {
+    @IBAction func didPullToRefresh(sender: UIRefreshControl) {
         fetchPokemons()
-        refreshControl?.endRefreshing()
+        sender.endRefreshing()
     }
     
     func fetchPokemons() {
