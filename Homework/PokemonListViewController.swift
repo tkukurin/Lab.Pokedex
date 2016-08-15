@@ -6,7 +6,6 @@ class PokemonListViewController: UITableViewController {
     
     var user: User!
     var items: [Pokemon]!
-    var nLoadedItems: Int!
     
     private var localStorageAdapter: LocalStorageAdapter!
     private var serverRequestor: ServerRequestor!
@@ -14,35 +13,25 @@ class PokemonListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
         
-        nLoadedItems = 0
         fetchPokemons()
-        
-        print("auth header: \(user.attributes.authToken)")
     }
     
     func fetchPokemons() {
         ProgressHud.show()
-        
-        serverRequestor.doGet(
-            RequestEndpoint.POKEMON_ACTION,
-            requestingUser: user,
-            callback: pokemonServerRequestCallback)
+        ApiPokemonListRequest()
+            .setSuccessHandler(loadPokemons)
+            .setFailureHandler({ ProgressHud.indicateFailure("Uh-oh... The Pokemons could not be loaded!")  })
+            .doGetPokemons(user)
     }
     
-    func pokemonServerRequestCallback(response: ServerResponse<AnyObject>) {
-        response
-            .ifPresent(loadPokemonsFromServerResponse)
-            .orElseDo({ _ in ProgressHud.indicateFailure("Uh-oh... The Pokemons could not be loaded!") })
-    }
-    
-    func loadPokemonsFromServerResponse(data: NSData) throws {
-        let fetchedData: PokemonList = try Unbox(data)
-        items = fetchedData.pokemons
-        
+    func loadPokemons(pokemonList: PokemonList) {
         ProgressHud.indicateSuccess()
+        
+        items = pokemonList.pokemons
         tableView.reloadData()
     }
 }
@@ -75,28 +64,36 @@ extension PokemonListViewController {
     }
     
     override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        requestCache
-            .getAndClear(cell)
-            .ifPresent({ $0.cancel() })
+        stopIfHasRequestInProgress(cell)
     }
     
     override func tableView(tableView: UITableView,
                             cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let pokemon = items[indexPath.row]
-        let cell = tableView.dequeueReusableCellWithIdentifier("pokemonTableCell", forIndexPath: indexPath) as! PokemonTableCell
+        let cell = getDefaultCell(pokemon, indexPath: indexPath)
         
-        cell.pokemonNameLabel.text = pokemon.attributes.name
-        cell.setDefaultImage()
-        
-        requestCache
-            .getAndClear(cell)
-            .ifPresent({ $0.cancel() })
+        stopIfHasRequestInProgress(cell)
         
         Result
             .ofNullable(pokemon.attributes.imageUrl)
             .ifPresent({ self.updateCellImage(cell, row: indexPath, imageUrl: $0) })
         
         return cell
+    }
+    
+    func getDefaultCell(pokemon: Pokemon, indexPath: NSIndexPath) -> PokemonTableCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("pokemonTableCell", forIndexPath: indexPath) as! PokemonTableCell
+        
+        cell.pokemonNameLabel.text = pokemon.attributes.name
+        cell.setDefaultImage()
+        
+        return cell
+    }
+    
+    func stopIfHasRequestInProgress(cell: UITableViewCell) {
+        requestCache
+            .getAndClear(cell)
+            .ifPresent({ $0.cancel() })
     }
     
     func updateCellImage(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String?) {

@@ -1,10 +1,3 @@
-//
-//  PokemonTableCell.swift
-//  Homework
-//
-//  Created by Infinum on 8/5/16.
-//  Copyright © 2016 Infinum. All rights reserved.
-//
 
 import UIKit
 
@@ -19,18 +12,8 @@ class PokemonTableCell: UITableViewCell {
     }
     
     func setDefaultImage() {
-        //initRoundedImage()
         self.pokemonImageUIView.image = PokemonTableCell.DEFAULT_IMAGE
     }
-    
-//    func updateImage(image: UIImage?) {
-//        initRoundedImage()
-//        
-//        Result
-//            .ofNullable(image)
-//            .ifPresent({ self.pokemonImageUIView.image = $0 })
-//            .orElseDo({ _ in self.pokemonImageUIView.image = PokemonTableCell.DEFAULT_IMAGE })
-//    }
     
     func initRoundedImage() {
         pokemonImageUIView.layer.masksToBounds = false
@@ -39,13 +22,5 @@ class PokemonTableCell: UITableViewCell {
         pokemonImageUIView.layer.cornerRadius = pokemonImageUIView.frame.size.width / 2;
         pokemonImageUIView.clipsToBounds = true;
     }
-    
-//    func displayPokemon(pokemon: Pokemon, image: UIImage?) {
-//        pokemonNameLabel.text = pokemon.attributes.name
-//        Result
-//            .ofNullable(image)
-//            .ifPresent({ self.pokemonImageUIView.image = $0 })
-//            .orElseDo({ _ in self.pokemonImageUIView.image = PokemonTableCell.DEFAULT_IMAGE })
-//    }
     
 }

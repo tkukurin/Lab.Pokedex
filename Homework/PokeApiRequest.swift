@@ -82,16 +82,8 @@ class ApiRegisterRequest: PokeApiJsonRequest<User> {
     
 }
 
-class UserAuthorizedPokeApiJsonRequest<T: Unboxable>: PokeApiJsonRequest<T> {
-    let requestingUser: User
-    
-    init(requestingUser: User) {
-        self.requestingUser = requestingUser
-    }
-}
-
-class ApiPokemonListRequest: UserAuthorizedPokeApiJsonRequest<PokemonList> {
-    func doGetPokemons() -> Request {
+class ApiPokemonListRequest: PokeApiJsonRequest<PokemonList> {
+    func doGetPokemons(requestingUser: User) -> Request {
         return serverRequestor.doGet(
             RequestEndpoint.POKEMON_ACTION,
             requestingUser: requestingUser,
@@ -99,28 +91,26 @@ class ApiPokemonListRequest: UserAuthorizedPokeApiJsonRequest<PokemonList> {
     }
 }
 
-class ApiCommentRequest: UserAuthorizedPokeApiJsonRequest<CommentList> {
-    func doGetComments(pokemonId: Int) -> Request {
+class ApiCommentRequest: PokeApiJsonRequest<CommentList> {
+    func doGetComments(requestingUser: User, pokemonId: Int) -> Request {
         return serverRequestor.doGet(RequestEndpoint.forComments(pokemonId),
                               requestingUser: requestingUser,
                               callback: deserialize)
     }
 }
 
-//class ApiPhotoRequest: ApiRequest<UIImage> {
-//    
-//    let requestingUser: User
-//    
-//    init(requestingUser: User) {
-//        self.requestingUser = requestingUser
-//    }
-//    
-//    func doGetComments(pokemonId: Int) -> Request {
-//        return serverRequestor.doGet(RequestEndpoint.forComments(pokemonId),
-//                                     requestingUser: requestingUser,
-//                                     callback: { self.deserialize($0) })
-//    }
-//}
+class ApiPhotoRequest: ApiRequest<UIImage?> {
+    
+    init() {
+        super.init()
+    }
+    
+    func doGetPhoto(imageUrl: String) {
+        AsyncImageLoader().loadFrom(RequestEndpoint.forImages(imageUrl),
+                                    callback: self.successCallbackConsumer)
+    }
+    
+}
 
 
 
