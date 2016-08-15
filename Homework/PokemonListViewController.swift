@@ -3,7 +3,6 @@ import Unbox
 import Alamofire
 
 class PokemonListViewController: UITableViewController {
-    static let DEFAULT_IMAGE = UIImage(named: "Pokeball.png")
     
     var user: User!
     var items: [Pokemon]!
@@ -11,16 +10,12 @@ class PokemonListViewController: UITableViewController {
     
     private var localStorageAdapter: LocalStorageAdapter!
     private var serverRequestor: ServerRequestor!
-    
-    //private var activeRequests: [Int: Request]!
     private let requestCache = Cache<UITableViewCell, Request>(maxCacheSize: 500)
-    //private let cache = Cache<UITableViewCell, (request: Request, image: UIImage?)>(maxCacheSize: 500)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
-        //activeRequests = [Int: Request]()
         
         nLoadedItems = 0
         fetchPokemons()
@@ -50,12 +45,6 @@ class PokemonListViewController: UITableViewController {
         ProgressHud.indicateSuccess()
         tableView.reloadData()
     }
-    
-    func updateCommentsTable(forIndex: NSIndexPath) {
-        tableView.beginUpdates()
-        tableView.reloadRowsAtIndexPaths([forIndex], withRowAnimation: .Left)
-        tableView.endUpdates()
-    }
 }
 
 
@@ -72,7 +61,7 @@ extension PokemonListViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let pokemon = items[indexPath.row] //.pokemon
+        let pokemon = items[indexPath.row]
         let image: UIImage? = nil
         
         let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonViewController")
@@ -87,7 +76,7 @@ extension PokemonListViewController {
     
     override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
         requestCache
-            .get(cell)
+            .getAndClear(cell)
             .ifPresent({ $0.cancel() })
     }
     
@@ -99,7 +88,8 @@ extension PokemonListViewController {
         cell.pokemonNameLabel.text = pokemon.attributes.name
         cell.setDefaultImage()
         
-        requestCache.get(cell)
+        requestCache
+            .getAndClear(cell)
             .ifPresent({ $0.cancel() })
         
         Result
@@ -149,18 +139,8 @@ extension PokemonListViewController {
     @IBAction func didTapLogoutButton(sender: AnyObject) {
         serverRequestor.doDelete(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE)
         localStorageAdapter.deleteActiveUser()
-        
-        //activeRequests.forEach({ (i, request) in request.cancel() })
         navigationController?.popViewControllerAnimated(true)
     }
-    
-//    override func viewWillDisappear(animated: Bool) {
-//        activeRequests.forEach({ (i, request) in request.cancel() })
-//    }
-//    
-//    override func viewWillAppear(animated: Bool) {
-//        activeRequests.forEach({ (i, request) in request.resume() })
-//    }
 }
 
 
@@ -169,7 +149,6 @@ extension PokemonListViewController {
 extension PokemonListViewController: CreatePokemonDelegate {
     
     func notify(pokemon: Pokemon, image: UIImage?) {
-        // items.insert((pokemon: pokemon, image: image), atIndex: 0)
         items.insert(pokemon, atIndex: 0)
         tableView.beginUpdates()
         tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)],

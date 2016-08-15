@@ -36,4 +36,8 @@ class Cache<KeyType: Hashable, ValueType> {
         return Result.ofNullable(cache[key])
     }
     
+    func getAndClear(key: KeyType) -> Result<ValueType> {
+        return Result.ofNullable(cache.removeValueForKey(key))
+    }
+    
 }
