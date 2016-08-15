@@ -3,27 +3,26 @@ import Unbox
 import Foundation
 import Alamofire
 
-protocol Chainable {
+protocol ChainableApiCallback: class {
     associatedtype ValueObject
     
     var successCallbackConsumer: ValueObject -> () { get set }
     var failureCallback: () -> () { get set }
-    
 }
 
-extension Chainable {
-    mutating func onSuccess(successCallbackConsumer: ValueObject -> ()) -> Self {
+extension ChainableApiCallback {
+    func setSuccessHandler(successCallbackConsumer: ValueObject -> ()) -> Self {
         self.successCallbackConsumer = successCallbackConsumer
         return self
     }
     
-    mutating func onFailure(failureCallback: () -> ()) -> Self {
+    func setFailureHandler(failureCallback: () -> ()) -> Self {
         self.failureCallback = failureCallback
         return self
     }
 }
 
-class ApiRequest<T>: Chainable {
+class ApiRequest<T>: ChainableApiCallback {
     typealias ValueObject = T
     
     typealias SuccessResultConsumer = ValueObject -> ()

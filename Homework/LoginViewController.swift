@@ -5,7 +5,6 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
-    private var alertUtils: AlertUtils!
     private var localStorageAdapter: LocalStorageAdapter!
     private var serverRequestor: ServerRequestor!
     
@@ -13,7 +12,6 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         self.navigationItem.setHidesBackButton(true, animated: false)
         
-        alertUtils = Container.sharedInstance.getAlertUtilities(self)
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
         
@@ -26,19 +24,11 @@ class LoginViewController: UIViewController {
 extension LoginViewController {
     
     @IBAction func didTapLoginButton(sender: UIButton) {
-        requireFilledTextFields()
+        requireFilledTextFieldsAndGetData()
             .ifPresent(sendLoginRequest)
-            // .orElseDo({ self.alertUtils.alert("\($0.cause)") })
     }
     
-    @IBAction func didTapRegisterButton(sender: AnyObject) {
-        let registerViewController = storyboard?
-            .instantiateViewControllerWithIdentifier("registerViewController") as! RegisterViewController
-        
-        navigationController?.pushViewController(registerViewController, animated: true)
-    }
-    
-    private func requireFilledTextFields() -> Result<UserLoginData> {
+    private func requireFilledTextFieldsAndGetData() -> Result<UserLoginData> {
         guard let username = emailTextField.text where !username.isEmpty else {
             AnimationUtils.shakeFieldAnimation(emailTextField)
             return Result.error()
@@ -56,12 +46,9 @@ extension LoginViewController {
         ProgressHud.show()
         
         ApiLoginRequest()
-//            .ifPresent(persistUserAndGoToHomescreen)
-//            .orElseDo({ ProgressHud.indicateFailure("Failed login!") })
-            
-            .doLogin(userData,
-                     success: persistUserAndGoToHomescreen,
-                     failure: { ProgressHud.indicateFailure() })
+            .setSuccessHandler(persistUserAndGoToHomescreen)
+            .setFailureHandler({ ProgressHud.indicateFailure("Error logging in") })
+            .doLogin(userData)
     }
     
     private func persistUserAndGoToHomescreen(user: User) {
@@ -75,7 +62,13 @@ extension LoginViewController {
         pokemonListViewController.user = user
         
         navigationController?.pushViewController(pokemonListViewController, animated: true)
-        print("User \(user)")
+    }
+    
+    @IBAction func didTapRegisterButton(sender: AnyObject) {
+        let registerViewController = storyboard?
+            .instantiateViewControllerWithIdentifier("registerViewController") as! RegisterViewController
+        
+        navigationController?.pushViewController(registerViewController, animated: true)
     }
     
 }

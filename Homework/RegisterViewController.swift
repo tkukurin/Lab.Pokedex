@@ -22,7 +22,6 @@ class RegisterViewController : UIViewController {
         localStorageAdapter = Container.sharedInstance.getLocalStorageAdapter()
         serverRequestor = Container.sharedInstance.getServerRequestor()
         
-        title = "Sign up"
         emailTextField.text = "nottestmail@email.com"
         usernameTextField.text = "nottestuser"
         passwordTextField.text = "longpassword"
@@ -51,33 +50,24 @@ extension  RegisterViewController {
     
     private func sendRegisterRequest(userData: UserRegisterData) {
         ProgressHud.show()
-        serverRequestor.doPost(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE,
-                               jsonReq: JsonMapBuilder.buildRegisterRequest(userData),
-                               callback: serverActionCallback)
+        
+        ApiRegisterRequest()
+            .setSuccessHandler(persistUserAndGoToHomescreen)
+            .setFailureHandler({ ProgressHud.indicateFailure("Could not send data to server") })
+            .doRegister(userData)
     }
     
-    func serverActionCallback(response: ServerResponse<AnyObject>) {
-        response
-            .ifPresent(loadUserAndLogin)
-            .orElseDo({ ProgressHud.indicateFailure("\($0.cause)") })
-    }
-    
-    private func loadUserAndLogin(data: NSData) throws {
-        let user : User = try Unbox(data)
+    private func persistUserAndGoToHomescreen(user: User) {
+        ProgressHud.indicateSuccess("Logged in as \(user.attributes.username)")
+        
         localStorageAdapter
             .persistUser(emailTextField.text!, passwordTextField.text!)
         
-        goToHomescreen(user)
-        ProgressHud.indicateSuccess("Login: \(user.attributes.username)")
-    }
-    
-    private func goToHomescreen(user: User) {
         let pokemonListViewController = storyboard?
             .instantiateViewControllerWithIdentifier("pokemonListViewController") as! PokemonListViewController
         pokemonListViewController.user = user
         
         navigationController?.pushViewController(pokemonListViewController, animated: true)
-        print("User \(user)")
     }
     
 }

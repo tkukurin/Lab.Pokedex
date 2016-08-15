@@ -96,10 +96,10 @@
             </objects>
             <point key="canvasLocation" x="1972" y="346"/>
         </scene>
-        <!--Register View Controller-->
+        <!--Sign up-->
         <scene sceneID="pSu-7e-qtj">
             <objects>
-                <viewController storyboardIdentifier="registerViewController" id="bOY-U0-WqH" customClass="RegisterViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="registerViewController" title="Sign up" id="bOY-U0-WqH" customClass="RegisterViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="6Zq-Yb-MEy"/>
                         <viewControllerLayoutGuide type="bottom" id="Xl1-C6-g2A"/>
