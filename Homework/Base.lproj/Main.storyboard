@@ -815,27 +815,50 @@
         <scene sceneID="2SE-u5-vRf">
             <objects>
                 <tableViewController storyboardIdentifier="singlePokemonTableView" id="mFF-0V-eFj" customClass="SinglePokemonTableView" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="90" sectionHeaderHeight="18" sectionFooterHeight="18" id="KGv-ba-iba">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="90" sectionHeaderHeight="28" sectionFooterHeight="28" id="KGv-ba-iba">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="separatorColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="description" rowHeight="90" id="Ig8-PD-C03" customClass="PokemonDescriptionTableCell" customModule="Homework" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="50" width="600" height="90"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="heroImageCell" id="t16-kR-2de" customClass="PokemonImageTableCell" customModule="Homework" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="600" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Ig8-PD-C03" id="ki2-qe-8dt">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="89"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="t16-kR-2de" id="iid-pk-RFj">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="90"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZWK-ba-32g">
-                                            <rect key="frame" x="8" y="8" width="5" height="74"/>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Pokeball.png" translatesAutoresizingMaskIntoConstraints="NO" id="H0V-iK-heW">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="90"/>
+                                        </imageView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="H0V-iK-heW" secondAttribute="bottom" id="0CM-bW-f1I"/>
+                                        <constraint firstAttribute="trailing" secondItem="H0V-iK-heW" secondAttribute="trailing" id="eqP-uK-2Im"/>
+                                        <constraint firstItem="H0V-iK-heW" firstAttribute="leading" secondItem="iid-pk-RFj" secondAttribute="leading" id="gDm-9t-vZG"/>
+                                        <constraint firstItem="H0V-iK-heW" firstAttribute="top" secondItem="iid-pk-RFj" secondAttribute="top" id="gdg-Li-3Db"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="pokemonImage" destination="H0V-iK-heW" id="kFv-qz-zkT"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="pokemonDescriptionCell" rowHeight="90" id="Ig8-PD-C03" customClass="PokemonDescriptionTableCell" customModule="Homework" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="118" width="600" height="90"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Ig8-PD-C03" id="ki2-qe-8dt">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="90"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZWK-ba-32g">
+                                            <rect key="frame" x="15" y="20" width="4" height="62"/>
                                             <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="5" id="U5T-U2-Cev"/>
+                                                <constraint firstAttribute="width" constant="4" id="U5T-U2-Cev"/>
                                             </constraints>
                                         </view>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qJt-W4-quB">
-                                            <rect key="frame" x="21" y="8" width="571" height="25"/>
+                                            <rect key="frame" x="31" y="20" width="561" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="25" id="5jO-kz-nRm"/>
                                             </constraints>
@@ -843,24 +866,24 @@
                                             <color key="textColor" red="0.0" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sa8-TY-zZz">
-                                            <rect key="frame" x="21" y="41" width="571" height="41"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sa8-TY-zZz">
+                                            <rect key="frame" x="31" y="53" width="561" height="29"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="ZWK-ba-32g" firstAttribute="leading" secondItem="ki2-qe-8dt" secondAttribute="leading" constant="8" id="2H0-jI-vjy"/>
-                                        <constraint firstItem="qJt-W4-quB" firstAttribute="top" secondItem="ki2-qe-8dt" secondAttribute="top" constant="8" id="7Qy-Ci-20t"/>
+                                        <constraint firstItem="ZWK-ba-32g" firstAttribute="leading" secondItem="ki2-qe-8dt" secondAttribute="leading" constant="15" id="2H0-jI-vjy"/>
+                                        <constraint firstItem="qJt-W4-quB" firstAttribute="top" secondItem="ki2-qe-8dt" secondAttribute="top" constant="20" id="7Qy-Ci-20t"/>
                                         <constraint firstItem="sa8-TY-zZz" firstAttribute="top" secondItem="qJt-W4-quB" secondAttribute="bottom" constant="8" id="H5N-z8-DLO"/>
                                         <constraint firstAttribute="bottom" secondItem="ZWK-ba-32g" secondAttribute="bottom" constant="8" id="T2o-5u-zar"/>
-                                        <constraint firstItem="qJt-W4-quB" firstAttribute="leading" secondItem="ZWK-ba-32g" secondAttribute="trailing" constant="8" id="Ubx-fD-9Ms"/>
-                                        <constraint firstItem="ZWK-ba-32g" firstAttribute="top" secondItem="ki2-qe-8dt" secondAttribute="top" constant="8" id="arU-Yw-CAE"/>
+                                        <constraint firstItem="qJt-W4-quB" firstAttribute="leading" secondItem="ZWK-ba-32g" secondAttribute="trailing" constant="12" id="Ubx-fD-9Ms"/>
+                                        <constraint firstItem="ZWK-ba-32g" firstAttribute="top" secondItem="ki2-qe-8dt" secondAttribute="top" constant="20" id="arU-Yw-CAE"/>
                                         <constraint firstAttribute="trailing" secondItem="qJt-W4-quB" secondAttribute="trailing" constant="8" id="f3c-np-Dsx"/>
                                         <constraint firstAttribute="bottom" secondItem="sa8-TY-zZz" secondAttribute="bottom" constant="8" id="iDR-LV-U6s"/>
                                         <constraint firstAttribute="trailing" secondItem="sa8-TY-zZz" secondAttribute="trailing" constant="8" id="vEf-7V-Pdm"/>
-                                        <constraint firstItem="sa8-TY-zZz" firstAttribute="leading" secondItem="ZWK-ba-32g" secondAttribute="trailing" constant="8" id="xAx-FT-fUi"/>
+                                        <constraint firstItem="sa8-TY-zZz" firstAttribute="leading" secondItem="ZWK-ba-32g" secondAttribute="trailing" constant="12" id="xAx-FT-fUi"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -868,11 +891,11 @@
                                     <outlet property="nameLabel" destination="qJt-W4-quB" id="eEp-0Q-Hse"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="attributes" textLabel="ObA-fL-nCH" detailTextLabel="NQo-aa-eYg" style="IBUITableViewCellStyleValue1" id="vk4-Lg-pr2" customClass="PokemonAttributeTableCell" customModule="Homework" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="140" width="600" height="90"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="pokemonAttributeCell" textLabel="ObA-fL-nCH" detailTextLabel="NQo-aa-eYg" style="IBUITableViewCellStyleValue1" id="vk4-Lg-pr2" customClass="PokemonAttributeTableCell" customModule="Homework" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="208" width="600" height="90"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="vk4-Lg-pr2" id="cvc-4h-AGC">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="89"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="90"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ObA-fL-nCH">
@@ -898,6 +921,11 @@
                             <outlet property="delegate" destination="mFF-0V-eFj" id="mMo-S4-lgg"/>
                         </connections>
                     </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Item" id="XSr-Am-66e"/>
+                        <barButtonItem title="Item" id="WNr-Nb-S5w"/>
+                    </toolbarItems>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IR0-wJ-8V4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
