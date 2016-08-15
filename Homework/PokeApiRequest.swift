@@ -95,7 +95,7 @@ class ApiPokemonListRequest: PokeApiJsonRequest<PokemonList> {
     }
 }
 
-class ApiCommentRequest: PokeApiJsonRequest<CommentList> {
+class ApiCommentListRequest: PokeApiJsonRequest<CommentList> {
     func doGetComments(requestingUser: User, pokemonId: Int) -> Request {
         return serverRequestor.doGet(RequestEndpoint.forComments(pokemonId),
                               requestingUser: requestingUser,
@@ -131,7 +131,9 @@ class ApiPhotoRequest: ApiRequest<UIImage> {
     }
     
     func prepareRequest(imageUrl: String) -> ApiPhotoRequest {
-        request = Alamofire.request(.GET, ServerRequestor.REQUEST_DOMAIN + RequestEndpoint.forImages(imageUrl))
+        request = serverRequestor
+            .requestManager
+            .request(.GET, RequestEndpoint.resolveFullUrl(RequestEndpoint.forImages(imageUrl)))
         return self
     }
     

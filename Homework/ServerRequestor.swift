@@ -1,18 +1,25 @@
 import Alamofire
 
 class ServerRequestor {
-    
     typealias DefaultResponseConsumer = NSData? -> ()
-    
-    static let REQUEST_DOMAIN = "https://pokeapi.infinum.co/"
     private static let COMPRESSION_QUALITY: CGFloat = 0.8
+    
+    let requestManager: Manager
+    
+    init() {
+        let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
+        configuration.timeoutIntervalForRequest = 10
+        configuration.timeoutIntervalForResource = 10
+        
+        self.requestManager = Alamofire.Manager(configuration: configuration)
+    }
 
     func doGet(toEndpoint: String,
                requestingUser: User? = nil,
                callback: DefaultResponseConsumer) -> Request {
         let headers = headersForUser(requestingUser)
         
-        return Alamofire.request(.GET,
+        return requestManager.request(.GET,
                           resolveUrl(toEndpoint),
                           headers: headers)
             .validate().responseJSON { response in
@@ -26,10 +33,10 @@ class ServerRequestor {
                    callback: DefaultResponseConsumer) -> Request {
         let headers = headersForUser(requestingUser)
         
-        Alamofire.Manager.sharedInstance.session.configuration
+        requestManager.session.configuration
             .HTTPAdditionalHeaders = headers
         
-        return Alamofire.request(.POST,
+        return requestManager.request(.POST,
                           resolveUrl(toEndpoint),
                           parameters: jsonReq,
                           encoding: .JSON)
@@ -57,7 +64,7 @@ class ServerRequestor {
                      callback: DefaultResponseConsumer) {
         
         let headers = headersForUser(user)
-        Alamofire.upload(.POST,
+        requestManager.upload(.POST,
                          resolveUrl(toEndpoint),
                          headers: headers,
                          multipartFormData: { multipartFormData in
@@ -102,12 +109,12 @@ class ServerRequestor {
     
     func doDelete(toEndpoint: String,
                   user: User) -> Request {
-        return Alamofire.request(.DELETE, resolveUrl(toEndpoint),
+        return requestManager.request(.DELETE, resolveUrl(toEndpoint),
                                  headers: headersForUser(user))
     }
 
     private func resolveUrl(endpoint: String) -> String {
-      return ServerRequestor.REQUEST_DOMAIN + endpoint
+      return RequestEndpoint.resolveFullUrl(endpoint)
     }
 
     private func headersForUser(user: User?) -> [String:String] {

@@ -18,14 +18,14 @@ class SinglePokemonViewController: UIViewController {
     var image: UIImage?
     
     var loggedInUser: User!
-    private var serverRequestor: ServerRequestor!
     private var imageLoader: ApiPhotoRequest!
+    private var commentRequest: ApiCommentListRequest!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
         imageLoader = Container.sharedInstance.get(ApiPhotoRequest.self)
+        commentRequest = Container.sharedInstance.get(ApiCommentListRequest.self)
         
         title = pokemon.attributes.name
         loadPokemonData()
@@ -88,7 +88,7 @@ class SinglePokemonViewController: UIViewController {
         sender.enabled = false
         ProgressHud.show()
         
-        ApiCommentRequest()
+        commentRequest
             .setSuccessHandler({ self.displayComments($0, sender: sender) })
             .setFailureHandler({ ProgressHud.indicateFailure() })
             .doGetComments(loggedInUser, pokemonId: pokemon.id)

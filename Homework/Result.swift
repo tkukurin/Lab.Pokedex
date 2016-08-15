@@ -18,20 +18,14 @@ class Result<T> {
         self.error = Exception(cause: error)
     }
     
-    func map<R>(f: (T throws -> R)) -> Result<R> {
-        let retVal = Result<R>()
+    func map<R>(f: (T throws -> R?)) -> Result<R> {
+        var newVal: R? = nil
         
-        if let _: Exception = self.error {
-            retVal.error = self.error
-        } else if let value:T = self.value {
-            do {
-                retVal.value = try f(value)
-            } catch {
-                retVal.error = Exception(cause: "\(error)")
-            }
+        if let value: T = self.value {
+            newVal = (try? f(value))?.flatMap({ $0 })
         }
         
-        return retVal
+        return Result<R>.ofNullable(newVal)
     }
     
     func flatMap<R>(f: (T throws -> Result<R>)) -> Result<R> {

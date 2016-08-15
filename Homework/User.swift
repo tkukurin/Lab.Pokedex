@@ -2,7 +2,7 @@
 import Unbox
 
 struct User : Unboxable {
-    let id: Int
+    let id: String
     let type: String?
     let attributes: UserAttributes
     

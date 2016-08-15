@@ -6,12 +6,14 @@ class Cache<KeyType: Hashable, ValueType> {
     
     let maxCacheSize: Int
     var keyInsertionIndex: Int
+    var priorToCleanupAction: (ValueType) -> ()
     
     init(maxCacheSize: Int) {
         self.cache = [KeyType: ValueType]()
         self.keyInsertionIndex = 0
         self.maxCacheSize = maxCacheSize
         self.keys = [KeyType?](count: maxCacheSize, repeatedValue: nil)
+        self.priorToCleanupAction = { item in }
     }
     
     func store(key: KeyType, value: ValueType) {
@@ -26,11 +28,17 @@ class Cache<KeyType: Hashable, ValueType> {
         
         Result
             .ofNullable(keys[keyInsertionIndex])
-            .ifPresent({ self.cache.removeValueForKey($0) })
+            .ifPresent({
+                if let item = self.cache.removeValueForKey($0) {
+                    self.priorToCleanupAction(item)
+                }
+                
+            })
     }
     
-    func get(key: KeyType) -> Result<ValueType> {
-        return Result.ofNullable(cache[key])
+    func get(key: KeyType?) -> Result<ValueType> {
+        return Result.ofNullable(key)
+                     .flatMap({ Result.ofNullable(self.cache[$0]) })
     }
     
     func getAndClear(key: KeyType) -> Result<ValueType> {

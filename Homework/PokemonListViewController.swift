@@ -10,11 +10,10 @@ class PokemonListViewController: UITableViewController {
     private var localStorageAdapter: LocalStorageAdapter!
     private var userRequest: ApiUserRequest!
     private var listRequest: ApiPokemonListRequest!
-    private var imageLoader: ApiPhotoRequest!
+    private var serverRequestor: ServerRequestor!
     
-    
-    
-    private let requestCache = Cache<UITableViewCell, Request>(maxCacheSize: 500)
+    private let imageCache = Cache<String, UIImage>(maxCacheSize: 50)
+    private let requestCache = Cache<UITableViewCell, Request>(maxCacheSize: 50)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +22,9 @@ class PokemonListViewController: UITableViewController {
         localStorageAdapter = container.get(LocalStorageAdapter.self)
         userRequest = container.get(ApiUserRequest.self)
         listRequest = container.get(ApiPokemonListRequest.self)
-        imageLoader = container.get(ApiPhotoRequest.self)
+        serverRequestor = container.get(ServerRequestor.self)
+        
+        requestCache.priorToCleanupAction = { request in request.cancel() }
         
         setupPullToRefresh()
         fetchPokemons()
@@ -88,13 +89,23 @@ extension PokemonListViewController {
         stopIfHasRequestInProgress(cell)
     }
     
+    func stopIfHasRequestInProgress(cell: UITableViewCell) {
+        requestCache
+            .getAndClear(cell)
+            .ifPresent({ $0.cancel() })
+    }
+    
     override func tableView(tableView: UITableView,
                             cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let pokemon = items[indexPath.row]
         let cell = getDefaultCell(pokemon, indexPath: indexPath)
         
         stopIfHasRequestInProgress(cell)
-        invokeAsyncCellImageUpdate(cell, row: indexPath, imageUrl: pokemon.attributes.imageUrl)
+        imageCache
+            .get(pokemon.attributes.imageUrl)
+            .ifPresent({ cell.pokemonImageUIView.image = $0 })
+            .orElseDo({ self.invokeAsyncCellImageUpdate(cell, row: indexPath,
+                imageUrl: pokemon.attributes.imageUrl) })
         
         return cell
     }
@@ -108,12 +119,6 @@ extension PokemonListViewController {
         return cell
     }
     
-    func stopIfHasRequestInProgress(cell: UITableViewCell) {
-        requestCache
-            .getAndClear(cell)
-            .ifPresent({ $0.cancel() })
-    }
-    
     func invokeAsyncCellImageUpdate(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String?) {
         Result
             .ofNullable(imageUrl)
@@ -121,7 +126,7 @@ extension PokemonListViewController {
     }
     
     func setCellImage(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String) {
-        let req = Alamofire.request(.GET, ServerRequestor.REQUEST_DOMAIN + RequestEndpoint.forImages(imageUrl))
+        let req = serverRequestor.requestManager.request(.GET, RequestEndpoint.REQUEST_DOMAIN + RequestEndpoint.forImages(imageUrl))
         requestCache.store(cell, value: req)
         
         req.validate()
@@ -129,10 +134,19 @@ extension PokemonListViewController {
                 if error == nil {
                     Result
                         .ofNullable(data)
-                        .flatMap({ Result.ofNullable(UIImage(data: $0)) })
-                        .ifPresent({ cell.pokemonImageUIView.image = $0 })
+                        .map({ UIImage(data: $0) })
+                        .ifPresent({
+                            cell.pokemonImageUIView.image = $0
+                            self.imageCache.store(imageUrl, value: $0)
+                        })
+                    self.tableView.reloadData()
                 }
             })
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        requestCache.forEach({ (cell, request) in request.cancel() })
+        requestCache.emptyCache()
     }
 }
 

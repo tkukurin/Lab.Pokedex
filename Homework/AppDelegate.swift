@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  Homework
-//
-//  Created by Infinum on 8/5/16.
-//  Copyright © 2016 Infinum. All rights reserved.
-//
 
 import UIKit
 import Unbox
@@ -37,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             (key: ServerRequestor.self, value: { serverRequestor }),
             (key: ApiUserRequest.self, value: { ApiUserRequest() }),
             (key: ApiPhotoRequest.self, value: { ApiPhotoRequest() }),
-            (key: ApiCommentRequest.self, value: { ApiCommentRequest()}),
+            (key: ApiCommentListRequest.self, value: { ApiCommentListRequest()}),
             (key: ApiCommentPostRequest.self, value: { ApiCommentPostRequest() }),
             (key: ApiPokemonListRequest.self, value: { ApiPokemonListRequest() }),
             (key: ApiPokemonCreateRequest.self, value: { ApiPokemonCreateRequest() })
@@ -58,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     private func showPokemonListScreen(userLoginData: UserLoginData) {
         Container.sharedInstance.get(ApiUserRequest.self)
             .setSuccessHandler(loadUserAndShowPokemonListScreen)
+            .setFailureHandler(showLoginScreen)
             .doLogin(userLoginData)
     }
     

@@ -187,15 +187,17 @@
 		4234DD421D5469A900CEBA18 /* Homework */ = {
 			isa = PBXGroup;
 			children = (
+				4234DD7A1D546C2200CEBA18 /* UserControllers */,
+				8EBB94251D5D1CB10098B41A /* SinglePokemon */,
+				4234DDB91D54B51600CEBA18 /* ListPokemons */,
 				8EBB94321D5E233B0098B41A /* Comments */,
-				4234DDA71D5483BE00CEBA18 /* ControllerToServerPokemonFrontend */,
+				4234DDA71D5483BE00CEBA18 /* CreatePokemon */,
 				4234DD9E1D547A0100CEBA18 /* Resources */,
 				4234DD881D5472B200CEBA18 /* Common */,
 				4234DD8B1D5473D000CEBA18 /* ServerRequest */,
 				4234DD851D54720400CEBA18 /* Storage */,
 				4234DD821D546F6A00CEBA18 /* Dependency Injection */,
 				4234DD7B1D546CF700CEBA18 /* Alerting */,
-				4234DD7A1D546C2200CEBA18 /* ControllerToServerUserFrontend */,
 				4234DD751D546BBD00CEBA18 /* Exception */,
 				4234DD431D5469A900CEBA18 /* AppDelegate.swift */,
 				4234DD471D5469A900CEBA18 /* Main.storyboard */,
@@ -233,13 +235,13 @@
 			name = Exception;
 			sourceTree = "<group>";
 		};
-		4234DD7A1D546C2200CEBA18 /* ControllerToServerUserFrontend */ = {
+		4234DD7A1D546C2200CEBA18 /* UserControllers */ = {
 			isa = PBXGroup;
 			children = (
 				4234DD731D546B7000CEBA18 /* LoginViewController.swift */,
 				8EBB94371D5F206B0098B41A /* RegisterViewController.swift */,
 			);
-			name = ControllerToServerUserFrontend;
+			name = UserControllers;
 			sourceTree = "<group>";
 		};
 		4234DD7B1D546CF700CEBA18 /* Alerting */ = {
@@ -320,14 +322,12 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		4234DDA71D5483BE00CEBA18 /* ControllerToServerPokemonFrontend */ = {
+		4234DDA71D5483BE00CEBA18 /* CreatePokemon */ = {
 			isa = PBXGroup;
 			children = (
-				4234DDB91D54B51600CEBA18 /* ListPokemons */,
-				8EBB94251D5D1CB10098B41A /* SinglePokemon */,
 				8EBB94391D5F2FD20098B41A /* CreatePokemonViewController.swift */,
 			);
-			name = ControllerToServerPokemonFrontend;
+			name = CreatePokemon;
 			sourceTree = "<group>";
 		};
 		4234DDB91D54B51600CEBA18 /* ListPokemons */ = {

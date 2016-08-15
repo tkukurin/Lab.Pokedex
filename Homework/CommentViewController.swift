@@ -9,26 +9,21 @@ protocol CommentCreatedDelegate {
 
 class CommentViewController: UITableViewController {
     
-    var serverRequestor: ServerRequestor!
     var loggedInUser: User!
-    
     var comments: [Comment]!
-    var cells: [CommentTableCell?]!
-    
     var pokemon: Pokemon!
     
-    private let cache = Cache<UITableViewCell, Request>(maxCacheSize: 30)
-    private var commentRequest: ApiCommentRequest!
+    private let requestCache = Cache<UITableViewCell, Request>(maxCacheSize: 30)
+    private let usernameCache = Cache<String, String>(maxCacheSize: 30)
+    
+    private var commentRequest: ApiCommentListRequest!
     private var userRequest: ApiUserRequest!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        serverRequestor = Container.sharedInstance.get(ServerRequestor.self)
-        commentRequest = Container.sharedInstance.get(ApiCommentRequest.self)
+        commentRequest = Container.sharedInstance.get(ApiCommentListRequest.self)
         userRequest = Container.sharedInstance.get(ApiUserRequest.self)
-        
-        tableView.reloadData()
     }
     
     func updateCommentsTable(forIndex: Int) {
@@ -51,6 +46,16 @@ class CommentViewController: UITableViewController {
         else { return getViewCommentCell(tableView, cellForRowAtIndexPath: indexPath) }
     }
     
+    override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        stopIfHasRequestInProgress(cell)
+    }
+    
+    func stopIfHasRequestInProgress(cell: UITableViewCell) {
+        requestCache
+            .getAndClear(cell)
+            .ifPresent({ $0.cancel() })
+    }
+    
     func getViewCommentCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let comment = comments[indexPath.row]
@@ -58,15 +63,27 @@ class CommentViewController: UITableViewController {
         cell.commentLabel.text = comment.attributes?.content
         cell.setDate(comment.attributes?.createdAt)
         
-        cache
-            .getAndClear(cell)
-            .ifPresent({ $0.cancel() })
-        userRequest
-            .setSuccessHandler({ cell.commenterUsernameLabel.text = $0.attributes.username })
-            .setFailureHandler({ cell.commenterUsernameLabel.text = "unknown commenter" })
-            .doGet(loggedInUser, userId: comment.userId)
+        stopIfHasRequestInProgress(cell)
+        usernameCache
+            .get(comment.userId)
+            .ifPresent({ cell.commenterUsernameLabel.text = $0 })
+            .orElseDo({ self.loadUsernameFromServer(cell, userId: comment.userId, indexPath: indexPath) })
         
         return cell
+    }
+    
+    func loadUsernameFromServer(ncell: CommentTableCell, userId: String, indexPath: NSIndexPath) {
+        userRequest
+            .setSuccessHandler({
+                if let cell: CommentTableCell = self.tableView.cellForRowAtIndexPath(indexPath) as? CommentTableCell {
+                    let username = $0.attributes.username
+                    cell.commenterUsernameLabel.text = username
+                }
+                
+                self.usernameCache.store($0.id, value: $0.attributes.username)
+                self.tableView.reloadData()
+            })
+            .doGet(loggedInUser, userId: userId)
     }
     
     func getPostCommentCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
