@@ -6,16 +6,13 @@
 
 class Result<T> {
     var value: T?
-    var error: Exception?
     
-    private init() {}
+    private init() {
+        self.value = nil
+    }
     
     private init(value: T) {
         self.value = value
-    }
-    
-    private init(error: String) {
-        self.error = Exception(cause: error)
     }
     
     func map<R>(f: (T throws -> R?)) -> Result<R> {
@@ -31,13 +28,11 @@ class Result<T> {
     func flatMap<R>(f: (T throws -> Result<R>)) -> Result<R> {
         var retVal = Result<R>()
         
-        if let _: Exception = self.error {
-            retVal.error = self.error
-        } else if let value:T = self.value {
+        if let value:T = self.value {
             do {
                 retVal = try f(value)
             } catch {
-                retVal.error = Exception(cause: "\(error)")
+                retVal.value = nil
             }
         }
         
@@ -53,7 +48,7 @@ class Result<T> {
     }
     
     func orElseDo(runnable: () -> ()) {
-        if let _: Exception = self.error {
+        if self.value == nil {
             runnable()
         }
     }
@@ -80,7 +75,7 @@ extension Result {
         return Result.of(opt)
     }
     
-    static func error(cause: String = "") -> Result<T> {
-        return Result<T>(error: cause)
+    static func error() -> Result<T> {
+        return Result<T>()
     }
 }

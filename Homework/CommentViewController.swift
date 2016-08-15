@@ -80,7 +80,7 @@ class CommentViewController: UITableViewController {
                     cell.commenterUsernameLabel.text = username
                 }
                 
-                self.usernameCache.store($0.id, value: $0.attributes.username)
+                self.usernameCache.put($0.id, value: $0.attributes.username)
                 self.tableView.reloadData()
             })
             .doGet(loggedInUser, userId: userId)

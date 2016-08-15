@@ -16,7 +16,7 @@ class LocalStorageAdapter {
         
         guard let email = userDefaults.stringForKey(LocalStorageAdapter.EMAIL_KEY),
               let password = userDefaults.stringForKey(LocalStorageAdapter.PASSWORD_KEY) else {
-              return Result.error("No email and password.")  
+              return Result.error()  
         }
         
         return Result.of((email, password))

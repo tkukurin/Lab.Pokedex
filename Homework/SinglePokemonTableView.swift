@@ -13,6 +13,8 @@ class SinglePokemonTableView: UITableViewController {
     var image: UIImage?
     var loggedInUser: User!
     
+    private let imageCache = ImageCache.sharedInstance
+    
     private var imageLoader: ApiPhotoRequest!
     private var commentRequest: ApiCommentListRequest!
     private var SECTIONS: [SectionDescriptor]!
@@ -33,7 +35,10 @@ class SinglePokemonTableView: UITableViewController {
         imageLoader = Container.sharedInstance.get(ApiPhotoRequest.self)
         commentRequest = Container.sharedInstance.get(ApiCommentListRequest.self)
         
-        loadImageOrDisplayDefault(pokemon.attributes.imageUrl)
+        imageCache
+            .get(pokemon.attributes.imageUrl)
+            .ifPresent(updatePhotoAndCloseProgressHud)
+            .orElseDo({ self.loadImageOrDisplayDefault(self.pokemon.attributes.imageUrl) })
     }
 
     override func viewWillDisappear(animated: Bool) {
@@ -51,7 +56,10 @@ class SinglePokemonTableView: UITableViewController {
         ProgressHud.show()
         
         imageLoader
-            .setSuccessHandler(updatePhotoAndCloseProgressHud)
+            .setSuccessHandler({
+                self.imageCache.put(self.pokemon.attributes.imageUrl!, value: $0)
+                self.updatePhotoAndCloseProgressHud($0)
+            })
             .setFailureHandler({
                 self.updatePhotoAndCloseProgressHud(SinglePokemonTableView.DEFAULT_IMAGE)
             })
@@ -89,6 +97,10 @@ class SinglePokemonTableView: UITableViewController {
         
         self.navigationController?.pushViewController(commentViewController, animated: true)
         
+        reEnableCommentsButton(sender)
+    }
+    
+    func reEnableCommentsButton(sender: UIBarButtonItem) {
         sender.enabled = true
     }
     
@@ -158,38 +170,12 @@ class SinglePokemonTableView: UITableViewController {
     
     func getOrDefaultFromDouble(value: Double?) -> String {
         if let value: Double = value { return String(format:"%.2f", value) }
-        return SinglePokemonViewController.DEFAULT_STRING_IF_DATA_UNAVAILABLE
+        return SinglePokemonTableView.DEFAULT_STRING_IF_DATA_UNAVAILABLE
     }
     
     func getOrDefaultFromString(value: String?) -> String {
         if let value: String = value { return value }
-        return SinglePokemonViewController.DEFAULT_STRING_IF_DATA_UNAVAILABLE
-    }
-    
-}
-
-class PokemonImageTableCell: UITableViewCell {
-    
-    @IBOutlet weak var pokemonImage: UIImageView!
-    
-}
-
-class PokemonDescriptionTableCell: UITableViewCell {
-    
-    @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    
-    func setPokemonNameAndDescription(name: String?, _ description: String?) {
-        self.nameLabel.text = name
-        self.descriptionLabel.text = description
-    }
-}
-
-class PokemonAttributeTableCell: UITableViewCell {
-    
-    func setKeyValuePair(key: String, _ value: String) {
-        self.textLabel?.text = key
-        self.detailTextLabel?.text = value
+        return SinglePokemonTableView.DEFAULT_STRING_IF_DATA_UNAVAILABLE
     }
     
 }

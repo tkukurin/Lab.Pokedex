@@ -12,7 +12,7 @@ class PokemonListViewController: UITableViewController {
     private var listRequest: ApiPokemonListRequest!
     private var serverRequestor: ServerRequestor!
     
-    private let imageCache = Cache<String, UIImage>(maxCacheSize: 50)
+    private let imageCache = ImageCache.sharedInstance
     private let requestCache = Cache<UITableViewCell, Request>(maxCacheSize: 50)
     
     override func viewDidLoad() {
@@ -25,7 +25,6 @@ class PokemonListViewController: UITableViewController {
         serverRequestor = container.get(ServerRequestor.self)
         
         requestCache.priorToCleanupAction = { request in request.cancel() }
-        
         fetchPokemons()
     }
     
@@ -69,8 +68,6 @@ extension PokemonListViewController {
         let image: UIImage? = nil
         
         let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonTableView") as! SinglePokemonTableView
-        
-        //self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonViewController") as! SinglePokemonViewController
         
         singlePokemonViewController.pokemon = pokemon
         singlePokemonViewController.image = image
@@ -121,7 +118,7 @@ extension PokemonListViewController {
     
     func setCellImage(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String) {
         let req = serverRequestor.requestManager.request(.GET, RequestEndpoint.REQUEST_DOMAIN + RequestEndpoint.forImages(imageUrl))
-        requestCache.store(cell, value: req)
+        requestCache.put(cell, value: req)
         
         req.validate()
             .response(completionHandler: { (_, _, data, error) in
@@ -131,7 +128,7 @@ extension PokemonListViewController {
                         .map({ UIImage(data: $0) })
                         .ifPresent({
                             cell.pokemonImageUIView.image = $0
-                            self.imageCache.store(imageUrl, value: $0)
+                            self.imageCache.put(imageUrl, value: $0)
                         })
                     self.tableView.reloadData()
                 }

@@ -37,14 +37,28 @@ extension  RegisterViewController {
     }
     
     private func requireFilledTextFields() -> Result<UserRegisterData> {
-        guard let email = emailTextField.text where !email.isEmpty,
-            let username = usernameTextField.text where !username.isEmpty,
-            let password = passwordTextField.text where !password.isEmpty,
-            let confirmedPassword = confirmPasswordTextField?.text where !confirmedPassword.isEmpty else {
-                return Result.error()
-        }
+        var values = [String]()
+        let fields = [ emailTextField,
+            usernameTextField,
+            passwordTextField,
+            confirmPasswordTextField ]
         
-        return Result.of((email, username, password, confirmedPassword))
+        fields.forEach({ field in
+                if let content = field.text where !content.isEmpty {
+                    values.append(content)
+                } else {
+                    AnimationUtils.shakeFieldAnimation(field)
+                }
+        })
+        
+        if values.count != fields.count {
+            return Result.error()
+        } else {
+            return Result.of((email: values[0],
+                username: values[1],
+                password: values[2],
+                confirmedPassword: values[3]))
+        }
     }
     
     private func sendRegisterRequest(userData: UserRegisterData) {

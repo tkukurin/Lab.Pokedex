@@ -4,9 +4,9 @@
 // for the application.
 //
 
-class Exception: ErrorType {
-    var cause: String
-    init(cause: String) {
-        self.cause = cause
-    }
-}
+//class Exception: ErrorType {
+//    var cause: String
+//    init(cause: String) {
+//        self.cause = cause
+//    }
+//}

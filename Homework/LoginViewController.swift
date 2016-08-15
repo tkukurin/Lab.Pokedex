@@ -10,7 +10,6 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.setHidesBackButton(true, animated: false)
         
         localStorageAdapter = Container.sharedInstance.get(LocalStorageAdapter.self)
         loginRequest = Container.sharedInstance.get(ApiUserRequest.self)

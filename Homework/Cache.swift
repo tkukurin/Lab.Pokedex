@@ -1,4 +1,14 @@
 
+import UIKit
+
+class ImageCache: Cache<String, UIImage> {
+    static let sharedInstance = ImageCache()
+    
+    private init() {
+        super.init(maxCacheSize: 30)
+    }
+}
+
 class Cache<KeyType: Hashable, ValueType> {
     
     var cache: [KeyType: ValueType]
@@ -16,7 +26,7 @@ class Cache<KeyType: Hashable, ValueType> {
         self.priorToCleanupAction = { item in }
     }
     
-    func store(key: KeyType, value: ValueType) {
+    func put(key: KeyType, value: ValueType) {
         keys[keyInsertionIndex] = key
         updateInsertionIndexAndClearCacheIfNecessary()
         
@@ -42,7 +52,10 @@ class Cache<KeyType: Hashable, ValueType> {
     }
     
     func getAndClear(key: KeyType) -> Result<ValueType> {
-        return Result.ofNullable(cache.removeValueForKey(key))
+        let result = Result.ofNullable(cache.removeValueForKey(key))
+        result.ifPresent(priorToCleanupAction)
+        
+        return result
     }
     
     func forEach(keyValueConsumer: (KeyType, ValueType) -> ()) {

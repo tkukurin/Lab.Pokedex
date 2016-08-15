@@ -3,6 +3,9 @@ import Unbox
 import Foundation
 import Alamofire
 
+typealias UserLoginData = (email: String, password: String)
+typealias JsonType = [String: AnyObject]
+
 protocol ChainableApiCallback: class {
     associatedtype ValueObject
     
@@ -59,18 +62,48 @@ class PokeApiJsonRequest<T: Unboxable>: ApiRequest<T> {
 class ApiUserRequest: PokeApiJsonRequest<User> {
     
     func doLogin(userLoginData: UserLoginData) -> Request {
-        let json = JsonMapBuilder.buildLoginRequest(userLoginData)
+        let json = buildLoginRequest(userLoginData)
         
         return serverRequestor.doPost(RequestEndpoint.USER_ACTION_LOGIN,
                                jsonReq: json,
                                callback: deserialize)
     }
     
+    private func buildLoginRequest(userData: UserLoginData) -> JsonType {
+        let requestData = [
+            ApiRequestConstants.UserAttributes.EMAIL:       userData.email,
+            ApiRequestConstants.UserAttributes.PASSWORD:    userData.password,
+        ]
+            
+        let attributesData = [
+            ApiRequestConstants.ATTRIBUTES: requestData,
+            ApiRequestConstants.TYPE:       "session"
+        ]
+        
+        return [ ApiRequestConstants.DATA: attributesData ]
+    }
+    
     func doRegister(userRegisterData: UserRegisterData) -> Request {
-        let json = JsonMapBuilder.buildRegisterRequest(userRegisterData)
+        let json = buildRegisterRequest(userRegisterData)
         return serverRequestor.doPost(RequestEndpoint.USER_ACTION_CREATE_OR_DELETE,
                                       jsonReq: json,
                                       callback: deserialize)
+    }
+    
+    private func buildRegisterRequest(userData: UserRegisterData) -> [String: AnyObject] {
+        let requestData = [
+            ApiRequestConstants.UserAttributes.USERNAME:            userData.username,
+            ApiRequestConstants.UserAttributes.EMAIL:               userData.email,
+            ApiRequestConstants.UserAttributes.PASSWORD:            userData.password,
+            ApiRequestConstants.UserAttributes.CONFIRMED_PASSWORD:  userData.confirmedPassword
+        ]
+        
+        let attributesData = [
+            ApiRequestConstants.ATTRIBUTES: requestData,
+            ApiRequestConstants.TYPE:       "users"
+        ]
+        
+        return [ ApiRequestConstants.DATA: attributesData ]
     }
     
     func doGet(requestingUser: User, userId: String) -> Request {
@@ -79,9 +112,9 @@ class ApiUserRequest: PokeApiJsonRequest<User> {
                               callback: deserialize)
     }
     
-    func doLogout(user: User) -> Request {
+    func doLogout(requestingUser: User) -> Request {
         return serverRequestor.doDelete(RequestEndpoint.USER_ACTION_LOGOUT,
-                                        user: user)
+                                        user: requestingUser)
     }
     
 }
