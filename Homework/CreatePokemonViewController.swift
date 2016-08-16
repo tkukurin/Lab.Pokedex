@@ -1,9 +1,5 @@
-import UIKit
-import Unbox
 
-protocol CreatePokemonDelegate {
-    func notify(pokemon: Pokemon, image: UIImage?)
-}
+import UIKit
 
 class CreatePokemonViewController: UITableViewController {
     
@@ -15,7 +11,7 @@ class CreatePokemonViewController: UITableViewController {
     @IBOutlet weak var genderSegmentedControl: UISegmentedControl!
     
     var loggedInUser: User!
-    var createPokemonDelegate: CreatePokemonDelegate!
+    var createPokemonDelegate: PokemonCreatedDelegate!
     
     private var pickedImage: UIImage!
     private var pokemonCreateRequest: ApiPokemonCreateRequest!
@@ -43,6 +39,7 @@ class CreatePokemonViewController: UITableViewController {
     
     @IBAction func didTapCreatePokemonButton(sender: UIButton) {
         constructPokemonAttributeMap()
+            .filter(areWeightAndHeightDoubleValues)
             .ifPresent({ attributes in
                 ProgressHud.show()
                 self.pokemonCreateRequest
@@ -52,19 +49,11 @@ class CreatePokemonViewController: UITableViewController {
             })
     }
     
-    func closeWindowAndNotifyDelegate(createdPokemon: PokemonCreatedResponse) -> Void {
-        ProgressHud.indicateSuccess()
-        
-        self.navigationController?.popViewControllerAnimated(true)
-        self.createPokemonDelegate.notify(createdPokemon.pokemon,
-                                          image: self.imageViewComponent.image)
-    }
-    
     func constructPokemonAttributeMap() -> Result<[String: String]> {
         var attributes = [String: String]()
         var fieldsAreValid = true
         
-        getTuplesOfFieldAndAttributeKey().forEach({ tuple in
+        getTuplesOfRequiredFieldsAndRequestKeys().forEach({ tuple in
             let key = tuple.key
             let field = tuple.field
             
@@ -79,7 +68,21 @@ class CreatePokemonViewController: UITableViewController {
         return Result.ofNullable(fieldsAreValid ? attributes : nil)
     }
     
-    func getTuplesOfFieldAndAttributeKey() -> [(key: String, field: UITextField)] {
+    func areWeightAndHeightDoubleValues(attributes: [String: String]) -> Bool {
+        let dblHeight = Result
+            .ofNullable(attributes[ApiRequestConstants.PokeAttributes.HEIGHT])
+            .map({ Double($0) })
+        let dblWeight = Result
+            .ofNullable(attributes[ApiRequestConstants.PokeAttributes.WEIGHT])
+            .map({ Double($0) })
+        
+        dblWeight.orElseDo({ ProgressHud.indicateFailure("Weight should be a double value") })
+        dblHeight.orElseDo({ ProgressHud.indicateFailure("Height should be a double value") })
+        
+        return dblHeight.isPresent() && dblWeight.isPresent()
+    }
+    
+    func getTuplesOfRequiredFieldsAndRequestKeys() -> [(key: String, field: UITextField)] {
         return [ (key: ApiRequestConstants.PokeAttributes.NAME, field: pokemonNameTextField),
                  (key: ApiRequestConstants.PokeAttributes.HEIGHT, field: pokemonHeightTextField),
                  (key: ApiRequestConstants.PokeAttributes.WEIGHT, field: pokemonWeightTextField),
@@ -93,15 +96,30 @@ class CreatePokemonViewController: UITableViewController {
         return String(zeroBasedIndexToValidOneBasedGenderId)
     }
     
+    func closeWindowAndNotifyDelegate(createdPokemon: PokemonCreatedResponse) -> Void {
+        ProgressHud.indicateSuccess()
+        
+        self.navigationController?.popViewControllerAnimated(true)
+        self.createPokemonDelegate.notifyPokemonCreated(
+            createdPokemon.pokemon,
+            image: self.imageViewComponent.image)
+    }
+    
 }
 
 extension CreatePokemonViewController : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
-        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            imageViewComponent.image = pickedImage
-            self.pickedImage = pickedImage
-        }
+    func imagePickerController(picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        Result
+            .ofNullable(info[UIImagePickerControllerOriginalImage] as? UIImage)
+            .ifPresent({
+                self.imageViewComponent.image = $0
+                self.pickedImage = $0
+            })
+            .orElseDo({
+                ProgressHud.indicateFailure("Couldn't load image!")
+            })
         
         dismissViewControllerAnimated(true, completion: nil)
     }

@@ -1,11 +1,6 @@
 
 import UIKit
-import Unbox
 import Alamofire
-
-protocol CommentCreatedDelegate {
-    func notify(comment: Comment)
-}
 
 class CommentViewController: UITableViewController {
     
@@ -13,7 +8,7 @@ class CommentViewController: UITableViewController {
     var comments: [Comment]!
     var pokemon: Pokemon!
     
-    private let requestCache = Cache<UITableViewCell, Request>(maxCacheSize: 30)
+    private var requestCache: RequestCache!
     private let usernameCache = Cache<String, String>(maxCacheSize: 30)
     
     private var commentRequest: ApiCommentListRequest!
@@ -22,6 +17,7 @@ class CommentViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        requestCache = Container.sharedInstance.get(RequestCache.self)
         commentRequest = Container.sharedInstance.get(ApiCommentListRequest.self)
         userRequest = Container.sharedInstance.get(ApiUserRequest.self)
     }
@@ -97,7 +93,7 @@ class CommentViewController: UITableViewController {
 }
 
 extension CommentViewController : CommentCreatedDelegate {
-    func notify(comment: Comment) {
+    func notifyCommentCreated(comment: Comment) {
         comments.append(comment)
         updateCommentsTable(comments.count - 1)
     }

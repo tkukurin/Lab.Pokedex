@@ -1,6 +1,10 @@
-
-import Foundation
-import UIKit
+//
+// Common container used for dependecy injection in controllers.
+// Swift unfortunately doesn't seem to have a nice reflection API
+// so this is a "hack" of sort.
+//
+// Ideally, each service would be accompanied by its corresponding protocol.
+//
 
 class Instantiator {
     let initialize: (() -> Any);

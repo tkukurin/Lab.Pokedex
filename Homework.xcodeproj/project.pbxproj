@@ -46,7 +46,10 @@
 		8EBB94D11D6247610098B41A /* SinglePokemonTableCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94D01D6247610098B41A /* SinglePokemonTableCells.swift */; };
 		8EDF82001D6366940098096F /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDF81FF1D6366940098096F /* ImageCache.swift */; };
 		8EDF82021D6369360098096F /* UIViewController+Instantiation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDF82011D6369360098096F /* UIViewController+Instantiation.swift */; };
-		8EDF82041D636D020098096F /* UserDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDF82031D636D020098096F /* UserDataStorage.swift */; };
+		8EDF82041D636D020098096F /* UserDataLocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDF82031D636D020098096F /* UserDataLocalStorage.swift */; };
+		8EDF82081D637AAB0098096F /* RequestCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDF82071D637AAB0098096F /* RequestCache.swift */; };
+		8EDF820A1D637F6C0098096F /* PokemonCreatedDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDF82091D637F6C0098096F /* PokemonCreatedDelegate.swift */; };
+		8EDF820C1D637F860098096F /* CommentCreatedDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDF820B1D637F860098096F /* CommentCreatedDelegate.swift */; };
 		C27E372A94B259DA310FD615 /* Pods_HomeworkTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22ABFD6E8E80A253684177AF /* Pods_HomeworkTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -113,7 +116,10 @@
 		8EBB94D01D6247610098B41A /* SinglePokemonTableCells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SinglePokemonTableCells.swift; sourceTree = "<group>"; };
 		8EDF81FF1D6366940098096F /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		8EDF82011D6369360098096F /* UIViewController+Instantiation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Instantiation.swift"; sourceTree = "<group>"; };
-		8EDF82031D636D020098096F /* UserDataStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDataStorage.swift; sourceTree = "<group>"; };
+		8EDF82031D636D020098096F /* UserDataLocalStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDataLocalStorage.swift; sourceTree = "<group>"; };
+		8EDF82071D637AAB0098096F /* RequestCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestCache.swift; sourceTree = "<group>"; };
+		8EDF82091D637F6C0098096F /* PokemonCreatedDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokemonCreatedDelegate.swift; sourceTree = "<group>"; };
+		8EDF820B1D637F860098096F /* CommentCreatedDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentCreatedDelegate.swift; sourceTree = "<group>"; };
 		B24D32D3AC143C6C3664D8E9 /* Pods-Homework.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Homework.release.xcconfig"; path = "Pods/Target Support Files/Pods-Homework/Pods-Homework.release.xcconfig"; sourceTree = "<group>"; };
 		BB2BB73FEB52175A0A90E7FC /* Pods-HomeworkTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeworkTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeworkTests/Pods-HomeworkTests.release.xcconfig"; sourceTree = "<group>"; };
 		C936BF2C91978BD45140DBB0 /* Pods-Homework.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Homework.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Homework/Pods-Homework.debug.xcconfig"; sourceTree = "<group>"; };
@@ -265,10 +271,11 @@
 		4234DD851D54720400CEBA18 /* Storage */ = {
 			isa = PBXGroup;
 			children = (
-				8EDF82031D636D020098096F /* UserDataStorage.swift */,
+				8EDF82031D636D020098096F /* UserDataLocalStorage.swift */,
 				4234DD861D54720E00CEBA18 /* LocalStorageAdapter.swift */,
 				8EBB94C81D6116400098B41A /* Cache.swift */,
 				8EDF81FF1D6366940098096F /* ImageCache.swift */,
+				8EDF82071D637AAB0098096F /* RequestCache.swift */,
 			);
 			name = Storage;
 			sourceTree = "<group>";
@@ -312,6 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				8EBB94391D5F2FD20098B41A /* CreatePokemonViewController.swift */,
+				8EDF82091D637F6C0098096F /* PokemonCreatedDelegate.swift */,
 			);
 			name = CreatePokemon;
 			sourceTree = "<group>";
@@ -350,6 +358,7 @@
 				8EBB942A1D5E1F3B0098B41A /* CommentViewController.swift */,
 				8EBB942C1D5E20240098B41A /* CommentTableCell.swift */,
 				8EBB94331D5E35D20098B41A /* PostCommentTableCell.swift */,
+				8EDF820B1D637F860098096F /* CommentCreatedDelegate.swift */,
 			);
 			name = Comments;
 			sourceTree = "<group>";
@@ -622,6 +631,7 @@
 				4234DD771D546BCD00CEBA18 /* Result.swift in Sources */,
 				4234DD9A1D5474F100CEBA18 /* ServerRequestor.swift in Sources */,
 				4234DD7D1D546D0A00CEBA18 /* ProgressHud.swift in Sources */,
+				8EDF820A1D637F6C0098096F /* PokemonCreatedDelegate.swift in Sources */,
 				8EBB94C71D60D1A90098B41A /* PokeApiRequest.swift in Sources */,
 				8EBB94311D5E22F60098B41A /* CommentList.swift in Sources */,
 				4234DD841D546F7F00CEBA18 /* Container.swift in Sources */,
@@ -629,13 +639,15 @@
 				8EBB94361D5E710C0098B41A /* UserList.swift in Sources */,
 				4234DD921D54747100CEBA18 /* ApiRequestConstants.swift in Sources */,
 				8EBB94CF1D62011B0098B41A /* SinglePokemonTableViewController.swift in Sources */,
+				8EDF82081D637AAB0098096F /* RequestCache.swift in Sources */,
 				8EBB942B1D5E1F3B0098B41A /* CommentViewController.swift in Sources */,
 				4234DDAF1D548D7E00CEBA18 /* PokemonListViewController.swift in Sources */,
 				8EBB94C91D6116400098B41A /* Cache.swift in Sources */,
 				4234DD871D54720E00CEBA18 /* LocalStorageAdapter.swift in Sources */,
-				8EDF82041D636D020098096F /* UserDataStorage.swift in Sources */,
+				8EDF82041D636D020098096F /* UserDataLocalStorage.swift in Sources */,
 				8EBB94D11D6247610098B41A /* SinglePokemonTableCells.swift in Sources */,
 				4234DD981D5474BC00CEBA18 /* User.swift in Sources */,
+				8EDF820C1D637F860098096F /* CommentCreatedDelegate.swift in Sources */,
 				8EBB94341D5E35D20098B41A /* PostCommentTableCell.swift in Sources */,
 				8EBB943A1D5F2FD20098B41A /* CreatePokemonViewController.swift in Sources */,
 				8EBB943C1D5F3C2C0098B41A /* AnimationUtils.swift in Sources */,

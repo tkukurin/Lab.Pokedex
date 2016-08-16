@@ -5,6 +5,7 @@ typealias UserLoginData = (email: String,
                            password: String)
 
 class LoginViewController: UIViewController {
+    
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
@@ -32,7 +33,7 @@ extension LoginViewController {
     }
     
     private func requireFilledTextFieldsAndGetData() -> Result<UserLoginData> {
-        guard let username = emailTextField.text where !username.isEmpty else {
+        guard let email = emailTextField.text where !email.isEmpty else {
             AnimationUtils.shakeFieldAnimation(emailTextField)
             return Result.error()
         }
@@ -42,7 +43,7 @@ extension LoginViewController {
             return Result.error()
         }
         
-        return Result.of((username, password))
+        return Result.of((email, password))
     }
     
     private func sendLoginRequest(userData: UserLoginData) {
@@ -57,17 +58,12 @@ extension LoginViewController {
     private func persistUserAndGoToHomescreen(user: User) {
         ProgressHud.indicateSuccess()
         
-        userDataLocalStorage
-            .persistUser(emailTextField.text!, passwordTextField.text!)
-        
-        let pokemonListViewController = instantiate(PokemonListViewController.self,
-                                                    injecting: { $0.loggedInUser = user })
-        navigationController?.pushViewController(pokemonListViewController, animated: true)
+        userDataLocalStorage.persistUser(emailTextField.text!, passwordTextField.text!)
+        pushController(PokemonListViewController.self, injecting: { $0.loggedInUser = user })
     }
     
     @IBAction func didTapRegisterButton(sender: AnyObject) {
-        let registerViewController = instantiate(RegisterViewController.self)
-        navigationController?.pushViewController(registerViewController, animated: true)
+        pushController(RegisterViewController.self)
     }
     
 }

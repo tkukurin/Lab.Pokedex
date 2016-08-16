@@ -7,14 +7,15 @@ class PokemonListViewController: UITableViewController {
     var loggedInUser: User!
     var items: [Pokemon]!
     
+    private var indexPathLastSelectedByUser: NSIndexPath?
     private var userDataLocalStorage: UserDataLocalStorage!
+    
     private var userRequest: ApiUserRequest!
     private var listRequest: ApiPokemonListRequest!
-    private var serverRequestor: ServerRequestor!
     private var imageRequest: ApiPhotoRequest!
     
-    private let imageCache = ImageCache.sharedInstance
-    private let requestCache = Cache<UITableViewCell, Request>(maxCacheSize: 50)
+    private var imageCache: ImageCache!
+    private var requestCache: RequestCache!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,16 +24,26 @@ class PokemonListViewController: UITableViewController {
         userDataLocalStorage = container.get(UserDataLocalStorage.self)
         userRequest = container.get(ApiUserRequest.self)
         listRequest = container.get(ApiPokemonListRequest.self)
-        serverRequestor = container.get(ServerRequestor.self)
         imageRequest = container.get(ApiPhotoRequest.self)
+        imageCache = container.get(ImageCache.self)
+        requestCache = container.get(RequestCache.self)
         
-        requestCache.priorToCleanupAction = { request in request.cancel() }
         fetchPokemons()
     }
     
-    @IBAction func didPullToRefresh(sender: UIRefreshControl) {
-        fetchPokemons()
-        sender.endRefreshing()
+    override func viewWillAppear(animated: Bool) {
+        Result
+            .ofNullable(indexPathLastSelectedByUser)
+            .ifPresent({
+                self.tableView.deselectRowAtIndexPath($0, animated: false)
+                self.tableView.reloadRowsAtIndexPaths([$0], withRowAnimation: .Fade)
+                self.indexPathLastSelectedByUser = nil
+            })
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        ProgressHud.dismiss()
+        requestCache.emptyCache()
     }
     
     func fetchPokemons() {
@@ -66,16 +77,15 @@ extension PokemonListViewController {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        indexPathLastSelectedByUser = indexPath
         let pokemon = items[indexPath.row]
         let image: UIImage? = nil
         
-        let singlePokemonViewController = instantiate(SinglePokemonTableViewController.self, injecting: {
+        pushController(SinglePokemonTableViewController.self, injecting: {
             $0.pokemon = pokemon
             $0.image = image
             $0.loggedInUser = self.loggedInUser
         })
-        
-        self.navigationController?.pushViewController(singlePokemonViewController, animated: true)
     }
     
     override func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -136,24 +146,17 @@ extension PokemonListViewController {
                 }
             })
     }
-    
-    override func viewWillDisappear(animated: Bool) {
-        requestCache.forEach({ (cell, request) in request.cancel() })
-        requestCache.emptyCache()
-    }
 }
 
 
-// MARK - Status bar actions
+// MARK - IB Actions
 
 extension PokemonListViewController {
     @IBAction func didTapAddPokemonAction(sender: AnyObject) {
-        let createPokemonViewController = instantiate(CreatePokemonViewController.self, injecting: {
+        pushController(CreatePokemonViewController.self, injecting: {
             $0.loggedInUser = self.loggedInUser;
             $0.createPokemonDelegate = self
         })
-        
-        self.navigationController?.pushViewController(createPokemonViewController, animated: true)
     }
     
     @IBAction func didTapLogoutButton(sender: AnyObject) {
@@ -162,14 +165,19 @@ extension PokemonListViewController {
         
         navigationController?.popToRootViewControllerAnimated(true)
     }
+    
+    @IBAction func didPullToRefresh(sender: UIRefreshControl) {
+        fetchPokemons()
+        sender.endRefreshing()
+    }
 }
 
 
 // MARK - Delegate for newly created Pokemons
 
-extension PokemonListViewController: CreatePokemonDelegate {
+extension PokemonListViewController: PokemonCreatedDelegate {
     
-    func notify(pokemon: Pokemon, image: UIImage?) {
+    func notifyPokemonCreated(pokemon: Pokemon, image: UIImage?) {
         items.insert(pokemon, atIndex: 0)
         tableView.beginUpdates()
         tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)],

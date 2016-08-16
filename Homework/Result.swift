@@ -15,6 +15,10 @@ class Result<T> {
         self.value = value
     }
     
+    func isPresent() -> Bool {
+        return self.value != nil
+    }
+    
     func map<R>(f: (T throws -> R?)) -> Result<R> {
         var newVal: R? = nil
         

@@ -1,14 +1,5 @@
-//
-//  PostCommentTableCell.swift
-//  Homework
-//
-//  Created by toni-user on 12/08/16.
-//  Copyright © 2016 Infinum. All rights reserved.
-//
 
 import UIKit
-import Unbox
-import Alamofire
 
 class PostCommentTableCell: UITableViewCell {
     
@@ -24,22 +15,27 @@ class PostCommentTableCell: UITableViewCell {
     }
     
     @IBAction func didTapSendButton(sender: AnyObject) {
-        guard let commentText: String = self.textField.text
-                where !commentText.isEmpty else {
-            AnimationUtils.shakeFieldAnimation(self.textField)
-            //ProgressHud.indicateFailure("Please enter a comment before sending")
-            return
-        }
-        
+        Result
+            .ofNullable(textField.text)
+            .filter({ !$0.isEmpty })
+            .ifPresent(postComment)
+            .orElseDo({
+                AnimationUtils.shakeFieldAnimation(self.textField)
+            })
+    }
+    
+    func postComment(content: String) {
         apiCommentPostRequest
             .setSuccessHandler(commentCreatedCallback)
-            .setFailureHandler({ ProgressHud.indicateFailure("Bad server response.") })
-            .doPostComment(user, pokemonId: pokemonId, content: commentText)
+            .setFailureHandler({ ProgressHud.indicateFailure("Couldn't post comment!") })
+            .doPostComment(user, pokemonId: pokemonId, content: content)
     }
     
     func commentCreatedCallback(commentCreatedResponse: CommentCreatedResponse) {
         self.textField.text = ""
-        delegate.notify(commentCreatedResponse.comment)
+        self.resignFirstResponder()
+        
+        delegate.notifyCommentCreated(commentCreatedResponse.comment)
     }
     
 }

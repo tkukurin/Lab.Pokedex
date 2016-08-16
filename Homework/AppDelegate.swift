@@ -24,10 +24,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setupSharedContainer() {
         let storageAdapter = LocalStorageAdapter()
         let serverRequestor = ServerRequestor()
+        let sharedImageCache = ImageCache.sharedInstance
+        let sharedRequestCache = RequestCache.sharedInstance
         
         Container.putServices([
             (key: UserDataLocalStorage.self, value: { storageAdapter }),
+            (key: ImageCache.self, value: { sharedImageCache }),
             (key: ServerRequestor.self, value: { serverRequestor }),
+            (key: RequestCache.self, value: { sharedRequestCache }),
             (key: ApiUserRequest.self, value: { ApiUserRequest() }),
             (key: ApiPhotoRequest.self, value: { ApiPhotoRequest() }),
             (key: ApiCommentListRequest.self, value: { ApiCommentListRequest()}),
@@ -66,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func showLoginScreen() {
-        let loginViewController = mainStoryboard.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
+        let loginViewController = mainStoryboard.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
         navigationController.pushViewController(loginViewController, animated: true)
     }
 

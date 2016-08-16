@@ -41,23 +41,20 @@ extension  RegisterViewController {
     
     private func requireFilledTextFields() -> Result<UserRegisterData> {
         var values = [String]()
-        let fields = getRequiredFields()
+        var didCollectAllRequiredValues = true
         
-        fields.forEach({ field in
+        getRequiredFields().forEach({ field in
             if let content = field.text where !content.isEmpty {
                 values.append(content)
             } else {
+                didCollectAllRequiredValues = false
                 AnimationUtils.shakeFieldAnimation(field)
             }
         })
         
-        let didCollectAllRequiredValues = (values.count == fields.count)
-        
-        if !didCollectAllRequiredValues {
-            return Result.error()
-        } else {
-            return Result.of(arrayToRegisterData(values))
-        }
+        return didCollectAllRequiredValues
+            ? Result.of(arrayToRegisterData(values))
+            : Result.error()
     }
     
     private func getRequiredFields() -> [UITextField] {
@@ -86,13 +83,8 @@ extension  RegisterViewController {
     private func persistUserAndGoToHomescreen(user: User) {
         ProgressHud.indicateSuccess("Successfully logged in!")
         
-        userDataLocalStorage
-            .persistUser(emailTextField.text!, passwordTextField.text!)
-        
-        let pokemonListViewController = instantiate("pokemonListViewController",
-                                                    injecting: { $0.loggedInUser = user }) as PokemonListViewController
-        
-        navigationController?.pushViewController(pokemonListViewController, animated: true)
+        userDataLocalStorage.persistUser(emailTextField.text!, passwordTextField.text!)
+        pushController(PokemonListViewController.self, injecting: { $0.loggedInUser = user })
     }
     
 }

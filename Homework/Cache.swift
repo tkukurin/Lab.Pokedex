@@ -55,6 +55,8 @@ class Cache<KeyType: Hashable, ValueType> {
     }
     
     func emptyCache() {
+        forEach({ (key, value) in self.priorToCleanupAction(value) })
+        
         self.cache = [KeyType: ValueType]()
         self.keyInsertionIndex = 0
         self.keys = [KeyType?](count: maxCacheSize, repeatedValue: nil)

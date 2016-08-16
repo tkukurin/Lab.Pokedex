@@ -13,25 +13,19 @@ class SinglePokemonTableViewController: UITableViewController {
     var image: UIImage?
     var loggedInUser: User!
     
-    private let imageCache = ImageCache.sharedInstance
-    
+    private var imageCache: ImageCache!
     private var imageLoader: ApiPhotoRequest!
     private var commentRequest: ApiCommentListRequest!
     private var SECTIONS: [SectionDescriptor]!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 60
         title = pokemon.attributes.name
         
-        SECTIONS = [
-            (identifier: "heroImageCell", nItems: 1, initializer: createHeroImageCell),
-            (identifier: "pokemonDescriptionCell", nItems: 1, initializer: createPokemonDescriptionCell),
-            (identifier: "pokemonAttributeCell", nItems: 4, initializer: createPokemonAttributesCell)
-        ]
+        setupCorrectCellHeights()
+        setupSections()
         
+        imageCache = Container.sharedInstance.get(ImageCache.self)
         imageLoader = Container.sharedInstance.get(ApiPhotoRequest.self)
         commentRequest = Container.sharedInstance.get(ApiCommentListRequest.self)
         
@@ -39,6 +33,19 @@ class SinglePokemonTableViewController: UITableViewController {
             .get(pokemon.attributes.imageUrl)
             .ifPresent(updatePhotoAndCloseProgressHud)
             .orElseDo({ self.loadImageOrDisplayDefault(self.pokemon.attributes.imageUrl) })
+    }
+    
+    func setupCorrectCellHeights() {
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 60
+    }
+    
+    func setupSections() {
+        SECTIONS = [
+            (identifier: "heroImageCell", nItems: 1, initializer: createHeroImageCell),
+            (identifier: "pokemonDescriptionCell", nItems: 1, initializer: createPokemonDescriptionCell),
+            (identifier: "pokemonAttributeCell", nItems: 4, initializer: createPokemonAttributesCell)
+        ]
     }
 
     override func viewWillDisappear(animated: Bool) {
@@ -90,13 +97,12 @@ class SinglePokemonTableViewController: UITableViewController {
     func displayComments(injecting: CommentList, sender: UIBarButtonItem) {
         ProgressHud.indicateSuccess()
         
-        let commentViewController = instantiate(CommentViewController.self, injecting: {
+        pushController(CommentViewController.self, injecting: {
             $0.comments = injecting.comments;
             $0.pokemon = self.pokemon;
             $0.loggedInUser = self.loggedInUser
         })
         
-        self.navigationController?.pushViewController(commentViewController, animated: true)
         reEnableCommentsButton(sender)
     }
     
