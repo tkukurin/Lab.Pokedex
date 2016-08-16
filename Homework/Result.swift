@@ -39,6 +39,16 @@ class Result<T> {
         return retVal
     }
     
+    func filter(predicate: (T -> Bool)) -> Result<T> {
+        var predicateIsOk = true
+        
+        if let value: T = self.value {
+            predicateIsOk = predicate(value)
+        }
+        
+        return predicateIsOk ? self : Result.error()
+    }
+    
     func ifPresent(f: (T -> ())) -> Result<T> {
         if let value: T = self.value {
             f(value)

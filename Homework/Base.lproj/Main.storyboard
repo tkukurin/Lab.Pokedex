@@ -9,7 +9,7 @@
         <!--Login View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="loginViewController" id="BYZ-38-t0r" customClass="LoginViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="BYZ-38-t0r" customClass="LoginViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -99,7 +99,7 @@
         <!--Sign up-->
         <scene sceneID="pSu-7e-qtj">
             <objects>
-                <viewController storyboardIdentifier="registerViewController" title="Sign up" id="bOY-U0-WqH" customClass="RegisterViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="RegisterViewController" title="Sign up" id="bOY-U0-WqH" customClass="RegisterViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="6Zq-Yb-MEy"/>
                         <viewControllerLayoutGuide type="bottom" id="Xl1-C6-g2A"/>
@@ -176,7 +176,7 @@
         <!--Pokedex-->
         <scene sceneID="lxE-EX-ZXd">
             <objects>
-                <tableViewController storyboardIdentifier="pokemonListViewController" title="Pokedex" id="NgO-Cd-8lJ" customClass="PokemonListViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="PokemonListViewController" title="Pokedex" id="NgO-Cd-8lJ" customClass="PokemonListViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="90" sectionHeaderHeight="28" sectionFooterHeight="28" id="dy8-qq-gNO">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -264,7 +264,7 @@
         <!--Add Pokemon-->
         <scene sceneID="3Xn-h2-UGh">
             <objects>
-                <tableViewController storyboardIdentifier="createPokemonViewController" id="o70-N7-uVz" customClass="CreatePokemonViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="CreatePokemonViewController" id="o70-N7-uVz" customClass="CreatePokemonViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Asg-E8-XYI">
                         <rect key="frame" x="0.0" y="64" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -428,7 +428,7 @@
         <!--Comment View Controller-->
         <scene sceneID="Dnt-Sb-PC8">
             <objects>
-                <tableViewController storyboardIdentifier="commentViewController" id="IB4-fX-BgI" customClass="CommentViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="CommentViewController" id="IB4-fX-BgI" customClass="CommentViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="109" sectionHeaderHeight="28" sectionFooterHeight="28" id="KNJ-7k-H0i">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -525,7 +525,7 @@
         <!--Navigation Controller-->
         <scene sceneID="WU2-e6-lfR">
             <objects>
-                <navigationController storyboardIdentifier="mainNavigationController" automaticallyAdjustsScrollViewInsets="NO" id="9Y0-nl-bTH" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="UINavigationController" automaticallyAdjustsScrollViewInsets="NO" id="9Y0-nl-bTH" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="RS4-mb-z6i">
@@ -546,7 +546,7 @@
         <!--Pokemon-->
         <scene sceneID="2SE-u5-vRf">
             <objects>
-                <tableViewController storyboardIdentifier="singlePokemonTableView" id="mFF-0V-eFj" customClass="SinglePokemonTableViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="SinglePokemonTableViewController" id="mFF-0V-eFj" customClass="SinglePokemonTableViewController" customModule="Homework" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="90" sectionHeaderHeight="28" sectionFooterHeight="28" id="KGv-ba-iba">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

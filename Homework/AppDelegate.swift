@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let serverRequestor = ServerRequestor()
         
         Container.putServices([
-            (key: LocalStorageAdapter.self, value: { storageAdapter }),
+            (key: UserDataLocalStorage.self, value: { storageAdapter }),
             (key: ServerRequestor.self, value: { serverRequestor }),
             (key: ApiUserRequest.self, value: { ApiUserRequest() }),
             (key: ApiPhotoRequest.self, value: { ApiPhotoRequest() }),
@@ -45,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func getLocalUserData() -> Result<UserLoginData> {
-        return Container.sharedInstance.get(LocalStorageAdapter.self).loadUser()
+        return Container.sharedInstance.get(UserDataLocalStorage.self).loadUser()
     }
     
     private func showPokemonListScreen(userLoginData: UserLoginData) {
@@ -56,10 +56,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func loadUserAndShowPokemonListScreen(user: User) {
-        let loginViewController = mainStoryboard.instantiateViewControllerWithIdentifier("loginViewController") as! LoginViewController
+        let loginViewController = mainStoryboard.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
         
-        let pokemonListViewController = mainStoryboard.instantiateViewControllerWithIdentifier("pokemonListViewController") as! PokemonListViewController
-        pokemonListViewController.user = user
+        let pokemonListViewController = mainStoryboard.instantiateViewControllerWithIdentifier("PokemonListViewController") as! PokemonListViewController
+        pokemonListViewController.loggedInUser = user
         
         navigationController.pushViewController(loginViewController, animated: false)
         loginViewController.navigationController?.pushViewController(pokemonListViewController, animated: false)

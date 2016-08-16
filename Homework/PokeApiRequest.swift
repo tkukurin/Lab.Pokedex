@@ -3,7 +3,6 @@ import Unbox
 import Foundation
 import Alamofire
 
-typealias UserLoginData = (email: String, password: String)
 typealias JsonType = [String: AnyObject]
 
 protocol ChainableApiCallback: class {

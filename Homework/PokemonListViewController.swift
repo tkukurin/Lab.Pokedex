@@ -4,10 +4,10 @@ import Alamofire
 
 class PokemonListViewController: UITableViewController {
     
-    var user: User!
+    var loggedInUser: User!
     var items: [Pokemon]!
     
-    private var localStorageAdapter: LocalStorageAdapter!
+    private var userDataLocalStorage: UserDataLocalStorage!
     private var userRequest: ApiUserRequest!
     private var listRequest: ApiPokemonListRequest!
     private var serverRequestor: ServerRequestor!
@@ -20,7 +20,7 @@ class PokemonListViewController: UITableViewController {
         super.viewDidLoad()
         
         let container = Container.sharedInstance
-        localStorageAdapter = container.get(LocalStorageAdapter.self)
+        userDataLocalStorage = container.get(UserDataLocalStorage.self)
         userRequest = container.get(ApiUserRequest.self)
         listRequest = container.get(ApiPokemonListRequest.self)
         serverRequestor = container.get(ServerRequestor.self)
@@ -41,7 +41,7 @@ class PokemonListViewController: UITableViewController {
         listRequest
             .setSuccessHandler(loadPokemons)
             .setFailureHandler({ ProgressHud.indicateFailure("Uh-oh... The Pokemons could not be loaded!")  })
-            .doGetPokemons(user)
+            .doGetPokemons(loggedInUser)
     }
     
     func loadPokemons(pokemonList: PokemonList) {
@@ -69,11 +69,11 @@ extension PokemonListViewController {
         let pokemon = items[indexPath.row]
         let image: UIImage? = nil
         
-        let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonTableView") as! SinglePokemonTableViewController
-        
-        singlePokemonViewController.pokemon = pokemon
-        singlePokemonViewController.image = image
-        singlePokemonViewController.loggedInUser = user
+        let singlePokemonViewController = instantiate(SinglePokemonTableViewController.self, injecting: {
+            $0.pokemon = pokemon
+            $0.image = image
+            $0.loggedInUser = self.loggedInUser
+        })
         
         self.navigationController?.pushViewController(singlePokemonViewController, animated: true)
     }
@@ -148,18 +148,19 @@ extension PokemonListViewController {
 
 extension PokemonListViewController {
     @IBAction func didTapAddPokemonAction(sender: AnyObject) {
-        let createPokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("createPokemonViewController") as! CreatePokemonViewController
-        
-        createPokemonViewController.user = user
-        createPokemonViewController.createPokemonDelegate = self
+        let createPokemonViewController = instantiate(CreatePokemonViewController.self, injecting: {
+            $0.loggedInUser = self.loggedInUser;
+            $0.createPokemonDelegate = self
+        })
         
         self.navigationController?.pushViewController(createPokemonViewController, animated: true)
     }
     
     @IBAction func didTapLogoutButton(sender: AnyObject) {
-        userRequest.doLogout(user)
-        localStorageAdapter.deleteActiveUser()
-        navigationController?.popViewControllerAnimated(true)
+        userRequest.doLogout(loggedInUser)
+        userDataLocalStorage.deleteActiveUser()
+        
+        navigationController?.popToRootViewControllerAnimated(true)
     }
 }
 

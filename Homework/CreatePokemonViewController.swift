@@ -14,7 +14,7 @@ class CreatePokemonViewController: UITableViewController {
     @IBOutlet weak var pokemonDescriptionTextField: UITextField!
     @IBOutlet weak var genderSegmentedControl: UISegmentedControl!
     
-    var user: User!
+    var loggedInUser: User!
     var createPokemonDelegate: CreatePokemonDelegate!
     
     private var pickedImage: UIImage!
@@ -43,17 +43,18 @@ class CreatePokemonViewController: UITableViewController {
     
     @IBAction func didTapCreatePokemonButton(sender: UIButton) {
         constructPokemonAttributeMap()
-            .ifPresent({
+            .ifPresent({ attributes in
                 ProgressHud.show()
                 self.pokemonCreateRequest
                     .setSuccessHandler(self.closeWindowAndNotifyDelegate)
                     .setFailureHandler({ ProgressHud.indicateFailure() })
-                    .doCreate(self.user, image: self.pickedImage, attributes: $0)
+                    .doCreate(self.loggedInUser, image: self.pickedImage, attributes: attributes)
             })
     }
     
     func closeWindowAndNotifyDelegate(createdPokemon: PokemonCreatedResponse) -> Void {
         ProgressHud.indicateSuccess()
+        
         self.navigationController?.popViewControllerAnimated(true)
         self.createPokemonDelegate.notify(createdPokemon.pokemon,
                                           image: self.imageViewComponent.image)
@@ -63,27 +64,29 @@ class CreatePokemonViewController: UITableViewController {
         var attributes = [String: String]()
         var fieldsAreValid = true
         
-        [ (pokemonNameTextField, ApiRequestConstants.PokeAttributes.NAME),
-            (pokemonHeightTextField, ApiRequestConstants.PokeAttributes.HEIGHT),
-            (pokemonWeightTextField, ApiRequestConstants.PokeAttributes.WEIGHT),
-            (pokemonDescriptionTextField, ApiRequestConstants.PokeAttributes.DESCRIPTION) ].forEach({ tuple in
-                let key = tuple.1
-                let value = tuple.0.text!
-                
-                if value.isEmpty {
-                    fieldsAreValid = false
-                    AnimationUtils.shakeFieldAnimation(tuple.0)
-                } else {
-                    attributes[key] = value
-                }
+        getTuplesOfFieldAndAttributeKey().forEach({ tuple in
+            let key = tuple.key
+            let field = tuple.field
+            
+            Result.ofNullable(field)
+                .map({ $0.text })
+                .filter({ !$0.isEmpty })
+                .ifPresent({ attributes[key] = $0 })
+                .orElseDo({ fieldsAreValid = false; AnimationUtils.shakeFieldAnimation(field) })
         })
         
-        attributes[ApiRequestConstants.PokeAttributes.GENDER_ID] = getGenderFromSegment()
-        
+        attributes[ApiRequestConstants.PokeAttributes.GENDER_ID] = getGenderIdFromSegmentControl()
         return Result.ofNullable(fieldsAreValid ? attributes : nil)
     }
     
-    func getGenderFromSegment() -> String {
+    func getTuplesOfFieldAndAttributeKey() -> [(key: String, field: UITextField)] {
+        return [ (key: ApiRequestConstants.PokeAttributes.NAME, field: pokemonNameTextField),
+                 (key: ApiRequestConstants.PokeAttributes.HEIGHT, field: pokemonHeightTextField),
+                 (key: ApiRequestConstants.PokeAttributes.WEIGHT, field: pokemonWeightTextField),
+                 (key: ApiRequestConstants.PokeAttributes.DESCRIPTION, field: pokemonDescriptionTextField) ]
+    }
+    
+    func getGenderIdFromSegmentControl() -> String {
         let index = genderSegmentedControl.selectedSegmentIndex
         let zeroBasedIndexToValidOneBasedGenderId = index + 1
         

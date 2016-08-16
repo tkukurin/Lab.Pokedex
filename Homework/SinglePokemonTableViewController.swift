@@ -90,13 +90,13 @@ class SinglePokemonTableViewController: UITableViewController {
     func displayComments(injecting: CommentList, sender: UIBarButtonItem) {
         ProgressHud.indicateSuccess()
         
-        let commentViewController = self.storyboard?.instantiateViewControllerWithIdentifier("commentViewController") as! CommentViewController
-        commentViewController.comments = injecting.comments
-        commentViewController.pokemon = self.pokemon
-        commentViewController.loggedInUser = loggedInUser
+        let commentViewController = instantiate(CommentViewController.self, injecting: {
+            $0.comments = injecting.comments;
+            $0.pokemon = self.pokemon;
+            $0.loggedInUser = self.loggedInUser
+        })
         
         self.navigationController?.pushViewController(commentViewController, animated: true)
-        
         reEnableCommentsButton(sender)
     }
     

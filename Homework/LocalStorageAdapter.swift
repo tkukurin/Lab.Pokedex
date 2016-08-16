@@ -1,6 +1,6 @@
 import Foundation
 
-class LocalStorageAdapter {
+class LocalStorageAdapter: UserDataLocalStorage {
     private static let EMAIL_KEY = "email"
     private static let PASSWORD_KEY = "password"
     
