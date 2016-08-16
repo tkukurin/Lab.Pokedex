@@ -16,7 +16,6 @@
 		4234DD641D5469A900CEBA18 /* HomeworkUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD631D5469A900CEBA18 /* HomeworkUITests.swift */; };
 		4234DD741D546B7000CEBA18 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD731D546B7000CEBA18 /* LoginViewController.swift */; };
 		4234DD771D546BCD00CEBA18 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD761D546BCD00CEBA18 /* Result.swift */; };
-		4234DD791D546BF800CEBA18 /* Exception.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD781D546BF800CEBA18 /* Exception.swift */; };
 		4234DD7D1D546D0A00CEBA18 /* ProgressHud.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD7C1D546D0A00CEBA18 /* ProgressHud.swift */; };
 		4234DD841D546F7F00CEBA18 /* Container.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD831D546F7F00CEBA18 /* Container.swift */; };
 		4234DD871D54720E00CEBA18 /* LocalStorageAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4234DD861D54720E00CEBA18 /* LocalStorageAdapter.swift */; };
@@ -43,8 +42,9 @@
 		8EBB94C71D60D1A90098B41A /* PokeApiRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94C61D60D1A90098B41A /* PokeApiRequest.swift */; };
 		8EBB94C91D6116400098B41A /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94C81D6116400098B41A /* Cache.swift */; };
 		8EBB94CB1D6186A70098B41A /* RequestEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94CA1D6186A70098B41A /* RequestEndpoint.swift */; };
-		8EBB94CF1D62011B0098B41A /* SinglePokemonTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94CE1D62011B0098B41A /* SinglePokemonTableView.swift */; };
+		8EBB94CF1D62011B0098B41A /* SinglePokemonTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94CE1D62011B0098B41A /* SinglePokemonTableViewController.swift */; };
 		8EBB94D11D6247610098B41A /* SinglePokemonTableCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBB94D01D6247610098B41A /* SinglePokemonTableCells.swift */; };
+		8EDF82001D6366940098096F /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDF81FF1D6366940098096F /* ImageCache.swift */; };
 		C27E372A94B259DA310FD615 /* Pods_HomeworkTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22ABFD6E8E80A253684177AF /* Pods_HomeworkTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -82,7 +82,6 @@
 		4234DD651D5469A900CEBA18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4234DD731D546B7000CEBA18 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4234DD761D546BCD00CEBA18 /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
-		4234DD781D546BF800CEBA18 /* Exception.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exception.swift; sourceTree = "<group>"; };
 		4234DD7C1D546D0A00CEBA18 /* ProgressHud.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressHud.swift; sourceTree = "<group>"; };
 		4234DD831D546F7F00CEBA18 /* Container.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Container.swift; sourceTree = "<group>"; };
 		4234DD861D54720E00CEBA18 /* LocalStorageAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalStorageAdapter.swift; sourceTree = "<group>"; };
@@ -108,8 +107,9 @@
 		8EBB94C61D60D1A90098B41A /* PokeApiRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokeApiRequest.swift; sourceTree = "<group>"; };
 		8EBB94C81D6116400098B41A /* Cache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		8EBB94CA1D6186A70098B41A /* RequestEndpoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestEndpoint.swift; sourceTree = "<group>"; };
-		8EBB94CE1D62011B0098B41A /* SinglePokemonTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SinglePokemonTableView.swift; sourceTree = "<group>"; };
+		8EBB94CE1D62011B0098B41A /* SinglePokemonTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SinglePokemonTableViewController.swift; sourceTree = "<group>"; };
 		8EBB94D01D6247610098B41A /* SinglePokemonTableCells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SinglePokemonTableCells.swift; sourceTree = "<group>"; };
+		8EDF81FF1D6366940098096F /* ImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		B24D32D3AC143C6C3664D8E9 /* Pods-Homework.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Homework.release.xcconfig"; path = "Pods/Target Support Files/Pods-Homework/Pods-Homework.release.xcconfig"; sourceTree = "<group>"; };
 		BB2BB73FEB52175A0A90E7FC /* Pods-HomeworkTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HomeworkTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HomeworkTests/Pods-HomeworkTests.release.xcconfig"; sourceTree = "<group>"; };
 		C936BF2C91978BD45140DBB0 /* Pods-Homework.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Homework.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Homework/Pods-Homework.debug.xcconfig"; sourceTree = "<group>"; };
@@ -227,7 +227,6 @@
 			isa = PBXGroup;
 			children = (
 				4234DD761D546BCD00CEBA18 /* Result.swift */,
-				4234DD781D546BF800CEBA18 /* Exception.swift */,
 			);
 			name = Exception;
 			sourceTree = "<group>";
@@ -263,6 +262,7 @@
 			children = (
 				8EBB94C81D6116400098B41A /* Cache.swift */,
 				4234DD861D54720E00CEBA18 /* LocalStorageAdapter.swift */,
+				8EDF81FF1D6366940098096F /* ImageCache.swift */,
 			);
 			name = Storage;
 			sourceTree = "<group>";
@@ -332,7 +332,7 @@
 		8EBB94251D5D1CB10098B41A /* SinglePokemon */ = {
 			isa = PBXGroup;
 			children = (
-				8EBB94CE1D62011B0098B41A /* SinglePokemonTableView.swift */,
+				8EBB94CE1D62011B0098B41A /* SinglePokemonTableViewController.swift */,
 				8EBB94D01D6247610098B41A /* SinglePokemonTableCells.swift */,
 			);
 			name = SinglePokemon;
@@ -618,12 +618,11 @@
 				4234DD7D1D546D0A00CEBA18 /* ProgressHud.swift in Sources */,
 				8EBB94C71D60D1A90098B41A /* PokeApiRequest.swift in Sources */,
 				8EBB94311D5E22F60098B41A /* CommentList.swift in Sources */,
-				4234DD791D546BF800CEBA18 /* Exception.swift in Sources */,
 				4234DD841D546F7F00CEBA18 /* Container.swift in Sources */,
 				4234DDAB1D54841E00CEBA18 /* PokemonTableCell.swift in Sources */,
 				8EBB94361D5E710C0098B41A /* UserList.swift in Sources */,
 				4234DD921D54747100CEBA18 /* ApiRequestConstants.swift in Sources */,
-				8EBB94CF1D62011B0098B41A /* SinglePokemonTableView.swift in Sources */,
+				8EBB94CF1D62011B0098B41A /* SinglePokemonTableViewController.swift in Sources */,
 				8EBB942B1D5E1F3B0098B41A /* CommentViewController.swift in Sources */,
 				4234DDAF1D548D7E00CEBA18 /* PokemonListViewController.swift in Sources */,
 				8EBB94C91D6116400098B41A /* Cache.swift in Sources */,
@@ -640,6 +639,7 @@
 				8EBB94381D5F206B0098B41A /* RegisterViewController.swift in Sources */,
 				8EBB94CB1D6186A70098B41A /* RequestEndpoint.swift in Sources */,
 				4234DD441D5469A900CEBA18 /* AppDelegate.swift in Sources */,
+				8EDF82001D6366940098096F /* ImageCache.swift in Sources */,
 				8EBB942D1D5E20240098B41A /* CommentTableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

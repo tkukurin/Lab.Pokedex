@@ -1,14 +1,6 @@
 
 import UIKit
 
-class ImageCache: Cache<String, UIImage> {
-    static let sharedInstance = ImageCache()
-    
-    private init() {
-        super.init(maxCacheSize: 30)
-    }
-}
-
 class Cache<KeyType: Hashable, ValueType> {
     
     var cache: [KeyType: ValueType]

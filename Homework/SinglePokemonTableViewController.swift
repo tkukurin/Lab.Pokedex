@@ -1,7 +1,7 @@
 
 import UIKit
 
-class SinglePokemonTableView: UITableViewController {
+class SinglePokemonTableViewController: UITableViewController {
     typealias TableCellInitializer = (cell: UITableViewCell, row: Int) -> UITableViewCell
     typealias SectionDescriptor = (identifier: String, nItems: Int, initializer: TableCellInitializer)
     
@@ -49,7 +49,7 @@ class SinglePokemonTableView: UITableViewController {
         Result
             .ofNullable(imageUrl)
             .ifPresent(loadImage)
-            .orElseDo({ self.updatePhotoAndCloseProgressHud(SinglePokemonTableView.DEFAULT_IMAGE) })
+            .orElseDo({ self.updatePhotoAndCloseProgressHud(SinglePokemonTableViewController.DEFAULT_IMAGE) })
     }
     
     func loadImage(urlEndpoint: String) {
@@ -61,7 +61,7 @@ class SinglePokemonTableView: UITableViewController {
                 self.updatePhotoAndCloseProgressHud($0)
             })
             .setFailureHandler({
-                self.updatePhotoAndCloseProgressHud(SinglePokemonTableView.DEFAULT_IMAGE)
+                self.updatePhotoAndCloseProgressHud(SinglePokemonTableViewController.DEFAULT_IMAGE)
             })
             .prepareRequest(urlEndpoint)
             .doGetPhoto()
@@ -106,7 +106,7 @@ class SinglePokemonTableView: UITableViewController {
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if isHeroImageCell(indexPath) {
-            return SinglePokemonTableView.HERO_IMAGE_HEIGHT
+            return SinglePokemonTableViewController.HERO_IMAGE_HEIGHT
         }
         
         return super.tableView(tableView, heightForRowAtIndexPath: indexPath)
@@ -170,12 +170,12 @@ class SinglePokemonTableView: UITableViewController {
     
     func getOrDefaultFromDouble(value: Double?) -> String {
         if let value: Double = value { return String(format:"%.2f", value) }
-        return SinglePokemonTableView.DEFAULT_STRING_IF_DATA_UNAVAILABLE
+        return SinglePokemonTableViewController.DEFAULT_STRING_IF_DATA_UNAVAILABLE
     }
     
     func getOrDefaultFromString(value: String?) -> String {
         if let value: String = value { return value }
-        return SinglePokemonTableView.DEFAULT_STRING_IF_DATA_UNAVAILABLE
+        return SinglePokemonTableViewController.DEFAULT_STRING_IF_DATA_UNAVAILABLE
     }
     
 }

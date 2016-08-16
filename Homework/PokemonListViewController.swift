@@ -11,6 +11,7 @@ class PokemonListViewController: UITableViewController {
     private var userRequest: ApiUserRequest!
     private var listRequest: ApiPokemonListRequest!
     private var serverRequestor: ServerRequestor!
+    private var imageRequest: ApiPhotoRequest!
     
     private let imageCache = ImageCache.sharedInstance
     private let requestCache = Cache<UITableViewCell, Request>(maxCacheSize: 50)
@@ -23,6 +24,7 @@ class PokemonListViewController: UITableViewController {
         userRequest = container.get(ApiUserRequest.self)
         listRequest = container.get(ApiPokemonListRequest.self)
         serverRequestor = container.get(ServerRequestor.self)
+        imageRequest = container.get(ApiPhotoRequest.self)
         
         requestCache.priorToCleanupAction = { request in request.cancel() }
         fetchPokemons()
@@ -67,7 +69,7 @@ extension PokemonListViewController {
         let pokemon = items[indexPath.row]
         let image: UIImage? = nil
         
-        let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonTableView") as! SinglePokemonTableView
+        let singlePokemonViewController = self.storyboard?.instantiateViewControllerWithIdentifier("singlePokemonTableView") as! SinglePokemonTableViewController
         
         singlePokemonViewController.pokemon = pokemon
         singlePokemonViewController.image = image
@@ -117,7 +119,7 @@ extension PokemonListViewController {
     }
     
     func setCellImage(cell: PokemonTableCell, row: NSIndexPath, imageUrl: String) {
-        let req = serverRequestor.requestManager.request(.GET, RequestEndpoint.REQUEST_DOMAIN + RequestEndpoint.forImages(imageUrl))
+        let req = imageRequest.prepareRequest(imageUrl).getRequest()
         requestCache.put(cell, value: req)
         
         req.validate()

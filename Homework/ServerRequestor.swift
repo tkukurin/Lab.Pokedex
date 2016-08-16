@@ -2,14 +2,16 @@ import Alamofire
 
 class ServerRequestor {
     typealias NSDataServerResponseConsumer = NSData? -> ()
-    private static let COMPRESSION_QUALITY: CGFloat = 0.8
     
+    private static let COMPRESSION_QUALITY: CGFloat = 0.8
     let requestManager: Manager
     
     init() {
         let configuration = NSURLSessionConfiguration.defaultSessionConfiguration()
         
         // this was a nice idea but doesn't seem to work.
+        // Expected behavior was for Alamofire to give up if it doesn't manage to
+        // download file within X seconds (TBD during runtime).
         //configuration.timeoutIntervalForRequest = 10
         //configuration.timeoutIntervalForResource = 10
         
