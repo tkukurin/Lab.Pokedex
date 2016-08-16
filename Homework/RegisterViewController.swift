@@ -33,10 +33,15 @@ class RegisterViewController : UIViewController {
 
 extension  RegisterViewController {
     
-    @IBAction func didTapSignUpButton(sender: AnyObject) {
+    @IBAction func didTapSignUpButton(sender: UIButton) {
+        sender.enabled = false
+        
         requireFilledTextFields()
             .ifPresent(sendRegisterRequest)
-            .orElseDo({ ProgressHud.indicateFailure("Please fill out all the fields.") })
+            .orElseDo({
+                ProgressHud.indicateFailure("Please fill out all the fields.")
+                sender.enabled = true
+            })
     }
     
     private func requireFilledTextFields() -> Result<UserRegisterData> {

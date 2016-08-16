@@ -42,6 +42,8 @@ class CreatePokemonViewController: UITableViewController {
             .filter(areWeightAndHeightDoubleValues)
             .ifPresent({ attributes in
                 ProgressHud.show()
+                sender.enabled = false
+                
                 self.pokemonCreateRequest
                     .setSuccessHandler(self.closeWindowAndNotifyDelegate)
                     .setFailureHandler({ ProgressHud.indicateFailure() })

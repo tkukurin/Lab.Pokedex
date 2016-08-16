@@ -56,7 +56,7 @@ class PokemonListViewController: UITableViewController {
     }
     
     func loadPokemons(pokemonList: PokemonList) {
-        ProgressHud.indicateSuccess()
+        ProgressHud.indicateSuccess("Successfully loaded Pokemons")
         
         items = pokemonList.pokemons
         tableView.reloadData()

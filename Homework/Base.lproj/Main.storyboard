@@ -508,6 +508,7 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
+                                    <outlet property="senderButton" destination="OVT-8q-DzW" id="Pk0-HJ-B5R"/>
                                     <outlet property="textField" destination="vYJ-h1-uuE" id="yCM-Hc-Jtu"/>
                                 </connections>
                             </tableViewCell>

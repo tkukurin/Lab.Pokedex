@@ -4,6 +4,8 @@ import UIKit
 class PostCommentTableCell: UITableViewCell {
     
     @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var senderButton: UIButton!
+    
     private var apiCommentPostRequest: ApiCommentPostRequest!
     
     var pokemonId: Int!
@@ -15,6 +17,8 @@ class PostCommentTableCell: UITableViewCell {
     }
     
     @IBAction func didTapSendButton(sender: AnyObject) {
+        senderButton.enabled = false
+        
         Result
             .ofNullable(textField.text)
             .filter({ !$0.isEmpty })
@@ -25,6 +29,8 @@ class PostCommentTableCell: UITableViewCell {
     }
     
     func postComment(content: String) {
+        ProgressHud.show()
+        
         apiCommentPostRequest
             .setSuccessHandler(commentCreatedCallback)
             .setFailureHandler({ ProgressHud.indicateFailure("Couldn't post comment!") })
@@ -32,7 +38,10 @@ class PostCommentTableCell: UITableViewCell {
     }
     
     func commentCreatedCallback(commentCreatedResponse: CommentCreatedResponse) {
+        ProgressHud.indicateSuccess()
+        
         self.textField.text = ""
+        senderButton.enabled = true
         self.resignFirstResponder()
         
         delegate.notifyCommentCreated(commentCreatedResponse.comment)
