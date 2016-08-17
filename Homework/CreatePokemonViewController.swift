@@ -18,13 +18,7 @@ class CreatePokemonViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         pokemonCreateRequest = Container.sharedInstance.get(ApiPokemonCreateRequest.self)
-        
-        pokemonNameTextField.text = "Test pokemon"
-        pokemonHeightTextField.text = "12"
-        pokemonWeightTextField.text = "22"
-        pokemonDescriptionTextField.text = "Test Pokemon description also"
     }
     
     
@@ -46,7 +40,8 @@ class CreatePokemonViewController: UITableViewController {
                 
                 self.pokemonCreateRequest
                     .setSuccessHandler(self.closeWindowAndNotifyDelegate)
-                    .setFailureHandler({ ProgressHud.indicateFailure() })
+                    .setFailureHandler({ sender.enabled = true
+                                         ProgressHud.indicateFailure() })
                     .doCreate(self.loggedInUser, image: self.pickedImage, attributes: attributes)
             })
     }
