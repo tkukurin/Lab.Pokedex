@@ -65,20 +65,6 @@ class CreatePokemonViewController: UITableViewController {
         return Result.ofNullable(fieldsAreValid ? attributes : nil)
     }
     
-    func areWeightAndHeightDoubleValues(attributes: [String: String]) -> Bool {
-        let dblHeight = Result
-            .ofNullable(attributes[ApiRequestConstants.PokeAttributes.HEIGHT])
-            .map({ Double($0) })
-        let dblWeight = Result
-            .ofNullable(attributes[ApiRequestConstants.PokeAttributes.WEIGHT])
-            .map({ Double($0) })
-        
-        dblWeight.orElseDo({ ProgressHud.indicateFailure("Weight should be a double value") })
-        dblHeight.orElseDo({ ProgressHud.indicateFailure("Height should be a double value") })
-        
-        return dblHeight.isPresent() && dblWeight.isPresent()
-    }
-    
     func getTuplesOfRequiredFieldsAndRequestKeys() -> [(key: String, field: UITextField)] {
         return [ (key: ApiRequestConstants.PokeAttributes.NAME, field: pokemonNameTextField),
                  (key: ApiRequestConstants.PokeAttributes.HEIGHT, field: pokemonHeightTextField),
@@ -86,11 +72,25 @@ class CreatePokemonViewController: UITableViewController {
                  (key: ApiRequestConstants.PokeAttributes.DESCRIPTION, field: pokemonDescriptionTextField) ]
     }
     
-    func getGenderIdFromSegmentControl() -> String {
-        let index = genderSegmentedControl.selectedSegmentIndex
-        let zeroBasedIndexToValidOneBasedGenderId = index + 1
+    func areWeightAndHeightDoubleValues(attributes: [String: String]) -> Bool {
+        let dblHeight = tryConvertToDouble(attributes[ApiRequestConstants.PokeAttributes.HEIGHT])
+        let dblWeight = tryConvertToDouble(attributes[ApiRequestConstants.PokeAttributes.WEIGHT])
         
-        return String(zeroBasedIndexToValidOneBasedGenderId)
+        dblWeight.orElseDo({ ProgressHud.indicateFailure("Weight should be a double value") })
+        dblHeight.orElseDo({ ProgressHud.indicateFailure("Height should be a double value") })
+        
+        return dblHeight.isPresent() && dblWeight.isPresent()
+    }
+    
+    func tryConvertToDouble(value: String?) -> Result<Double> {
+        return Result.ofNullable(value).map({ Double($0) })
+    }
+    
+    func getGenderIdFromSegmentControl() -> String {
+        let segmentIndexToValue = [ "1", "2" ]
+        let index = genderSegmentedControl.selectedSegmentIndex
+        
+        return segmentIndexToValue[index]
     }
     
     func closeWindowAndNotifyDelegate(createdPokemon: PokemonCreatedResponse) -> Void {
@@ -110,13 +110,9 @@ extension CreatePokemonViewController : UIImagePickerControllerDelegate, UINavig
                                didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         Result
             .ofNullable(info[UIImagePickerControllerOriginalImage] as? UIImage)
-            .ifPresent({
-                self.imageViewComponent.image = $0
-                self.pickedImage = $0
-            })
-            .orElseDo({
-                ProgressHud.indicateFailure("Couldn't load image!")
-            })
+            .ifPresent({ self.imageViewComponent.image = $0
+                         self.pickedImage = $0 })
+            .orElseDo({ ProgressHud.indicateFailure("Couldn't load image!") })
         
         dismissViewControllerAnimated(true, completion: nil)
     }
