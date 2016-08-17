@@ -61,10 +61,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     private func loadUserAndShowPokemonListScreen(user: User) {
         let loginViewController = mainStoryboard.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-        
         let pokemonListViewController = mainStoryboard.instantiateViewControllerWithIdentifier("PokemonListViewController") as! PokemonListViewController
-        pokemonListViewController.loggedInUser = user
         
+        pokemonListViewController.loggedInUser = user
         navigationController.pushViewController(loginViewController, animated: false)
         loginViewController.navigationController?.pushViewController(pokemonListViewController, animated: false)
     }
