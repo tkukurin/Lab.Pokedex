@@ -31,21 +31,6 @@ class PokemonListViewController: UITableViewController {
         fetchPokemons()
     }
     
-    override func viewWillAppear(animated: Bool) {
-        Result
-            .ofNullable(indexPathLastSelectedByUser)
-            .ifPresent({
-                self.tableView.deselectRowAtIndexPath($0, animated: false)
-                self.tableView.reloadRowsAtIndexPaths([$0], withRowAnimation: .Fade)
-                self.indexPathLastSelectedByUser = nil
-            })
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        ProgressHud.dismiss()
-        requestCache.emptyCache()
-    }
-    
     func fetchPokemons() {
         ProgressHud.show()
         
@@ -60,6 +45,26 @@ class PokemonListViewController: UITableViewController {
         
         items = pokemonList.pokemons
         tableView.reloadData()
+    }
+}
+
+// MARK - Appear and disappear actions
+
+extension PokemonListViewController {    
+
+    override func viewWillAppear(animated: Bool) {
+        Result
+            .ofNullable(indexPathLastSelectedByUser)
+            .ifPresent({
+                self.tableView.deselectRowAtIndexPath($0, animated: false)
+                self.tableView.reloadRowsAtIndexPaths([$0], withRowAnimation: .Fade)
+                self.indexPathLastSelectedByUser = nil
+            })
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        ProgressHud.dismiss()
+        requestCache.emptyCache()
     }
 }
 
@@ -107,8 +112,7 @@ extension PokemonListViewController {
         imageCache
             .get(pokemon.attributes.imageUrl)
             .ifPresent({ cell.pokemonImageUIView.image = $0 })
-            .orElseDo({ self.invokeAsyncCellImageUpdate(cell, row: indexPath,
-                imageUrl: pokemon.attributes.imageUrl) })
+            .orElseDo({ self.invokeAsyncCellImageUpdate(cell, row: indexPath, imageUrl: pokemon.attributes.imageUrl) })
         
         return cell
     }
