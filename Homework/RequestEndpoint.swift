@@ -10,7 +10,6 @@ class RequestEndpoint {
         return POKEMON_ACTION + "/\(pokemonId)/comments"
     }
     
-    
     static func forUsers(userId: String) -> String {
         return USER_ACTION_CREATE_OR_DELETE + "/\(userId)"
     }
