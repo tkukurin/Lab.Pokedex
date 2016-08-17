@@ -49,6 +49,7 @@ extension  RegisterViewController {
         var didCollectAllRequiredValues = true
         
         getRequiredFields().forEach({ field in
+            // TODO functional
             if let content = field.text where !content.isEmpty {
                 values.append(content)
             } else {
@@ -62,6 +63,8 @@ extension  RegisterViewController {
             : Result.error()
     }
     
+    // TODO separate into collection
+    
     private func getRequiredFields() -> [UITextField] {
         return [ emailTextField,
                  usernameTextField,
@@ -69,12 +72,16 @@ extension  RegisterViewController {
                  confirmPasswordTextField ]
     }
     
+    // TODO would work better as a String:String hashMap
+    
     private func arrayToRegisterData(values: [String]) -> UserRegisterData {
         return (email: values[0],
                 username: values[1],
                 password: values[2],
                 confirmedPassword: values[3])
     }
+    
+    // TODO if registerRequest fails, button should be reset to enabled.
     
     private func sendRegisterRequest(userData: UserRegisterData) {
         ProgressHud.show()
