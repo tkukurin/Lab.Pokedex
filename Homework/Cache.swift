@@ -30,12 +30,15 @@ class Cache<KeyType: Hashable, ValueType> {
         
         Result
             .ofNullable(keys[keyInsertionIndex])
-            .ifPresent({
+            .map({ self.cache.removeValueForKey($0) })
+            .ifPresent({ self.priorToCleanupAction(item) })
+            
+                /* edited online, not brave enough to remove this.
+                    didn't use .map previously but:
                 if let item = self.cache.removeValueForKey($0) {
                     self.priorToCleanupAction(item)
                 }
-                
-            })
+                })*/
     }
     
     func get(key: KeyType?) -> Result<ValueType> {
