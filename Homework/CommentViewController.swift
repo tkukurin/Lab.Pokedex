@@ -1,6 +1,7 @@
-
 import UIKit
-import Alamofire
+
+// TODO the hardcoded values should be replaced with something nicer
+// e.g. SectionDescriptor
 
 class CommentViewController: UITableViewController {
     
@@ -8,9 +9,8 @@ class CommentViewController: UITableViewController {
     var comments: [Comment]!
     var pokemon: Pokemon!
     
-    private var requestCache: RequestCache!
     private let usernameCache = Cache<String, String>(maxCacheSize: 30)
-    
+    private var requestCache: RequestCache!    
     private var commentRequest: ApiCommentListRequest!
     private var userRequest: ApiUserRequest!
     
@@ -21,14 +21,12 @@ class CommentViewController: UITableViewController {
         commentRequest = Container.sharedInstance.get(ApiCommentListRequest.self)
         userRequest = Container.sharedInstance.get(ApiUserRequest.self)
     }
-    
-    func updateCommentsTable(forIndex: Int) {
-        tableView.beginUpdates()
-        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: forIndex, inSection: 0)],
-                                         withRowAnimation: .Automatic)
-        tableView.endUpdates()
-    }
-    
+}
+
+// MARK - TableView specific methods
+
+extension CommentViewController {
+
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
     }
@@ -71,10 +69,17 @@ class CommentViewController: UITableViewController {
     func loadUsernameFromServer(ncell: CommentTableCell, userId: String, indexPath: NSIndexPath) {
         userRequest
             .setSuccessHandler({
+                // why did I even do this??!
+                // TODO replace if let ... {} with:
+                // let username = $0.attributes.username
+                // ncell.commenterUsernameLabel.text = username
+                
                 if let cell: CommentTableCell = self.tableView.cellForRowAtIndexPath(indexPath) as? CommentTableCell {
                     let username = $0.attributes.username
                     cell.commenterUsernameLabel.text = username
                 }
+                
+                // 
                 
                 self.usernameCache.put($0.id, value: $0.attributes.username)
                 self.tableView.reloadData()
@@ -84,17 +89,30 @@ class CommentViewController: UITableViewController {
     
     func getPostCommentCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("postCommentCell", forIndexPath: indexPath) as! PostCommentTableCell
+        
         cell.pokemonId = self.pokemon.id
         cell.user = loggedInUser
         cell.delegate = self
+        
         return cell
     }
     
 }
 
+// MARK - Delegate action
+
 extension CommentViewController : CommentCreatedDelegate {
+
     func notifyCommentCreated(comment: Comment) {
         comments.append(comment)
         updateCommentsTable(comments.count - 1)
     }
+    
+    func updateCommentsTable(forIndex: Int) {
+        tableView.beginUpdates()
+        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: forIndex, inSection: 0)],
+                                         withRowAnimation: .Automatic)
+        tableView.endUpdates()
+    }
+    
 }
