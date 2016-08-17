@@ -63,13 +63,9 @@ class SinglePokemonTableViewController: UITableViewController {
         ProgressHud.show()
         
         imageLoader
-            .setSuccessHandler({
-                self.imageCache.put(self.pokemon.attributes.imageUrl!, value: $0)
-                self.updatePhotoAndCloseProgressHud($0)
-            })
-            .setFailureHandler({
-                self.updatePhotoAndCloseProgressHud(SinglePokemonTableViewController.DEFAULT_IMAGE)
-            })
+            .setSuccessHandler({ self.imageCache.put(urlEndpoint, value: $0)
+                                 self.updatePhotoAndCloseProgressHud($0) })
+            .setFailureHandler({ self.updatePhotoAndCloseProgressHud(SinglePokemonTableViewController.DEFAULT_IMAGE) })
             .prepareRequest(urlEndpoint)
             .doGetPhoto()
     }
@@ -86,7 +82,8 @@ class SinglePokemonTableViewController: UITableViewController {
         ProgressHud.show()
         commentRequest
             .setSuccessHandler({ self.displayComments($0, sender: sender) })
-            .setFailureHandler({ ProgressHud.indicateFailure() })
+            .setFailureHandler({ ProgressHud.indicateFailure() 
+                                 self.reEnableCommentsButton(sender) })
             .doGetComments(loggedInUser, pokemonId: pokemon.id)
     }
     
@@ -94,12 +91,12 @@ class SinglePokemonTableViewController: UITableViewController {
         sender.enabled = false
     }
     
-    func displayComments(injecting: CommentList, sender: UIBarButtonItem) {
+    func displayComments(commentList: CommentList, sender: UIBarButtonItem) {
         ProgressHud.indicateSuccess()
         
         pushController(CommentViewController.self, injecting: {
-            $0.comments = injecting.comments;
-            $0.pokemon = self.pokemon;
+            $0.comments = commentList.comments
+            $0.pokemon = self.pokemon
             $0.loggedInUser = self.loggedInUser
         })
         
